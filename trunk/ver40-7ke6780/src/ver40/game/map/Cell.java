@@ -10,7 +10,7 @@ public class Cell {
 	 * 
 	 */
 	public enum Type {
-		NONE(0), WALL(1), FLOOR(2), GAP(3);
+		NONE(0), WALL(10), FLOOR(20), GAP(30);
 
 		private int code;
 
