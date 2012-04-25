@@ -64,27 +64,12 @@ public class App extends BasicGame {
 		pos.y = (int) (center.y + 0.8f * Math.sin(track) * radius);
 		track += (Math.PI * 2) / (2000.0f * delta);
 		if (track >= Math.PI * 2)
-			track = 0.0f;
+			track = 0.0f; 
 	}
 
 	@Override
 	public void render(GameContainer container, Graphics g)
 			throws SlickException {
-		// g.drawString("Hello, Slick world!", 0, 100);
-		// for (int j = 0; j < 25; j++)
-		// for (int i = 0; i < 80; i++) {
-		// letter = font.getSubImage(i, 1);
-		// Random rnd = new Random();
-		// Color col = new Color(1.0f / (rnd.nextInt(9) + 1),
-		// 1.0f / (rnd.nextInt(9) + 1),
-		// 1.0f / (rnd.nextInt(9) + 1));
-		// letter.draw(i * 8, j * 12, col);
-		// }
-
-		// g.setBackground(new Color(0.0f, 0.0f, 0.5f));
-		// Color col = new Color(1.0f, 1.0f, 0.0f);
-		// Color col1 = new Color(1.0f, 0.0f, 0.0f);
-		// ascii.drawFree("WARNING FoREVer!", pos.x, pos.y, col, col1, g);
 
 		Color c = new Color(Color.gray);
 		int r = 6;
