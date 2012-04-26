@@ -68,11 +68,14 @@ public class AsciiDraw {
 		}
 		// рисуем символы
 		Point p;
+//TODO		font.startUse();
 		for (int i = 0; i < len; i++) {
 			p = codeConvert((int) str.charAt(i));
 			letter = font.getSubImage(p.x, p.y);
+//			letter.drawEmbedded((x + i) * width, y * height, x2, y2, srcx, srcy, srcx2, srcy2, fg);
 			letter.draw((x + i) * width, y * height, fg);
 		}
+//		font.endUse();
 	}
 
 	/**
@@ -105,7 +108,7 @@ public class AsciiDraw {
 	}
 
 	/**
-	 * Перевод кода символа в линейный индекс ASCII-битмапы
+	 * Перевод кода символа в координаты на матрице битмапы шрифта
 	 * 
 	 * @param code
 	 * @return
