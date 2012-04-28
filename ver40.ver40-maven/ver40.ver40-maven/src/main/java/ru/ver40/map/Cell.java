@@ -5,27 +5,14 @@ package ru.ver40.map;
  * 
  */
 public class Cell {
-	/**
-	 * Типы клеток
-	 * 
-	 */
-	public enum Type {
-		NONE(0), WALL(10), FLOOR(20), GAP(30);
+	public static final short TYPE_NONE = 0;
+	public static final short TYPE_WALL = 10;
+	public static final short TYPE_FLOOR = 20;
+	public static final short TYPE_GAP = 30;
 
-		private int code;
-
-		private Type(int c) {
-			code = c;
-		}
-
-		public int toInt() {
-			return code;
-		}
-	}
-
-	public int type;
+	public short type;
 
 	public Cell() {
-		type = Type.NONE.toInt();
+		type = TYPE_NONE;
 	}
 }

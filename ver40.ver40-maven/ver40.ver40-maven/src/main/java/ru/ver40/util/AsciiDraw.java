@@ -4,21 +4,18 @@ import java.awt.Point;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
-import org.newdawn.slick.Image;
 import org.newdawn.slick.SpriteSheet;
 
 import ru.ver40.engine.ResourceManager;
 
-
 /**
- * Отрисовка ASCII-символов
+ * Отрисовка ASCII-строк
  */
 public class AsciiDraw {
 
-	private SpriteSheet font = null;
-	private Image letter = null;
-	private int width = 0; // ширина одного символа
-	private int height = 0; // высота одного символа
+	private SpriteSheet font;
+	private int width; // ширина одного символа
+	private int height; // высота одного символа
 
 	/**
 	 * Конструктор
@@ -68,14 +65,18 @@ public class AsciiDraw {
 		}
 		// рисуем символы
 		Point p;
-//TODO		font.startUse();
+		int dx, dy, sx, sy;
+		font.startUse();
 		for (int i = 0; i < len; i++) {
 			p = codeConvert((int) str.charAt(i));
-			letter = font.getSubImage(p.x, p.y);
-//			letter.drawEmbedded((x + i) * width, y * height, x2, y2, srcx, srcy, srcx2, srcy2, fg);
-			letter.draw((x + i) * width, y * height, fg);
+			dx = (x + i) * width;
+			dy = y * height;
+			sx = p.x * width;
+			sy = p.y * height;
+			font.drawEmbedded(dx, dy, dx + width - 1, dy + height - 1, sx, sy,
+					sx + width - 1, sy + height - 1, fg);
 		}
-//		font.endUse();
+		font.endUse();
 	}
 
 	/**
@@ -100,15 +101,22 @@ public class AsciiDraw {
 		}
 		// рисуем символы
 		Point p;
+		int dx, dy, sx, sy;
+		font.startUse();
 		for (int i = 0; i < len; i++) {
 			p = codeConvert((int) str.charAt(i));
-			letter = font.getSubImage(p.x, p.y);
-			letter.draw(x + (i * width), y, fg);
+			dx = x + (i * width);
+			dy = y;
+			sx = p.x * width;
+			sy = p.y * height;
+			font.drawEmbedded(dx, dy, dx + width - 1, dy + height - 1, sx, sy,
+					sx + width - 1, sy + height - 1, fg);
 		}
+		font.endUse();
 	}
 
 	/**
-	 * Перевод кода символа в координаты на матрице битмапы шрифта
+	 * Перевод кода символа в координаты на матрице SpriteSheet-а шрифта
 	 * 
 	 * @param code
 	 * @return

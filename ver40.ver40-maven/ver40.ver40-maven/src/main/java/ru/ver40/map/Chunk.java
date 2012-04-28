@@ -3,6 +3,7 @@ package ru.ver40.map;
 import java.io.File;
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
+import java.util.List;
 
 import ru.ver40.util.Constants;
 
@@ -11,44 +12,36 @@ import ru.ver40.util.Constants;
  * 
  */
 public class Chunk {
-	Map map;
-	long index;
-	ArrayList<Cell> cells;
+	private FloorMap m_map;
+	private List<Cell> m_cells;
+
+	public int m_posX, m_posY;
 
 	/**
 	 * Конструктор
 	 * 
-	 * @param index
 	 */
-	public Chunk(Map map, long index) {
-		this.map = map;
-		this.index = index;
-		cells = new ArrayList<Cell>(Constants.MAP_CHUNK_SIZE
-				* Constants.MAP_CHUNK_SIZE);
-		for (int i = 0; i < Constants.MAP_CHUNK_SIZE * Constants.MAP_CHUNK_SIZE; i++)
-			cells.add(new Cell());
+	public Chunk(FloorMap map, int x, int y) {
+		m_map = map;
+		m_posX = x;
+		m_posY = y;
+		m_cells = new ArrayList<Cell>(2);// Constants.MAP_CHUNK_LENGTH);
+		for (int i = 0; i < Constants.MAP_CHUNK_LENGTH; i++)
+			m_cells.add(new Cell());
+
+		File f = new File(getFile());
+		if (f.exists()) {
+			load();
+		}
 	}
 
 	/**
-	 * Вернуть клетку по её координатам в чанке
+	 * Вернуть клетку по её индексу в массиве клеток
 	 * 
-	 * @param x
-	 * @param y
 	 * @return
 	 */
-	public Cell getCell(int x, int y) {
-		return cells.get(y * Constants.MAP_CHUNK_SIZE + x);
-	}
-
-	/**
-	 * Присвоить клетку по её координатам в чанке
-	 * 
-	 * @param x
-	 * @param y
-	 * @param c
-	 */
-	public void setCell(int x, int y, Cell c) {
-		cells.set(y * Constants.MAP_CHUNK_SIZE + x, c);
+	public Cell getCell(int index) {
+		return m_cells.get(index);
 	}
 
 	/**
@@ -57,8 +50,8 @@ public class Chunk {
 	 * @return
 	 */
 	public String getFile() {
-		return new String(map.getPath() + File.separator + Long.toString(index)
-				+ ".ch");
+		return m_map.getPath() + File.separator
+				+ String.format("(%010d)(%010d).ch", m_posX, m_posY);
 	}
 
 	/**
@@ -66,10 +59,15 @@ public class Chunk {
 	 */
 	public void save() {
 		// TODO оптимизация сохранением только изменившихся клеток
-		try (RandomAccessFile outFile = new RandomAccessFile(getFile(), "w")) {
-			for (Cell c : cells) {
-				outFile.writeInt(c.type);
+		try (RandomAccessFile outFile = new RandomAccessFile(getFile(), "rw")) {
+			int i = 0;
+			while (i < Constants.MAP_CHUNK_LENGTH) {
+				outFile.writeShort(m_cells.get(i).type);
+				i++;
 			}
+			// for (Cell c : m_cells) {
+			// outFile.writeShort(c.type);
+			// }
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -79,13 +77,30 @@ public class Chunk {
 	 * Загрузка чанка из файла
 	 */
 	public void load() {
-		try (RandomAccessFile inFile = new RandomAccessFile(getFile(), "r")) {
-			for (int i = 0; i < Constants.MAP_CHUNK_SIZE
-					* Constants.MAP_CHUNK_SIZE; i++) {
-				cells.get(i).type = inFile.readInt();
+		try (RandomAccessFile inFile = new RandomAccessFile(getFile(), "rw")) {
+			int i = 0;
+			while (i < Constants.MAP_CHUNK_LENGTH) {
+				m_cells.get(i).type = inFile.readShort();
+				i++;
 			}
+			// for (Cell c : m_cells) {
+			// c.type = inFile.readShort();
+			// }
 		} catch (Exception e) {
 			e.printStackTrace();
+		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#finalize()
+	 */
+	protected void finalize() throws Throwable {
+		try {
+			save(); // сохраняем чанк
+		} finally {
+			super.finalize();
 		}
 	}
 }
