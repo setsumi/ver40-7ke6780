@@ -5,7 +5,7 @@ package ru.ver40.model;
  * @author anon
  *
  */
-public class Person extends GObject {
+public class Actor extends GObject {
 	
 	/*
 	 * Роевые характериктики:
@@ -17,9 +17,23 @@ public class Person extends GObject {
 	 */
 	private int x, y;
 	
+	/**
+	 * Относительная скорость
+	 * 10 - значение по умолчанию
+	 */
+	private int speed = 10;	
+	
+	public int getSpeed() {
+		return speed;
+	}
+
+	public void setSpeed(int speed) {
+		this.speed = speed;
+	}
+
 	private static final long serialVersionUID = 8472085921088558199L;
 	
-	public Person() {
+	public Actor() {
 		this.getSymbol().setSymbol('@');
 		this.hp = 10;
 		setPassable(false);

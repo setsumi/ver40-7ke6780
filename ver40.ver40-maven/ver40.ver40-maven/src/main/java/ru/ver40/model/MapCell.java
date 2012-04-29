@@ -32,14 +32,14 @@ public class MapCell extends GObject  {
 	
 //	private List<Item> items;
 	
-    private List<Person> persons;
+    private List<Actor> persons;
 	
 	/**
 	 * Констркутор по умолчанию: создает обычный пол карты.
 	 */
 	public MapCell() {
 		this.floor = new Floor();
-		persons = new LinkedList<Person>();
+		persons = new LinkedList<Actor>();
 	}
 	
 	/**
@@ -71,12 +71,12 @@ public class MapCell extends GObject  {
 		this.building = building;
 	}
 	
-	public void addPerson(Person person) {
+	public void addPerson(Actor person) {
 		person.setParent(this);
 		persons.add(person);
 	}
 	
-	public List<Person> getPersons() {
+	public List<Actor> getPersons() {
 		return Collections.unmodifiableList(persons);
 	}
 	
@@ -85,7 +85,7 @@ public class MapCell extends GObject  {
 			if (object == building) { 
 				building = null;
 			}
-		} else if (object instanceof Person) {
+		} else if (object instanceof Actor) {
 			persons.remove(object);
 		}
 	}
@@ -125,7 +125,7 @@ public class MapCell extends GObject  {
 	@Override
 	public boolean isPassable() {
 		boolean passable = true;
-		for (Person p : persons) {
+		for (Actor p : persons) {
 			passable = passable && p.isPassable();
 		}
 		return passable && floor.isPassable() 

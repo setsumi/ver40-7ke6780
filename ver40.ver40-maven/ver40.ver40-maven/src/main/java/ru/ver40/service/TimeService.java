@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+import ru.ver40.model.Player;
 import ru.ver40.model.time.TimedTask;
 
 /**
@@ -40,6 +41,9 @@ public class TimeService implements Serializable {
 	
 	public void schedule(TimedTask task) {
 		tasks.addLast(new TaskWrapper(task, task.getDuration()));
+		if (task.getActor() instanceof Player) {
+			tick(task.getDuration());
+		}
 	}
 	
 	public void remove(TimedTask task) {
@@ -62,15 +66,18 @@ public class TimeService implements Serializable {
 		return Collections.unmodifiableList(ret);
 	}
 	
-	public void tick() {
-		sessionTicksLeft++;
-		totalTicksLeft++;
-		Iterator<TaskWrapper> i = tasks.iterator();
-		while (i.hasNext()) {
-			TaskWrapper next = i.next();
-			if (next.isCompleted()) {
-				next.getTask().perform();
-				i.remove();
+	public void tick(int ticks) {
+		while (ticks != 0) {
+			ticks--;		
+			sessionTicksLeft++;
+			totalTicksLeft++;
+			Iterator<TaskWrapper> i = tasks.iterator();
+			while (i.hasNext()) {
+				TaskWrapper next = i.next();
+				if (next.isCompleted()) {
+					next.getTask().perform();
+					i.remove();
+				}
 			}
 		}
 	}

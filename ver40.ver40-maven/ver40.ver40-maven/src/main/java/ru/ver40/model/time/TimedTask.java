@@ -2,6 +2,8 @@ package ru.ver40.model.time;
 
 import java.io.Serializable;
 
+import ru.ver40.model.Actor;
+
 /**
  * Задача занимающая некоторое количество игрового времени.
  * @author anon
@@ -25,13 +27,24 @@ public abstract class TimedTask implements Serializable {
 	 */
 	private boolean finite;
 	
-	public TimedTask(int duration) {
-		this(duration, true);
+	private Actor actor;
+	
+	public Actor getActor() {
+		return actor;
+	}
+
+	public void setActor(Actor actor) {
+		this.actor = actor;
+	}
+
+	public TimedTask(Actor actor, int duration) {
+		this(actor, duration, true);
 	}
 	
-	public TimedTask(int duration, boolean finite) {
+	public TimedTask(Actor actor, int duration, boolean finite) {
 		this.duration = duration;
 		this.finite = finite;
+		this.actor = actor;
 	}
 	
 	/**

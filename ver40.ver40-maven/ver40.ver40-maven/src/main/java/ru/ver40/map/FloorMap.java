@@ -3,7 +3,7 @@ package ru.ver40.map;
 import java.util.ArrayList;
 
 import ru.ver40.model.MapCell;
-import ru.ver40.model.Person;
+import ru.ver40.model.Actor;
 import ru.ver40.util.Constants;
 
 /**
@@ -87,7 +87,7 @@ public class FloorMap {
 		}
 	}
 	
-	public void translatePerson(Person p, int newX, int newY) {
+	public void translatePerson(Actor p, int newX, int newY) {
 		// Проверяем можно ли перенести:
 		//
 		MapCell newCell = getCell(newX, newY);

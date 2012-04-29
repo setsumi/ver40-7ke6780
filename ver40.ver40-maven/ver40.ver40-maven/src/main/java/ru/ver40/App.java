@@ -96,9 +96,6 @@ public class App extends BasicGame {
 		radius = 200;
 		track = 0.0f;
 		timeService = TimeService.getInstance();
-
-		// TODO debug abort
-		// gc.exit();
 	}
 
 	@Override
@@ -110,14 +107,13 @@ public class App extends BasicGame {
 			track = 0.0f;
 
 		
-		m_viewPos.x = p.getX();
-		m_viewPos.y = p.getY();
+
 		
 
 		Input input = gc.getInput();
 		p.handleInputEvent(input);
-		
-		timeService.tick();		
+		m_viewPos.x = p.getX();
+		m_viewPos.y = p.getY();	
 	}
 
 	@Override

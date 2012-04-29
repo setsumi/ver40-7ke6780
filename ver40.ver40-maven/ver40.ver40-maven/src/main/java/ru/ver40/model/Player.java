@@ -11,7 +11,7 @@ import ru.ver40.service.TimeService;
  * @author anon
  *
  */
-public class Player extends Person implements MovementDelegate {
+public class Player extends Actor implements MovementDelegate {
 	
 	private transient TimeService tService;
 	/**
