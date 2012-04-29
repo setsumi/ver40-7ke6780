@@ -28,5 +28,6 @@ public class Constants {
 	/**
 	 * Максимальный размер карты
 	 */
-	public static final int MAP_MAX_SIZE = Integer.MAX_VALUE;
+	public static final int MAP_MAX_SIZE = Integer.MAX_VALUE
+			- (Integer.MAX_VALUE % MAP_CHUNK_SIZE);
 }

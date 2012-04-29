@@ -14,14 +14,11 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.util.Log;
 
 import ru.ver40.engine.ResourceManager;
-import ru.ver40.map.Cell;
 import ru.ver40.map.FloorMap;
 import ru.ver40.map.Viewport;
-import ru.ver40.model.Building;
 import ru.ver40.model.Floor;
 import ru.ver40.model.MapCell;
 import ru.ver40.model.Player;
-import ru.ver40.model.Symbol;
 import ru.ver40.service.MapService;
 import ru.ver40.util.AsciiDraw;
 

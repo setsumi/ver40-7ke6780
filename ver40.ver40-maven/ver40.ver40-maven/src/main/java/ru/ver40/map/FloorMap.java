@@ -1,7 +1,6 @@
 package ru.ver40.map;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import ru.ver40.model.MapCell;
 import ru.ver40.model.Person;
@@ -12,8 +11,13 @@ import ru.ver40.util.Constants;
  * 
  */
 public class FloorMap {
-	
-	private List<Chunk> m_chunks;
+	/**
+	 * Буфер чанков
+	 */
+	private ArrayList<Chunk> m_chunks;
+	/**
+	 * Путь к каталогу с данными карты
+	 */
 	private String m_path;
 	
 	/**
@@ -21,7 +25,8 @@ public class FloorMap {
 	 */
 	public FloorMap(String path) {
 		m_path = path;
-		m_chunks = new ArrayList<Chunk>(2);// Constants.MAP_CHUNK_CACHE_SIZE);
+		m_chunks = new ArrayList<Chunk>();
+		m_chunks.ensureCapacity(Constants.MAP_CHUNK_CACHE_SIZE);
 	}
 
 	/**
@@ -44,30 +49,43 @@ public class FloorMap {
 		int cx = x / Constants.MAP_CHUNK_SIZE;
 		int cy = y / Constants.MAP_CHUNK_SIZE;
 		// ищем чанк в кэше
-		for (Chunk c : m_chunks) {
+		Chunk c;
+		int i = 0;
+		while (i < m_chunks.size()) {
+			c = m_chunks.get(i);
 			if (c.m_posX == cx && c.m_posY == cy) {
 				ch = c;
-				// TODO move used chunk down the list to ensure survival
 				break;
 			}
+			i++;
 		}
-		// не нашли в кэше, создаем и заносим в кэш
+		// не нашли в кэше
 		if (ch == null) {
+			// удаляем лишнее если кэш уже полон
 			if (m_chunks.size() == Constants.MAP_CHUNK_CACHE_SIZE) {
-				// TODO debug force save
-				// m_chunks.get(0).save();
+				m_chunks.get(0).save();
 				m_chunks.remove(0);
 			}
+			// создаем чанк и заносим в кэш
 			ch = new Chunk(this, cx, cy);
 			m_chunks.add(ch);
-			// TODO debug test save
-			// rv.save();
 		}
 		// индекс клетки в квадрате
 		int ci = (y % Constants.MAP_CHUNK_SIZE) * Constants.MAP_CHUNK_SIZE
 				+ (x % Constants.MAP_CHUNK_SIZE);
 		return ch.getCell(ci);
-	}	
+	}
+
+	/**
+	 * Сохранение чанков из буфера. Должно вызываться перед удалением карты.
+	 */
+	public void SaveChunks() {
+		int i = 0;
+		while (i < m_chunks.size()) {
+			m_chunks.get(i).save();
+			i++;
+		}
+	}
 	
 	public void translatePerson(Person p, int newX, int newY) {
 		// Проверяем можно ли перенести:
