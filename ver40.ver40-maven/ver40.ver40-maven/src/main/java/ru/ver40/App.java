@@ -16,6 +16,10 @@ import ru.ver40.engine.ResourceManager;
 import ru.ver40.map.Cell;
 import ru.ver40.map.FloorMap;
 import ru.ver40.map.Viewport;
+import ru.ver40.model.Building;
+import ru.ver40.model.Floor;
+import ru.ver40.model.MapCell;
+import ru.ver40.model.Symbol;
 import ru.ver40.util.AsciiDraw;
 
 public class App extends BasicGame {
@@ -58,15 +62,18 @@ public class App extends BasicGame {
 		m_view = new Viewport(m_map, 60, 30, 1, 1);
 		m_viewPos = new Point(200, 200);
 
-		for (int i = 1; i < 400; i++)
+		for (int i = 1; i < 400; i++) {
 			for (int j = 1; j < 400; j++) {
-				Cell c = m_map.getCell(i, j);
+				MapCell c = m_map.getCell(i, j);
 				if (Math.random() < 0.2f) {
-					c.type = Cell.TYPE_WALL;
+					c.setFloor(new Floor());
+					c.setBuilding(MapCell.createWall().getBuilding());
 				} else {
-					c.type = Cell.TYPE_FLOOR;
+					c = new MapCell();
 				}
 			}
+		}
+		
 
 		center = new Point(250, 200);
 		pos = new Point();

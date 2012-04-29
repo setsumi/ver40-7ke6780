@@ -3,6 +3,7 @@ package ru.ver40.map;
 import java.util.ArrayList;
 import java.util.List;
 
+import ru.ver40.model.MapCell;
 import ru.ver40.util.Constants;
 
 /**
@@ -35,7 +36,7 @@ public class FloorMap {
 	 * 
 	 * @return
 	 */
-	public Cell getCell(int x, int y) {
+	public MapCell getCell(int x, int y) {
 		Chunk ch = null;
 		// координаты чанка
 		int cx = x / Constants.MAP_CHUNK_SIZE;
@@ -64,5 +65,5 @@ public class FloorMap {
 		int ci = (y % Constants.MAP_CHUNK_SIZE) * Constants.MAP_CHUNK_SIZE
 				+ (x % Constants.MAP_CHUNK_SIZE);
 		return ch.getCell(ci);
-	}
+	}	
 }

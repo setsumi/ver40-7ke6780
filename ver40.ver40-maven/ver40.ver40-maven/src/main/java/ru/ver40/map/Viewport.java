@@ -3,6 +3,7 @@ package ru.ver40.map;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 
+import ru.ver40.model.MapCell;
 import ru.ver40.util.AsciiDraw;
 import ru.ver40.util.Constants;
 
@@ -42,18 +43,9 @@ public class Viewport {
 		for (int i = 0; i < m_width; i++, viewX++) {
 			int vy = viewY;
 			for (int j = 0; j < m_height; j++, vy++) {
-				Cell c = m_map.getCell(viewX, vy);
-				String str = " ";
-				Color col = Color.lightGray;
-				switch (c.type) {
-				case Cell.TYPE_WALL:
-					str = "#";
-					break;
-				case Cell.TYPE_FLOOR:
-					str = ".";
-					break;
-				}
-				ascii.draw(str, i + m_posX, j + m_posY, col, Color.darkGray, gr); //
+				MapCell c = m_map.getCell(viewX, vy);				
+				String str = c.getResultString();
+				ascii.draw(str, i + m_posX, j + m_posY, Color.decode(c.getResultFg()), Color.decode(c.getResultBg()), gr); //
 			}
 		}
 	}
