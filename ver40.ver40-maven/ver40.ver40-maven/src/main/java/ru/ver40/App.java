@@ -20,6 +20,7 @@ import ru.ver40.model.Floor;
 import ru.ver40.model.MapCell;
 import ru.ver40.model.Player;
 import ru.ver40.service.MapService;
+import ru.ver40.service.TimeService;
 import ru.ver40.util.AsciiDraw;
 
 	
@@ -36,6 +37,7 @@ public class App extends BasicGame {
 	Viewport m_view;
 	Point m_viewPos;
 	private Player p;
+	private TimeService timeService;
 
 	// -----------------------------------------------
 
@@ -83,11 +85,12 @@ public class App extends BasicGame {
 			}
 		}
 		
-
+		
 		center = new Point(250, 200);
 		pos = new Point();
 		radius = 200;
 		track = 0.0f;
+		timeService = TimeService.getInstance();
 
 		// TODO debug abort
 		// gc.exit();
@@ -126,8 +129,7 @@ public class App extends BasicGame {
 		} else if (input.isKeyDown(Input.KEY_NUMPAD9)) {
 			m_viewPos.translate(1, -1);
 		}*/
-		
-		
+		timeService.tick();		
 	}
 
 	@Override
