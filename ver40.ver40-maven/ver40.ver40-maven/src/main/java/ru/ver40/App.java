@@ -2,8 +2,6 @@ package ru.ver40;
 
 import java.awt.Point;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Random;
 
 import org.newdawn.slick.AppGameContainer;
@@ -58,11 +56,10 @@ public class App extends BasicGame {
 					+ e.getMessage());
 			throw new SlickException("Resource loading failed!");
 		}
-		
-		
 
-		// Input input = gc.getInput();
-		// input.enableKeyRepeat();
+		// повтор нажатых клавиш
+		Input input = gc.getInput();
+		input.enableKeyRepeat();
 
 		// Отрисовка ASCII
 		m_ascii = new AsciiDraw();
@@ -81,7 +78,7 @@ public class App extends BasicGame {
 		for (int i = 1; i < 400; i++) {
 			for (int j = 1; j < 400; j++) {
 				MapCell c = m_map.getCell(i, j);
-				if (Math.random() < 0.2f) {
+				if (Math.random() < 0.1f) {
 					c.setFloor(new Floor());
 					c.setBuilding(MapCell.createWall().getBuilding());
 				} else {

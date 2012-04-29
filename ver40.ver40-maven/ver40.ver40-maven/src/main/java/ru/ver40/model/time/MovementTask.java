@@ -30,28 +30,28 @@ public class MovementTask extends TimedTask {
 		Actor person = getActor();
 		switch (position) {
 		case NORTH:
-			map.translatePerson(person, person.getX() , person.getY() - 1);			
+			map.translateActor(person, person.getX() , person.getY() - 1);			
 			break;
 		case SOUTH:
-			map.translatePerson(person, person.getX() , person.getY() + 1);	
+			map.translateActor(person, person.getX() , person.getY() + 1);	
 			break;
 		case EAST:
-			map.translatePerson(person, person.getX() + 1 , person.getY());
+			map.translateActor(person, person.getX() + 1 , person.getY());
 			break;
 		case WEST:
-			map.translatePerson(person, person.getX() - 1 , person.getY());
+			map.translateActor(person, person.getX() - 1 , person.getY());
 			break;
 		case NORTH_EAST:
-			map.translatePerson(person, person.getX() + 1 , person.getY() - 1);
+			map.translateActor(person, person.getX() + 1 , person.getY() - 1);
 			break;
 		case SOUTH_EAST:
-			map.translatePerson(person, person.getX() + 1 , person.getY() + 1);
+			map.translateActor(person, person.getX() + 1 , person.getY() + 1);
 			break;
 		case SOUTH_WEST:
-			map.translatePerson(person, person.getX() - 1 , person.getY() + 1);
+			map.translateActor(person, person.getX() - 1 , person.getY() + 1);
 			break;
 		case NOTRT_WEST:
-			map.translatePerson(person, person.getX() - 1 , person.getY() - 1);
+			map.translateActor(person, person.getX() - 1 , person.getY() - 1);
 			break;
 			
 		}

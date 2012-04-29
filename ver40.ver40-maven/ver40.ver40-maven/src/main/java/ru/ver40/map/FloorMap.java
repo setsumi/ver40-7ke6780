@@ -2,8 +2,8 @@ package ru.ver40.map;
 
 import java.util.ArrayList;
 
-import ru.ver40.model.MapCell;
 import ru.ver40.model.Actor;
+import ru.ver40.model.MapCell;
 import ru.ver40.util.Constants;
 
 /**
@@ -87,20 +87,23 @@ public class FloorMap {
 		}
 	}
 	
-	public void translatePerson(Actor p, int newX, int newY) {
+	public void translateActor(Actor p, int newX, int newY) {
 		// Проверяем можно ли перенести:
 		//
-		MapCell newCell = getCell(newX, newY);
-		if (newCell != null && newCell.isPassable()) {
-			// Задаем координаты:
-			//
-			p.setX(newX);
-			p.setY(newY);
-			// Удаляем из старого списка:
-			//
-			MapCell oldCell = p.getCell();
-			oldCell.remove(p);
-			newCell.addPerson(p);
+		if (newX >= 0 && newY >= 0 && newX < Constants.MAP_MAX_SIZE
+				&& newX < Constants.MAP_MAX_SIZE) {
+			MapCell newCell = getCell(newX, newY);
+			if (newCell != null && newCell.isPassable()) {
+				// Задаем координаты:
+				//
+				p.setX(newX);
+				p.setY(newY);
+				// Удаляем из старого списка:
+				//
+				MapCell oldCell = p.getCell();
+				oldCell.remove(p);
+				newCell.addPerson(p);
+			}
 		}
 	}
 }
