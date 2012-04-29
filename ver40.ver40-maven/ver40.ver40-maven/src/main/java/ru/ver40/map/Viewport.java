@@ -1,5 +1,8 @@
 package ru.ver40.map;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 
@@ -13,7 +16,7 @@ import ru.ver40.util.Constants;
  */
 public class Viewport {	
 	
-	
+	private Map<Integer, Color> colorCache;
 	
 	private FloorMap m_map;
 	private int m_width, m_height; // размер
@@ -29,6 +32,7 @@ public class Viewport {
 		m_offsetY = m_height / 2;
 		m_posX = posX;
 		m_posY = posY;
+		colorCache = new HashMap<Integer, Color>();
 	}
 
 	public void drawRaw(AsciiDraw ascii, int x, int y, Graphics gr) {
@@ -48,8 +52,18 @@ public class Viewport {
 			for (int j = 0; j < m_height; j++, vy++) {
 				MapCell c = m_map.getCell(viewX, vy);				
 				String str = c.getResultString();
-				ascii.draw(str, i + m_posX, j + m_posY, Color.decode(c.getResultFg()), Color.decode(c.getResultBg()), gr); //
+				
+				ascii.draw(str, i + m_posX, j + m_posY, getColor(c.getResultFg()), getColor(c.getResultBg()), gr); //
 			}
 		}
+	}
+
+	private Color getColor(int colorHex) {
+		Color c = colorCache.get(colorHex);
+		if (c == null) {
+			c = new Color(colorHex);
+			colorCache.put(colorHex, c);
+		}
+		return c;
 	}
 }

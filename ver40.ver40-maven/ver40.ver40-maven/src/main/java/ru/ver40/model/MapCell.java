@@ -102,23 +102,23 @@ public class MapCell extends GObject  {
 		}
 	}
 	
-	public String getResultBg() {
+	public int getResultBg() {
 		if (building != null) {
-			return String.valueOf(building.getSymbol().getBgColor());
+			return (building.getSymbol().getBgColor());
 		} else if (!persons.isEmpty()) {
-			return String.valueOf((persons.get(persons.size() - 1).getSymbol().getBgColor()));
+			return persons.get(persons.size() - 1).getSymbol().getBgColor();
 		} else {
-			return String.valueOf(floor.getSymbol().getBgColor());
+			return floor.getSymbol().getBgColor();
 		}
 	}
 	
-	public String getResultFg() {
+	public int getResultFg() {
 		if (building != null) {
-			return String.valueOf(building.getSymbol().getFgColor());
+			return (building.getSymbol().getFgColor());
 		} else if (!persons.isEmpty()) {
-			return String.valueOf(persons.get(persons.size() - 1).getSymbol().getFgColor());
+			return persons.get(persons.size() - 1).getSymbol().getFgColor();
 		} else {
-			return String.valueOf(floor.getSymbol().getFgColor());
+			return floor.getSymbol().getFgColor();
 		}
 	}
 	

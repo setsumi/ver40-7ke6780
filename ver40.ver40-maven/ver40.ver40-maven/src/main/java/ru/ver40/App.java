@@ -2,6 +2,8 @@ package ru.ver40;
 
 import java.awt.Point;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 import org.newdawn.slick.AppGameContainer;
@@ -38,6 +40,7 @@ public class App extends BasicGame {
 	Point m_viewPos;
 	private Player p;
 	private TimeService timeService;
+	
 
 	// -----------------------------------------------
 
@@ -55,6 +58,8 @@ public class App extends BasicGame {
 					+ e.getMessage());
 			throw new SlickException("Resource loading failed!");
 		}
+		
+		
 
 		// Input input = gc.getInput();
 		// input.enableKeyRepeat();
@@ -112,23 +117,6 @@ public class App extends BasicGame {
 		Input input = gc.getInput();
 		p.handleInputEvent(input);
 		
-		/*if (input.isKeyDown(Input.KEY_NUMPAD6)) {
-			m_viewPos.translate(1, 0);
-		} else if (input.isKeyDown(Input.KEY_NUMPAD4)) {
-			m_viewPos.translate(-1, 0);
-		} else if (input.isKeyDown(Input.KEY_NUMPAD8)) {
-			m_viewPos.translate(0, -1);
-		} else if (input.isKeyDown(Input.KEY_NUMPAD2)) {
-			m_viewPos.translate(0, 1);
-		} else if (input.isKeyDown(Input.KEY_NUMPAD7)) {
-			m_viewPos.translate(-1, -1);
-		} else if (input.isKeyDown(Input.KEY_NUMPAD3)) {
-			m_viewPos.translate(1, 1);
-		} else if (input.isKeyDown(Input.KEY_NUMPAD1)) {
-			m_viewPos.translate(-1, 1);
-		} else if (input.isKeyDown(Input.KEY_NUMPAD9)) {
-			m_viewPos.translate(1, -1);
-		}*/
 		timeService.tick();		
 	}
 
@@ -136,53 +124,9 @@ public class App extends BasicGame {
 	public void render(GameContainer container, Graphics g)
 			throws SlickException {
 
-		// Color c = new Color(Color.gray);
-		// int r = 6;
-		// float d = 1.0f / r;
-		// Random rnd = new Random(1);
-		// for (int y = 0; y < 20; y++)
-		// for (int x = 0; x < r; x++) {
-		// if (x == 0) {
-		// m_ascii.draw("#", x + 5, y + 5, Color.lightGray,
-		// Color.blue, g);
-		// m_ascii.draw("#", 34 - x, y + 5, Color.lightGray,
-		// Color.blue, g);
-		// } else {
-		// if (rnd.nextInt(5) != 1)
-		// m_ascii.draw("#", x + 5, y + 5, c.darker(d * x));
-		// if (rnd.nextInt(5) != 3)
-		// m_ascii.draw("#", 34 - x, y + 5, c.darker(d * x));
-		// }
-		// }
-		// m_ascii.draw("==============================", 5, 11,
-		// Color.lightGray,
-		// Color.black, g);
-		// m_ascii.draw("úúúúúúúúúúúúúúúúúúúúúúúúúúúúúú", 5, 12,
-		// Color.lightGray,
-		// Color.black, g);
-		// m_ascii.draw("úúúúúúúúúúúúúúúúúúúúúúúúúúúúúú", 5, 13,
-		// Color.lightGray,
-		// Color.black, g);
-		// m_ascii.draw("úúúúúúúúúúúúúúúúúúúúúúúúúúúúúú", 5, 14,
-		// Color.lightGray,
-		// Color.black, g);
-		// m_ascii.draw("==============================", 5, 15,
-		// Color.lightGray,
-		// Color.black, g);
-		// m_ascii.draw("@", 15, 12, Color.white, Color.black, g);
-		// m_ascii.draw("Где я?", 3, 27, Color.magenta, Color.black, g);
-
 		m_view.drawRaw(m_ascii, m_viewPos.x, m_viewPos.y, g);
 		g.setColor(Color.red);
 		g.drawString("View pos: " + m_viewPos.x + ", " + m_viewPos.y, 100, 0);
-		// g.setBackground(new Color(0.0f, 0.0f, 0.5f));
-		// Color col = new Color(1.0f, 1.0f, 0.0f);
-		// Color col1 = new Color(1.0f, 0.0f, 0.0f);
-		// m_ascii.drawFree("WARNING FoREVer!", pos.x, pos.y, col, col1, g);
-		//
-		// g.drawString("Max Image size: " + BigImage.getMaxSingleImageSize(),
-		// 100, 0);
-
 	}
 
 	/**
@@ -198,5 +142,5 @@ public class App extends BasicGame {
 		} catch (SlickException e) {
 			e.printStackTrace();
 		}
-	}
+	}	
 }
