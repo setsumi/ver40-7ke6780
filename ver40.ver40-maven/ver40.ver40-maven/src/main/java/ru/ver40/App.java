@@ -2,6 +2,7 @@ package ru.ver40;
 
 import java.awt.Point;
 import java.io.IOException;
+import java.util.Random;
 
 import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.BasicGame;
@@ -19,9 +20,12 @@ import ru.ver40.map.Viewport;
 import ru.ver40.model.Building;
 import ru.ver40.model.Floor;
 import ru.ver40.model.MapCell;
+import ru.ver40.model.Player;
 import ru.ver40.model.Symbol;
+import ru.ver40.service.MapService;
 import ru.ver40.util.AsciiDraw;
 
+	
 public class App extends BasicGame {
 
 	// -----------------------------------------------
@@ -34,6 +38,7 @@ public class App extends BasicGame {
 	FloorMap m_map;
 	Viewport m_view;
 	Point m_viewPos;
+	private Player p;
 
 	// -----------------------------------------------
 
@@ -59,9 +64,16 @@ public class App extends BasicGame {
 		m_ascii = new AsciiDraw();
 
 		m_map = new FloorMap("map/test");
+		MapService.getInstance().setcMap(m_map);
 		m_view = new Viewport(m_map, 60, 30, 1, 1);
 		m_viewPos = new Point(200, 200);
-
+		p = new Player("2ch anonymous");
+		Random r = new Random();
+		int x = r.nextInt(50);
+		int y = r.nextInt(50);
+		p.setX(x);
+		p.setY(y);
+		m_map.getCell(x, y).addPerson(p);
 		for (int i = 1; i < 400; i++) {
 			for (int j = 1; j < 400; j++) {
 				MapCell c = m_map.getCell(i, j);
@@ -92,8 +104,15 @@ public class App extends BasicGame {
 		if (track >= Math.PI * 2)
 			track = 0.0f;
 
+		
+		m_viewPos.x = p.getX();
+		m_viewPos.y = p.getY();
+		
+
 		Input input = gc.getInput();
-		if (input.isKeyDown(Input.KEY_NUMPAD6)) {
+		p.handleInputEvent(input);
+		
+		/*if (input.isKeyDown(Input.KEY_NUMPAD6)) {
 			m_viewPos.translate(1, 0);
 		} else if (input.isKeyDown(Input.KEY_NUMPAD4)) {
 			m_viewPos.translate(-1, 0);
@@ -109,7 +128,9 @@ public class App extends BasicGame {
 			m_viewPos.translate(-1, 1);
 		} else if (input.isKeyDown(Input.KEY_NUMPAD9)) {
 			m_viewPos.translate(1, -1);
-		}
+		}*/
+		
+		
 	}
 
 	@Override
@@ -179,5 +200,4 @@ public class App extends BasicGame {
 			e.printStackTrace();
 		}
 	}
-
 }

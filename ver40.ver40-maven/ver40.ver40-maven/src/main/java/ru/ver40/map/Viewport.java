@@ -11,7 +11,10 @@ import ru.ver40.util.Constants;
  * Рисует область карты на экране
  * 
  */
-public class Viewport {
+public class Viewport {	
+	
+	
+	
 	private FloorMap m_map;
 	private int m_width, m_height; // размер
 	private int m_offsetX, m_offsetY; // смещение левого верхнего угла

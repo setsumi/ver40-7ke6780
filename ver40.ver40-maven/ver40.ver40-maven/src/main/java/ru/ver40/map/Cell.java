@@ -3,6 +3,9 @@ package ru.ver40.map;
 /**
  * Клетка на карте
  * 
+ * FIXME: Вероятно следует снести к чертям.
+ * @see ru.ver40.model.MapCell
+ * 
  */
 public class Cell {
 	public static final short TYPE_NONE = 0;

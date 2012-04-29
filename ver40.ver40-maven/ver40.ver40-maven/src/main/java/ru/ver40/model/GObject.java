@@ -14,6 +14,11 @@ import java.io.Serializable;
 public abstract class GObject extends NotificationSource implements Serializable {
 	
 	/**
+	 * Родительский GObject
+	 */
+	private GObject parent;
+	
+	/**
 	 * Серийная версия класса
 	 */
 	private static final long serialVersionUID = 2546350833419137727L;
@@ -60,5 +65,13 @@ public abstract class GObject extends NotificationSource implements Serializable
 
 	public void setSymbol(Symbol symbol) {
 		this.symbol = symbol;
+	}
+
+	public GObject getParent() {
+		return parent;
+	}
+
+	public void setParent(GObject parent) {
+		this.parent = parent;
 	}	
 }

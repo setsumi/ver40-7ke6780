@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ru.ver40.model.MapCell;
+import ru.ver40.model.Person;
 import ru.ver40.util.Constants;
 
 /**
@@ -11,9 +12,10 @@ import ru.ver40.util.Constants;
  * 
  */
 public class FloorMap {
+	
 	private List<Chunk> m_chunks;
 	private String m_path;
-
+	
 	/**
 	 * Конструктор
 	 */
@@ -66,4 +68,21 @@ public class FloorMap {
 				+ (x % Constants.MAP_CHUNK_SIZE);
 		return ch.getCell(ci);
 	}	
+	
+	public void translatePerson(Person p, int newX, int newY) {
+		// Проверяем можно ли перенести:
+		//
+		MapCell newCell = getCell(newX, newY);
+		if (newCell != null && newCell.isPassable()) {
+			// Задаем координаты:
+			//
+			p.setX(newX);
+			p.setY(newY);
+			// Удаляем из старого списка:
+			//
+			MapCell oldCell = p.getCell();
+			oldCell.remove(p);
+			newCell.addPerson(p);
+		}
+	}
 }
