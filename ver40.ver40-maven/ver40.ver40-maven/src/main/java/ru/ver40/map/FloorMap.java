@@ -115,7 +115,7 @@ public class FloorMap implements ILosBoard {
 
 	@Override
 	public boolean contains(int x, int y) {
-		return getCell(x, y) != null;
+		return x > 0 && y > 0 && x < Constants.MAP_MAX_SIZE && y < Constants.MAP_MAX_SIZE;
 	}
 
 	@Override
