@@ -13,6 +13,8 @@ import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.util.Log;
 
+import rlforj.los.IFovAlgorithm;
+import rlforj.los.PrecisePermissive;
 import ru.ver40.engine.ResourceManager;
 import ru.ver40.map.FloorMap;
 import ru.ver40.map.Viewport;
@@ -37,9 +39,7 @@ public class App extends BasicGame {
 	Viewport m_view;
 	Point m_viewPos;
 	private Player p;
-	private TimeService timeService;
-	
-
+	private IFovAlgorithm fov;
 	// -----------------------------------------------
 
 	public App() {
@@ -87,30 +87,21 @@ public class App extends BasicGame {
 			}
 		}
 		
-		
-		center = new Point(250, 200);
-		pos = new Point();
-		radius = 200;
-		track = 0.0f;
-		timeService = TimeService.getInstance();
+		fov = new PrecisePermissive();
 	}
 
 	@Override
 	public void update(GameContainer gc, int delta) throws SlickException {
-		pos.x = (int) (center.x + radius * Math.cos(track));
-		pos.y = (int) (center.y + 0.8f * Math.sin(track) * radius);
-		track += (Math.PI * 2) / (2000.0f * delta);
-		if (track >= Math.PI * 2)
-			track = 0.0f;
-
-		
-
 		
 
 		Input input = gc.getInput();
 		p.handleInputEvent(input);
 		m_viewPos.x = p.getX();
 		m_viewPos.y = p.getY();	
+		
+		
+		m_map.setFogOfWar();
+		fov.visitFieldOfView(m_map, p.getX(), p.getY(), 10);
 	}
 
 	@Override

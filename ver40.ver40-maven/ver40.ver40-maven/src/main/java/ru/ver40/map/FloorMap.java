@@ -2,15 +2,18 @@ package ru.ver40.map;
 
 import java.util.ArrayList;
 
+import rlforj.los.ILosBoard;
 import ru.ver40.model.Actor;
 import ru.ver40.model.MapCell;
+import ru.ver40.model.VisibilityState;
 import ru.ver40.util.Constants;
+
 
 /**
  * Карта в виде большого 2D-поля
  * 
  */
-public class FloorMap {
+public class FloorMap implements ILosBoard {
 	/**
 	 * Буфер чанков
 	 */
@@ -20,6 +23,8 @@ public class FloorMap {
 	 */
 	private String m_path;
 	
+	private ArrayList<MapCell> oldVisible;
+	
 	/**
 	 * Конструктор
 	 */
@@ -27,6 +32,7 @@ public class FloorMap {
 		m_path = path;
 		m_chunks = new ArrayList<Chunk>();
 		m_chunks.ensureCapacity(Constants.MAP_CHUNK_CACHE_SIZE);
+		oldVisible = new ArrayList<MapCell>();
 	}
 
 	/**
@@ -105,5 +111,30 @@ public class FloorMap {
 				newCell.addPerson(p);
 			}
 		}
+	}
+
+	@Override
+	public boolean contains(int x, int y) {
+		return getCell(x, y) != null;
+	}
+
+	@Override
+	public boolean isObstacle(int x, int y) {
+		return !getCell(x, y).isPassable();
+	}
+
+	@Override
+	public void visit(int x, int y) {		
+		MapCell cell = getCell(x, y);
+		cell.setVisible(VisibilityState.VISIBLE);
+		oldVisible.add(cell);		
+	}
+	
+	// Поменить все видимые клетки вокруг игрока как FOG_OF_WAR
+	public void setFogOfWar() {
+		for (MapCell cell : oldVisible) {
+			cell.setVisible(VisibilityState.FOG_OF_WAR);
+		}
+		oldVisible.clear();
 	}
 }

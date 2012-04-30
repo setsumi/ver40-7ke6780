@@ -7,6 +7,7 @@ import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 
 import ru.ver40.model.MapCell;
+import ru.ver40.model.VisibilityState;
 import ru.ver40.util.AsciiDraw;
 import ru.ver40.util.Constants;
 
@@ -52,8 +53,14 @@ public class Viewport {
 			for (int j = 0; j < m_height; j++, vy++) {
 				MapCell c = m_map.getCell(viewX, vy);				
 				String str = c.getResultString();
-				
-				ascii.draw(str, i + m_posX, j + m_posY, getColor(c.getResultFg()), getColor(c.getResultBg()), gr); //
+				if (c.getVisible() == VisibilityState.VISIBLE) {
+					ascii.draw(str, i + m_posX, j + m_posY, getColor(c.getResultFg()), getColor(c.getResultBg()), gr); //
+				}					
+				else if (c.getVisible() == VisibilityState.FOG_OF_WAR) {
+					ascii.draw(str, i + m_posX, j + m_posY, getColor(c.getResultFg()).darker(0.6f), getColor(c.getResultBg()).darker(0.6f), gr); //
+				} else {
+ 					ascii.draw(" ", i + m_posX, j + m_posY, Color.black, Color.black, gr); //
+				}
 			}
 		}
 	}
@@ -66,4 +73,40 @@ public class Viewport {
 		}
 		return c;
 	}
+	
+	public MapCell getCell(int cIndex) {
+		int y = cIndex % m_width;
+		int x = cIndex - (cIndex * y);
+		return m_map.getCell(x, y);
+	}
+
+	public FloorMap getMap() {
+		return m_map;
+	}
+	
+	public int getWidth() {
+		return m_width;
+	}
+
+	public int getHeight() {
+		return m_height;
+	}
+
+	public int getViewX(int x) {
+		int viewX = x - m_offsetX;
+		if (viewX < 0)
+			viewX = 0;
+		else if (viewX + m_width > Constants.MAP_MAX_SIZE)
+			viewX = Constants.MAP_MAX_SIZE - m_width;
+		return viewX;
+	}
+
+	public int geViewY(int y) {
+		int viewY = y - m_offsetY;
+		if (viewY < 0)
+			viewY = 0;
+		else if (viewY + m_height > Constants.MAP_MAX_SIZE)
+			viewY = Constants.MAP_MAX_SIZE - m_height;
+		return viewY;
+	}		 		
 }

@@ -4,6 +4,8 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
+import rlforj.los.ILosBoard;
+
 /**
  * Ячейка карты.
  * 
@@ -33,7 +35,17 @@ public class MapCell extends GObject  {
 //	private List<Item> items;
 	
     private List<Actor> persons;
-	
+    
+    private VisibilityState visible;
+
+	public VisibilityState getVisible() {
+		return visible;
+	}
+
+	public void setVisible(VisibilityState visible) {
+		this.visible = visible;
+	}
+
 	/**
 	 * Констркутор по умолчанию: создает обычный пол карты.
 	 */
