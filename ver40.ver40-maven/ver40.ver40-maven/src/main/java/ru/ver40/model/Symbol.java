@@ -1,12 +1,19 @@
 package ru.ver40.model;
 
+import java.io.Serializable;
+
 /**
  * Репрезентация графической информаии об игровом объекте 
  * 
  * @author anon
  *
  */
-public class Symbol {
+public class Symbol implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7038322624384390091L;
+
 	private char symbol;
 	private int bgColor, fgColor;
 	

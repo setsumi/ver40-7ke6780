@@ -1,5 +1,6 @@
 package ru.ver40.map;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import rlforj.los.ILosBoard;
@@ -27,8 +28,15 @@ public class FloorMap implements ILosBoard {
 	
 	/**
 	 * Конструктор
+	 * 
+	 * Получает путь к каталогу для данных карты
 	 */
 	public FloorMap(String path) {
+		File f = new File(path);
+		if (!f.isDirectory())
+			throw new IllegalArgumentException("Invalid path to map data: "
+					+ path);
+
 		m_path = path;
 		m_chunks = new ArrayList<Chunk>();
 		m_chunks.ensureCapacity(Constants.MAP_CHUNK_CACHE_SIZE);
@@ -36,7 +44,7 @@ public class FloorMap implements ILosBoard {
 	}
 
 	/**
-	 * Вернуть путь к данным карты
+	 * Вернуть путь к каталогу с данным карты
 	 * 
 	 * @return
 	 */
@@ -45,11 +53,17 @@ public class FloorMap implements ILosBoard {
 	}
 
 	/**
-	 * Вернуть клетку по её координатам на карте
+	 * Вернуть клетку по её координатам на карте.
+	 * 
+	 * Создает новые чанки по мере необходимости.
 	 * 
 	 * @return
 	 */
 	public MapCell getCell(int x, int y) {
+		if (!contains(x, y))
+			new IllegalArgumentException("Invalid map coordinates: " + x + ", "
+					+ y + " (Must be 0.." + (Constants.MAP_MAX_SIZE - 1));
+
 		Chunk ch = null;
 		// координаты чанка
 		int cx = x / Constants.MAP_CHUNK_SIZE;
@@ -83,7 +97,10 @@ public class FloorMap implements ILosBoard {
 	}
 
 	/**
-	 * Сохранение чанков из буфера. Должно вызываться перед удалением карты.
+	 * Сохранение на диск чанков из буфера.
+	 * 
+	 * Должно вызываться перед удалением карты. Чанки, вытесненные из буфера
+	 * естественным путем, сохраняются автоматически.
 	 */
 	public void SaveChunks() {
 		int i = 0;
@@ -115,7 +132,8 @@ public class FloorMap implements ILosBoard {
 
 	@Override
 	public boolean contains(int x, int y) {
-		return x > 0 && y > 0 && x < Constants.MAP_MAX_SIZE && y < Constants.MAP_MAX_SIZE;
+		return x >= 0 && y >= 0 && x < Constants.MAP_MAX_SIZE
+				&& y < Constants.MAP_MAX_SIZE;
 	}
 
 	@Override

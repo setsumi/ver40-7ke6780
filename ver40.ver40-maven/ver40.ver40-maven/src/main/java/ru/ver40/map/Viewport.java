@@ -5,8 +5,10 @@ import java.util.Map;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.geom.Vector2f;
 
 import ru.ver40.model.MapCell;
+import ru.ver40.model.Player;
 import ru.ver40.model.VisibilityState;
 import ru.ver40.util.AsciiDraw;
 import ru.ver40.util.Constants;
@@ -36,10 +38,10 @@ public class Viewport {
 		colorCache = new HashMap<Integer, Color>();
 	}
 
-	public void drawRaw(AsciiDraw ascii, int x, int y, Graphics gr) {
-		int viewX = x - m_offsetX;
+	public void draw(AsciiDraw ascii, int x, int y, Graphics gr, Player p) {
+		int viewX = x - m_offsetX; // верхний угол вьюпорта
 		int viewY = y - m_offsetY;
-		if (viewX < 0)
+		if (viewX < 0) // коррекция по границам карты
 			viewX = 0;
 		else if (viewX + m_width > Constants.MAP_MAX_SIZE)
 			viewX = Constants.MAP_MAX_SIZE - m_width;
@@ -47,19 +49,27 @@ public class Viewport {
 			viewY = 0;
 		else if (viewY + m_height > Constants.MAP_MAX_SIZE)
 			viewY = Constants.MAP_MAX_SIZE - m_height;
-
+		// цикл отрисовки клеток
 		for (int i = 0; i < m_width; i++, viewX++) {
 			int vy = viewY;
 			for (int j = 0; j < m_height; j++, vy++) {
-				MapCell c = m_map.getCell(viewX, vy);				
+				MapCell c = m_map.getCell(viewX, vy);
 				String str = c.getResultString();
 				if (c.getVisible() == VisibilityState.VISIBLE) {
-					ascii.draw(str, i + m_posX, j + m_posY, getColor(c.getResultFg()), getColor(c.getResultBg()), gr); //
-				}					
-				else if (c.getVisible() == VisibilityState.FOG_OF_WAR) {
-					ascii.draw(str, i + m_posX, j + m_posY, getColor(c.getResultFg()).darker(0.6f), getColor(c.getResultBg()).darker(0.6f), gr); //
+					float grad = 0.7f / 15;
+					Vector2f trg = new Vector2f(viewX, vy);
+					Vector2f src = new Vector2f(p.getX(), p.getY());
+
+					ascii.draw(str, i + m_posX, j + m_posY,
+							getColor(c.getResultFg()).darker(
+									trg.distance(src) * grad),
+							getColor(c.getResultBg()), gr);
+				} else if (c.getVisible() == VisibilityState.FOG_OF_WAR) {
+					ascii.draw(str, i + m_posX, j + m_posY,
+							getColor(c.getResultFg()).darker(0.7f),
+							getColor(c.getResultBg()).darker(0.7f), gr);
 				} else {
- 					ascii.draw(" ", i + m_posX, j + m_posY, Color.black, Color.black, gr); //
+					// невидимые клетки не рисуем
 				}
 			}
 		}

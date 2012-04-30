@@ -1,5 +1,7 @@
 package ru.ver40.map;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -78,8 +80,9 @@ public class Chunk implements Serializable {
 	public void save() {
 		ObjectOutputStream oos = null;
 		try {
-			File file = new File(getFile(), "rw");
-			oos = new ObjectOutputStream(new FileOutputStream(file));
+			// File file = new File(getFile(), "rw");
+			oos = new ObjectOutputStream(new BufferedOutputStream(
+					new FileOutputStream(getFile())));
 			oos.writeObject(this);			
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -98,8 +101,9 @@ public class Chunk implements Serializable {
 	public void load() {
 		ObjectInputStream ois = null;
 		try {
-			File file = new File(getFile(), "rw");
-			ois = new ObjectInputStream(new FileInputStream(file));
+			// File file = new File(getFile(), "rw");
+			ois = new ObjectInputStream(new BufferedInputStream(
+					new FileInputStream(getFile())));
 			Chunk c = (Chunk) ois.readObject();
 			this.m_cells = c.m_cells;
 			this.m_posX = c.m_posX;

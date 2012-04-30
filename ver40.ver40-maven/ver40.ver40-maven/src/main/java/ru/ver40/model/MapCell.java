@@ -4,8 +4,6 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-import rlforj.los.ILosBoard;
-
 /**
  * Ячейка карты.
  * 

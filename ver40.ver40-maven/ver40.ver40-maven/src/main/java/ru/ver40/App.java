@@ -22,19 +22,19 @@ import ru.ver40.model.Floor;
 import ru.ver40.model.MapCell;
 import ru.ver40.model.Player;
 import ru.ver40.service.MapService;
-import ru.ver40.service.TimeService;
 import ru.ver40.util.AsciiDraw;
 
 	
 public class App extends BasicGame {
 
-	// -----------------------------------------------
-	AsciiDraw m_ascii;
+	//
 	Point center;
 	int radius;
 	Point pos;
 	float track;
+	//
 
+	AsciiDraw m_ascii;
 	FloorMap m_map;
 	Viewport m_view;
 	Point m_viewPos;
@@ -48,6 +48,13 @@ public class App extends BasicGame {
 
 	@Override
 	public void init(GameContainer gc) throws SlickException {
+		//
+		center = new Point(250, 200);
+		pos = new Point();
+		radius = 200;
+		track = 0.0f;
+
+		//
 		// Загрузка всех ресурсов
 		try {
 			ResourceManager.loadResources("data/resources.xml");
@@ -82,7 +89,7 @@ public class App extends BasicGame {
 					c.setFloor(new Floor());
 					c.setBuilding(MapCell.createWall().getBuilding());
 				} else {
-					c = new MapCell();
+					// c = new MapCell();
 				}
 			}
 		}
@@ -92,25 +99,40 @@ public class App extends BasicGame {
 
 	@Override
 	public void update(GameContainer gc, int delta) throws SlickException {
-		
+		//
+		pos.x = (int) (center.x + radius * Math.cos(track));
+		pos.y = (int) (center.y + 0.8f * Math.sin(track) * radius);
+		track += (Math.PI * 2) / (2000.0f / delta);
+		if (track >= Math.PI * 2)
+			track = 0.0f;
+		//
 
 		Input input = gc.getInput();
 		p.handleInputEvent(input);
 		m_viewPos.x = p.getX();
 		m_viewPos.y = p.getY();	
-		
+
+		if (input.isKeyPressed(Input.KEY_Q)) {
+			m_map.SaveChunks();
+			// gc.exit();
+		}
 		
 		m_map.setFogOfWar();
-		fov.visitFieldOfView(m_map, p.getX(), p.getY(), 10);
+		fov.visitFieldOfView(m_map, p.getX(), p.getY(), 15);
 	}
 
 	@Override
 	public void render(GameContainer container, Graphics g)
 			throws SlickException {
 
-		m_view.drawRaw(m_ascii, m_viewPos.x, m_viewPos.y, g);
+		m_view.draw(m_ascii, m_viewPos.x, m_viewPos.y, g, p);
 		g.setColor(Color.red);
 		g.drawString("View pos: " + m_viewPos.x + ", " + m_viewPos.y, 100, 0);
+
+		//
+		m_ascii.drawFree("WARNING FoREVer!", pos.x, pos.y, Color.yellow,
+				Color.red, g);
+		//
 	}
 
 	/**
