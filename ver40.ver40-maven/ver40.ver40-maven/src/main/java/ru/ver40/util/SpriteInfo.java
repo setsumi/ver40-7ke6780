@@ -1,4 +1,4 @@
-package ru.ver40.engine;
+package ru.ver40.util;
 
 public class SpriteInfo implements Comparable<SpriteInfo> {
 

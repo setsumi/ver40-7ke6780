@@ -1,5 +1,7 @@
-package ru.ver40.engine;
+package ru.ver40.util;
 
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -12,13 +14,14 @@ import java.util.List;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import org.newdawn.slick.AngelCodeFont;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.Music;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.Sound;
 import org.newdawn.slick.SpriteSheet;
+import org.newdawn.slick.UnicodeFont;
+import org.newdawn.slick.font.GlyphPage;
 import org.newdawn.slick.openal.SoundStore;
 import org.newdawn.slick.tiled.TiledMap;
 import org.newdawn.slick.util.Log;
@@ -27,7 +30,9 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+
 public class ResourceManager {
+
 	private static String baseDir = null;
 
 	private static float sfxVolume = 1.0f;
@@ -38,7 +43,7 @@ public class ResourceManager {
 	private static HashMap<String, Image> images = new HashMap<String, Image>();
 	private static HashMap<String, SpriteSheet> sheets = new HashMap<String, SpriteSheet>();
 	private static HashMap<String, List<SpriteInfo>> spriteInfo = new HashMap<String, List<SpriteInfo>>();
-	private static HashMap<String, AngelCodeFont> fonts = new HashMap<String, AngelCodeFont>();
+	private static HashMap<String, UnicodeFont> fonts = new HashMap<String, UnicodeFont>();
 	private static HashMap<String, Integer> ints = new HashMap<String, Integer>();
 	private static HashMap<String, Float> floats = new HashMap<String, Float>();
 	private static HashMap<String, String> strings = new HashMap<String, String>();
@@ -92,9 +97,9 @@ public class ResourceManager {
 			}
 
 			// load fonts
-			list = element.getElementsByTagName("angelcodefont");
+			list = element.getElementsByTagName("font");
 			for (int i = 0; i < list.getLength(); i++) {
-				loadAngelCodeFont((Element) list.item(i));
+				loadUnicodeFont((Element) list.item(i));
 			}
 			// load maps
 			list = element.getElementsByTagName("map");
@@ -184,8 +189,8 @@ public class ResourceManager {
 		Log.debug("Trying to load music file '" + file + "' at key '" + key
 				+ "'...");
 		if (songs.get(key) != null)
-			throw new SlickException("Music for key " + key
-					+ " already existing!");
+			throw new SlickException("Music for key '" + key
+					+ "' already existing!");
 		if (baseDir != null && !file.startsWith(baseDir))
 			file = baseDir + file;
 		Music song = new Music(file);
@@ -195,7 +200,7 @@ public class ResourceManager {
 	public static Music getMusic(String key) {
 		Music music = songs.get(key);
 		if (music == null)
-			Log.error("No music for key " + key + " found!");
+			Log.error("No music for key '" + key + "' found!");
 		return music;
 	}
 
@@ -209,8 +214,8 @@ public class ResourceManager {
 		Log.debug("Trying to load sound file '" + file + "' at key '" + key
 				+ "'...");
 		if (sounds.get(key) != null)
-			throw new SlickException("Sound for key " + key
-					+ " already existing!");
+			throw new SlickException("Sound for key '" + key
+					+ "' already existing!");
 		if (baseDir != null && !file.startsWith(baseDir))
 			file = baseDir + file;
 		Sound sound = new Sound(file);
@@ -220,7 +225,7 @@ public class ResourceManager {
 	public static Sound getSound(String key) {
 		Sound sound = sounds.get(key);
 		if (sound == null)
-			Log.error("No sound for key " + key + " found!");
+			Log.error("No sound for key '" + key + "' found!");
 		return sound;
 	}
 
@@ -241,8 +246,8 @@ public class ResourceManager {
 		Log.debug("Trying to load image file '" + file + "' at key '" + key
 				+ "'...");
 		if (images.get(key) != null)
-			throw new SlickException("Image for key " + key
-					+ " already existing!");
+			throw new SlickException("Image for key '" + key
+					+ "' already existing!");
 		Image image;
 		if (baseDir != null && !file.startsWith(baseDir))
 			file = baseDir + file;
@@ -256,7 +261,7 @@ public class ResourceManager {
 	public static Image getImage(String key) {
 		Image image = images.get(key);
 		if (image == null)
-			Log.error("No image for key " + key + " found!");
+			Log.error("No image for key '" + key + "' found!");
 		return image;
 	}
 
@@ -287,8 +292,8 @@ public class ResourceManager {
 								+ transparentColor.toString() + "'")
 				+ " at key '" + key + "'...");
 		if (sheets.get(key) != null)
-			throw new SlickException("SpriteSheet for key " + key
-					+ " already existing!");
+			throw new SlickException("SpriteSheet for key '" + key
+					+ "' already existing!");
 		SpriteSheet spriteSheet = null;
 		if (baseDir != null && !file.startsWith(baseDir))
 			file = baseDir + file;
@@ -302,7 +307,7 @@ public class ResourceManager {
 	public static SpriteSheet getSpriteSheet(String key) {
 		SpriteSheet spriteSheet = sheets.get(key);
 		if (spriteSheet == null)
-			Log.error("No SpriteSheet for key " + key + " found!");
+			Log.error("No SpriteSheet for key '" + key + "' found!");
 		return spriteSheet;
 	}
 
@@ -310,33 +315,48 @@ public class ResourceManager {
 		return sheets;
 	}
 
-	private static void loadAngelCodeFont(Element fnt) throws SlickException {
+	private static void loadUnicodeFont(Element fnt) throws SlickException {
 		String key = fnt.getAttribute("key");
 		String fntfile = fnt.getAttribute("fontFile");
-		String imagefile = fnt.getAttribute("imageFile");
-		loadAngelCodeFont(key, fntfile, imagefile);
+		int size = Integer.parseInt(fnt.getAttribute("size"));
+		boolean bold = fnt.getAttribute("bold").equalsIgnoreCase("true") ? true
+				: false;
+		boolean italic = fnt.getAttribute("italic").equalsIgnoreCase("true") ? true
+				: false;
+		loadUnicodeFont(key, fntfile, size, bold, italic);
 	}
 
-	public static void loadAngelCodeFont(String key, String fontFile,
-			String imageFile) throws SlickException {
-		Log.debug("Trying to load Angelcode font file '" + fontFile
-				+ "' and imagefile '" + imageFile + "' at key '" + key + "'...");
+	public static void loadUnicodeFont(String key, String fontFile, int size,
+			boolean bold, boolean italic) throws SlickException {
+		Log.debug("Trying to load Unicode font file '" + fontFile
+				+ "' at key '" + key + "'...");
 		if (fonts.get(key) != null)
-			throw new SlickException("AngelCodeFont for key " + key
-					+ " already existing!");
-		// load AngelCodeFonts with caching enabled to speed up rendering
+			throw new SlickException("UnicodeFont for key '" + key
+					+ "' already existing!");
 		if (baseDir != null && !fontFile.startsWith(baseDir)) {
 			fontFile = baseDir + fontFile;
-			imageFile = baseDir + imageFile;
 		}
-		AngelCodeFont font = new AngelCodeFont(fontFile, imageFile, true);
+		boolean antiAlias = Constants.UNICODE_FONT_ANTIALIAS;
+		java.awt.Graphics g = GlyphPage.getScratchGraphics();
+		if (g != null && g instanceof Graphics2D) {
+			Graphics2D g2d = (Graphics2D) g;
+			g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+					antiAlias ? RenderingHints.VALUE_ANTIALIAS_ON
+							: RenderingHints.VALUE_ANTIALIAS_OFF);
+			g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
+					antiAlias ? RenderingHints.VALUE_TEXT_ANTIALIAS_ON
+							: RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
+		}
+		UnicodeFont font = new UnicodeFont(fontFile, size, bold, italic);
+		// font = new UnicodeFont(new java.awt.Font("Courier New",
+		// java.awt.Font.PLAIN, 18));
 		fonts.put(key, font);
 	}
 
-	public static AngelCodeFont getAngelCodeFont(String key) {
-		AngelCodeFont font = fonts.get(key);
+	public static UnicodeFont getUnicodeFont(String key) {
+		UnicodeFont font = fonts.get(key);
 		if (font == null)
-			Log.error("No AngelCodeFont for key " + key + " found!");
+			Log.error("No UnicodeFont for key '" + key + "' found!");
 		return font;
 	}
 
@@ -354,7 +374,7 @@ public class ResourceManager {
 	public static int getInt(String key) {
 		Integer intval = ints.get(key);
 		if (intval == null)
-			Log.error("No int for key " + key + " found!");
+			Log.error("No int for key '" + key + "' found!");
 		return intval;
 	}
 
@@ -372,7 +392,7 @@ public class ResourceManager {
 	public static float getFloat(String key) {
 		Float floatval = floats.get(key);
 		if (floatval == null)
-			Log.error("No float for key " + key + " found!");
+			Log.error("No float for key '" + key + "' found!");
 		return floatval;
 	}
 
@@ -396,7 +416,7 @@ public class ResourceManager {
 	public static TiledMap getMap(String key) {
 		TiledMap map = maps.get(key);
 		if (map == null)
-			Log.error("No map for key " + key + " found!");
+			Log.error("No map for key '" + key + "' found!");
 		return map;
 	}
 

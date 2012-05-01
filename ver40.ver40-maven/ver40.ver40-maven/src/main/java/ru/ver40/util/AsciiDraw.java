@@ -6,21 +6,46 @@ import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SpriteSheet;
 
-import ru.ver40.engine.ResourceManager;
 
 /**
- * Отрисовка ASCII-строк
+ * Вывод на экран ASCII-строк
  */
 public class AsciiDraw {
 
+	/**
+	 * Единственный экземпляр класса.
+	 */
+	private static AsciiDraw instance = null;
+
+	/**
+	 * SpriteSheet с изображением символов
+	 */
 	private SpriteSheet font;
-	private int width; // ширина одного символа
-	private int height; // высота одного символа
+	/**
+	 * ширина одного символа
+	 */
+	private int width;
+	/**
+	 * высота одного символа
+	 */
+	private int height;
+
+	/**
+	 * Вернуть единственный экземпляр класса.
+	 * 
+	 * @return
+	 */
+	public static AsciiDraw getInstance() {
+		if (instance == null) {
+			instance = new AsciiDraw();
+		}
+		return instance;
+	}
 
 	/**
 	 * Конструктор
 	 */
-	public AsciiDraw() {
+	private AsciiDraw() {
 		font = ResourceManager.getSpriteSheet(Constants.ASCII_FONT_KEY);
 		width = font.getWidth() / font.getHorizontalCount();
 		height = font.getHeight() / font.getVerticalCount();
@@ -45,14 +70,14 @@ public class AsciiDraw {
 	}
 
 	/**
-	 * Печать символа (перегрузка)
+	 * Вывод строки на экран в посимвольных координатах
 	 */
 	public void draw(String str, int x, int y, Color fg) {
 		draw(str, x, y, fg, null, null);
 	}
 
 	/**
-	 * Печать символа
+	 * Вывод строки на экран в посимвольных координатах
 	 */
 	public void draw(String str, int x, int y, Color fg, Color bg, Graphics g) {
 		int len = str.length();
@@ -80,14 +105,14 @@ public class AsciiDraw {
 	}
 
 	/**
-	 * Вывод символа в произвольной точке (перегрузка)
+	 * Вывод строки на экран в попиксельных координатах
 	 */
 	public void drawFree(String str, int x, int y, Color fg) {
 		drawFree(str, x, y, fg, null, null);
 	}
 
 	/**
-	 * Вывод символа в произвольной точке
+	 * Вывод строки на экран в попиксельных координатах
 	 */
 	public void drawFree(String str, int x, int y, Color fg, Color bg,
 			Graphics g) {

@@ -15,7 +15,6 @@ import org.newdawn.slick.util.Log;
 
 import rlforj.los.IFovAlgorithm;
 import rlforj.los.PrecisePermissive;
-import ru.ver40.engine.ResourceManager;
 import ru.ver40.map.FloorMap;
 import ru.ver40.map.Viewport;
 import ru.ver40.model.Floor;
@@ -23,6 +22,8 @@ import ru.ver40.model.MapCell;
 import ru.ver40.model.Player;
 import ru.ver40.service.MapService;
 import ru.ver40.util.AsciiDraw;
+import ru.ver40.util.ResourceManager;
+import ru.ver40.util.UnicodeDraw;
 
 	
 public class App extends BasicGame {
@@ -34,7 +35,6 @@ public class App extends BasicGame {
 	float track;
 	//
 
-	AsciiDraw m_ascii;
 	FloorMap m_map;
 	Viewport m_view;
 	Point m_viewPos;
@@ -49,13 +49,13 @@ public class App extends BasicGame {
 	@Override
 	public void init(GameContainer gc) throws SlickException {
 		//
-		center = new Point(250, 200);
+		center = new Point(250, 430);
 		pos = new Point();
-		radius = 200;
+		radius = 30;
 		track = 0.0f;
-
 		//
-		// Загрузка всех ресурсов
+
+		// Загрузка ресурсов
 		try {
 			ResourceManager.loadResources("data/resources.xml");
 		} catch (IOException e) {
@@ -68,8 +68,9 @@ public class App extends BasicGame {
 		Input input = gc.getInput();
 		input.enableKeyRepeat();
 
-		// Отрисовка ASCII
-		m_ascii = new AsciiDraw();
+		// Отрисовка символов
+		AsciiDraw.getInstance();
+		UnicodeDraw.getInstance();
 
 		m_map = new FloorMap("map/test");
 		MapService.getInstance().setcMap(m_map);
@@ -125,13 +126,18 @@ public class App extends BasicGame {
 	public void render(GameContainer container, Graphics g)
 			throws SlickException {
 
-		m_view.draw(m_ascii, m_viewPos.x, m_viewPos.y, g, p);
+		m_view.draw(m_viewPos.x, m_viewPos.y, g, p);
 		g.setColor(Color.red);
 		g.drawString("View pos: " + m_viewPos.x + ", " + m_viewPos.y, 100, 0);
 
 		//
-		m_ascii.drawFree("WARNING FoREVer!", pos.x, pos.y, Color.yellow,
+		AsciiDraw.getInstance().drawFree("WARNING FoREVer!", 500, pos.y,
+				Color.yellow,
 				Color.red, g);
+		AsciiDraw.getInstance().draw("ASCII Текст.", 1, 35, Color.green);
+		UnicodeDraw.getInstance().draw(
+				"Нам не хватает мыла. Замылим помыльнее.", 8, 440,
+				Color.green);
 		//
 	}
 

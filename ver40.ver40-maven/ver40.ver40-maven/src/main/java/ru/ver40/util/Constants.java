@@ -6,6 +6,14 @@ public class Constants {
 	 */
 	public static final String ASCII_FONT_KEY = "asciifont";
 	/**
+	 * Ключ ресурса UnicodeFont для UnicodeDraw
+	 */
+	public static final String UNICODE_FONT_KEY = "unicodefont";
+	/**
+	 * Антиалиасинг шрифта в UnicodeDraw
+	 */
+	public static final boolean UNICODE_FONT_ANTIALIAS = true;
+	/**
 	 * Ширина экрана в ASCII-тайлах
 	 */
 	public static final int ASCII_SCREEN_WIDTH = 80;

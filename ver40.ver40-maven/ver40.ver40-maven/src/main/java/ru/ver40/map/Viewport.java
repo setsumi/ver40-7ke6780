@@ -38,7 +38,7 @@ public class Viewport {
 		colorCache = new HashMap<Integer, Color>();
 	}
 
-	public void draw(AsciiDraw ascii, int x, int y, Graphics gr, Player p) {
+	public void draw(int x, int y, Graphics gr, Player p) {
 		int viewX = x - m_offsetX; // верхний угол вьюпорта
 		int viewY = y - m_offsetY;
 		if (viewX < 0) // коррекция по границам карты
@@ -56,18 +56,21 @@ public class Viewport {
 				MapCell c = m_map.getCell(viewX, vy);
 				String str = c.getResultString();
 				if (c.getVisible() == VisibilityState.VISIBLE) {
-					float grad = 0.7f / 15;
+					float grad = 0.8f / 15;
 					Vector2f trg = new Vector2f(viewX, vy);
 					Vector2f src = new Vector2f(p.getX(), p.getY());
 
-					ascii.draw(str, i + m_posX, j + m_posY,
+					AsciiDraw.getInstance().draw(
+							str,
+							i + m_posX,
+							j + m_posY,
 							getColor(c.getResultFg()).darker(
 									trg.distance(src) * grad),
 							getColor(c.getResultBg()), gr);
 				} else if (c.getVisible() == VisibilityState.FOG_OF_WAR) {
-					ascii.draw(str, i + m_posX, j + m_posY,
-							getColor(c.getResultFg()).darker(0.7f),
-							getColor(c.getResultBg()).darker(0.7f), gr);
+					AsciiDraw.getInstance().draw(str, i + m_posX, j + m_posY,
+							getColor(c.getResultFg()).darker(0.8f),
+							getColor(c.getResultBg()).darker(0.8f), gr);
 				} else {
 					// невидимые клетки не рисуем
 				}

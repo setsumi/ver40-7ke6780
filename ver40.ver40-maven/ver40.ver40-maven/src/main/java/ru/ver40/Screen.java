@@ -22,12 +22,6 @@ public class Screen extends BasicGame {
 	 */
 	private static Screen instance;
 	
-	/**
-	 * Хелпер, отрисовывающий ASCII на графике.
-	 * TODO: Вероятно стоит перенести сюда?
-	 */
-	private AsciiDraw ascii;	
-	
 	private Tile[] tiles;
 	
 	/**
@@ -47,7 +41,6 @@ public class Screen extends BasicGame {
 	 */
 	private Screen(String title) {
 		super(title);
-		ascii = new AsciiDraw();
 		tiles = new Tile[Constants.ASCII_SCREEN_WIDTH*40];
 	}
 
@@ -56,7 +49,9 @@ public class Screen extends BasicGame {
 		for (int y = 0; y < 40; ++y) {
 			for (int x = 0; x < Constants.ASCII_SCREEN_WIDTH; ++x) {
 				int p = x * y;
-				 ascii.draw(Character.toString(tiles[p].getSymbol()), x, y, Color.white, Color.black, g);
+				AsciiDraw.getInstance().draw(
+						Character.toString(tiles[p].getSymbol()), x, y,
+						Color.white, Color.black, g);
 			}				
 		}		
 	}
