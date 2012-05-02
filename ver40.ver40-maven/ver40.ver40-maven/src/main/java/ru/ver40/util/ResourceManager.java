@@ -157,7 +157,7 @@ public class ResourceManager {
 	public static void loadTiledMap(Element map) throws SlickException {
 		String key = map.getAttribute("key");
 		String file = map.getAttribute("file");
-		Log.debug("Trying to load tiled map file '" + file + "' at key '" + key
+		Log.debug("Loading tiled map file '" + file + "' at key '" + key
 				+ "'...");
 		TiledMap tiledMap = new TiledMap(baseDir + "/" + file);
 		maps.put(key, tiledMap);
@@ -186,7 +186,7 @@ public class ResourceManager {
 	}
 
 	public static void loadMusic(String key, String file) throws SlickException {
-		Log.debug("Trying to load music file '" + file + "' at key '" + key
+		Log.debug("Loading music file '" + file + "' at key '" + key
 				+ "'...");
 		if (songs.get(key) != null)
 			throw new SlickException("Music for key '" + key
@@ -211,7 +211,7 @@ public class ResourceManager {
 	}
 
 	public static void loadSound(String key, String file) throws SlickException {
-		Log.debug("Trying to load sound file '" + file + "' at key '" + key
+		Log.debug("Loading sound file '" + file + "' at key '" + key
 				+ "'...");
 		if (sounds.get(key) != null)
 			throw new SlickException("Sound for key '" + key
@@ -243,7 +243,7 @@ public class ResourceManager {
 
 	public static void loadImage(String key, String file, Color transparentColor)
 			throws SlickException {
-		Log.debug("Trying to load image file '" + file + "' at key '" + key
+		Log.debug("Loading image file '" + file + "' at key '" + key
 				+ "'...");
 		if (images.get(key) != null)
 			throw new SlickException("Image for key '" + key
@@ -281,7 +281,7 @@ public class ResourceManager {
 
 	public static void loadSpriteSheet(String key, String file, int width,
 			int height, Color transparentColor) throws SlickException {
-		Log.debug("Trying to load spritesheet file '"
+		Log.debug("Loading spritesheet file '"
 				+ file
 				+ "' with width "
 				+ width
@@ -328,7 +328,7 @@ public class ResourceManager {
 
 	public static void loadUnicodeFont(String key, String fontFile, int size,
 			boolean bold, boolean italic) throws SlickException {
-		Log.debug("Trying to load Unicode font file '" + fontFile
+		Log.debug("Loading Unicode font file '" + fontFile
 				+ "' at key '" + key + "'...");
 		if (fonts.get(key) != null)
 			throw new SlickException("UnicodeFont for key '" + key

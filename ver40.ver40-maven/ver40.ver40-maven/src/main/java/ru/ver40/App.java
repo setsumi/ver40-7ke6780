@@ -22,6 +22,9 @@ import ru.ver40.model.MapCell;
 import ru.ver40.model.Player;
 import ru.ver40.service.MapService;
 import ru.ver40.util.AsciiDraw;
+import ru.ver40.util.DebugLog;
+import ru.ver40.util.MyLogSystem;
+import ru.ver40.util.Config;
 import ru.ver40.util.ResourceManager;
 import ru.ver40.util.UnicodeDraw;
 
@@ -99,6 +102,9 @@ public class App extends BasicGame {
 		fov = new PrecisePermissive();
 	}
 
+	static String zzz = new String("");
+	static int xxx = 0;
+
 	@Override
 	public void update(GameContainer gc, int delta) throws SlickException {
 		//
@@ -114,8 +120,17 @@ public class App extends BasicGame {
 		m_viewPos.x = p.getX();
 		m_viewPos.y = p.getY();	
 
-		if (input.isKeyPressed(Input.KEY_Q)) {
-			m_map.SaveChunks();
+		// debug log
+		if (input.isKeyPressed(Input.KEY_GRAVE)) {
+			if (Config.showDebugLog)
+				DebugLog.getInstance().newTurn();
+			Config.showDebugLog = !Config.showDebugLog;
+		} else if (input.isKeyPressed(Input.KEY_Q)) {
+			DebugLog.getInstance().newTurn();
+			zzz += "Log(" + Integer.toString(xxx++) + ") ";
+			Log.debug(zzz);
+			Log.debug(zzz);
+//			m_map.SaveChunks();
 			// gc.exit();
 		}
 		
@@ -137,6 +152,9 @@ public class App extends BasicGame {
 		AsciiDraw.getInstance().draw("ASCII Текст.", 1, 35, Color.green);
 		UnicodeDraw.getInstance().draw(
 				"Нам не хватает мыла. Замылим помыльнее.", 8, 440, Color.green);
+
+		if (Config.showDebugLog)
+			DebugLog.getInstance().draw(g);
 		//
 	}
 
@@ -147,6 +165,9 @@ public class App extends BasicGame {
 	 */
 	public static void main(String[] args) {
 		try {
+			DebugLog.create(0, 0, 80, 20);
+			Log.setLogSystem(MyLogSystem.getInstance());
+
 			AppGameContainer app = new AppGameContainer(new App());
 			// app.setDisplayMode(640, 480, false);
 			app.start();
