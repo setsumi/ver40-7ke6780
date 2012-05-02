@@ -21,7 +21,7 @@ public class UnicodeDraw {
 	/**
 	 * Объект юникодного шрифта слика.
 	 */
-	private UnicodeFont font = null;
+	private UnicodeFont m_font = null;
 
 	/**
 	 * Вернуть единственный экземпляр класса.
@@ -44,15 +44,15 @@ public class UnicodeDraw {
 	 */
 	@SuppressWarnings("unchecked")
 	private UnicodeDraw() throws SlickException {
-		font = ResourceManager.getUnicodeFont(Constants.UNICODE_FONT_KEY);
-		font.addAsciiGlyphs();
-		font.addGlyphs(1025, 1025); // Ё
-		font.addGlyphs(1040, 1105); // А..Яа..яё
-		font.getEffects().add(new ColorEffect(java.awt.Color.WHITE));
-		font.loadGlyphs();
+		m_font = ResourceManager.getUnicodeFont(Constants.UNICODE_FONT_KEY);
+		m_font.addAsciiGlyphs();
+		m_font.addGlyphs(1025, 1025); // Ё
+		m_font.addGlyphs(1040, 1105); // А..Яа..яё
+		m_font.getEffects().add(new ColorEffect(java.awt.Color.WHITE));
+		m_font.loadGlyphs();
 	}
 
 	public void draw(String str, int x, int y, Color col) {
-		font.drawString(x, y, str, col);
+		m_font.drawString(x, y, str, col);
 	}
 }

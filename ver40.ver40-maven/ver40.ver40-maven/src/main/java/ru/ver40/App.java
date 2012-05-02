@@ -74,7 +74,7 @@ public class App extends BasicGame {
 
 		m_map = new FloorMap("map/test");
 		MapService.getInstance().setcMap(m_map);
-		m_view = new Viewport(m_map, 60, 30, 1, 1);
+		m_view = new Viewport(m_map, 60, 30, 0, 0);
 		m_viewPos = new Point(200, 200);
 		p = new Player("2ch anonymous");
 		Random r = new Random();
@@ -90,6 +90,7 @@ public class App extends BasicGame {
 					c.setFloor(new Floor());
 					c.setBuilding(MapCell.createWall().getBuilding());
 				} else {
+					// руками клетки создавать не надо, карта сама создаст
 					// c = new MapCell();
 				}
 			}
@@ -132,12 +133,10 @@ public class App extends BasicGame {
 
 		//
 		AsciiDraw.getInstance().drawFree("WARNING FoREVer!", 500, pos.y,
-				Color.yellow,
-				Color.red, g);
+				Color.yellow, Color.red, g);
 		AsciiDraw.getInstance().draw("ASCII Текст.", 1, 35, Color.green);
 		UnicodeDraw.getInstance().draw(
-				"Нам не хватает мыла. Замылим помыльнее.", 8, 440,
-				Color.green);
+				"Нам не хватает мыла. Замылим помыльнее.", 8, 440, Color.green);
 		//
 	}
 

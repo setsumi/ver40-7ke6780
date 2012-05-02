@@ -19,14 +19,16 @@ import ru.ver40.util.Constants;
  */
 public class Viewport {	
 	
-	private Map<Integer, Color> colorCache;
+	private Map<Integer, Color> m_colorCache; // кэш объектов Color для рендера
 	
 	private FloorMap m_map;
-	private int m_width, m_height; // размер
-	private int m_offsetX, m_offsetY; // смещение левого верхнего угла
-										// относительно центра
+	private int m_width, m_height; // размер в символах
+	private int m_offsetX, m_offsetY; // расстояние от центра до края
 	private int m_posX, m_posY; // положение на экране
 
+	/**
+	 * Конструктор
+	 */
 	public Viewport(FloorMap map, int width, int height, int posX, int posY) {
 		m_map = map;
 		m_width = width;
@@ -35,20 +37,15 @@ public class Viewport {
 		m_offsetY = m_height / 2;
 		m_posX = posX;
 		m_posY = posY;
-		colorCache = new HashMap<Integer, Color>();
+		m_colorCache = new HashMap<Integer, Color>();
 	}
 
+	/**
+	 * Рендер вьюпорта
+	 */
 	public void draw(int x, int y, Graphics gr, Player p) {
-		int viewX = x - m_offsetX; // верхний угол вьюпорта
-		int viewY = y - m_offsetY;
-		if (viewX < 0) // коррекция по границам карты
-			viewX = 0;
-		else if (viewX + m_width > Constants.MAP_MAX_SIZE)
-			viewX = Constants.MAP_MAX_SIZE - m_width;
-		if (viewY < 0)
-			viewY = 0;
-		else if (viewY + m_height > Constants.MAP_MAX_SIZE)
-			viewY = Constants.MAP_MAX_SIZE - m_height;
+		int viewX = getViewX(x); // верхний угол вьюпорта
+		int viewY = getViewY(y);
 		// цикл отрисовки клеток
 		for (int i = 0; i < m_width; i++, viewX++) {
 			int vy = viewY;
@@ -56,6 +53,8 @@ public class Viewport {
 				MapCell c = m_map.getCell(viewX, vy);
 				String str = c.getResultString();
 				if (c.getVisible() == VisibilityState.VISIBLE) {
+					// затенение освещения
+					// TODO радиус обзора должен быть в кричере (Player)?
 					float grad = 0.8f / 15;
 					Vector2f trg = new Vector2f(viewX, vy);
 					Vector2f src = new Vector2f(p.getX(), p.getY());
@@ -78,11 +77,16 @@ public class Viewport {
 		}
 	}
 
+	/**
+	 * Получить объект Color из кэша
+	 * 
+	 * @return
+	 */
 	private Color getColor(int colorHex) {
-		Color c = colorCache.get(colorHex);
+		Color c = m_colorCache.get(colorHex);
 		if (c == null) {
 			c = new Color(colorHex);
-			colorCache.put(colorHex, c);
+			m_colorCache.put(colorHex, c);
 		}
 		return c;
 	}
@@ -105,6 +109,12 @@ public class Viewport {
 		return m_height;
 	}
 
+	/**
+	 * Получить валидные координаты левого верхнего угла вьюпорта по желаемому
+	 * положению на карте его центра
+	 * 
+	 * @return
+	 */
 	public int getViewX(int x) {
 		int viewX = x - m_offsetX;
 		if (viewX < 0)
@@ -114,7 +124,13 @@ public class Viewport {
 		return viewX;
 	}
 
-	public int geViewY(int y) {
+	/**
+	 * Получить валидные координаты левого верхнего угла вьюпорта по желаемому
+	 * положению на карте его центра
+	 * 
+	 * @return
+	 */
+	public int getViewY(int y) {
 		int viewY = y - m_offsetY;
 		if (viewY < 0)
 			viewY = 0;

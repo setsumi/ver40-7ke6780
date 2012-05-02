@@ -20,15 +20,15 @@ public class AsciiDraw {
 	/**
 	 * SpriteSheet с изображением символов
 	 */
-	private SpriteSheet font;
+	private SpriteSheet m_font;
 	/**
 	 * ширина одного символа
 	 */
-	private int width;
+	private int m_width;
 	/**
 	 * высота одного символа
 	 */
-	private int height;
+	private int m_height;
 
 	/**
 	 * Вернуть единственный экземпляр класса.
@@ -46,9 +46,9 @@ public class AsciiDraw {
 	 * Конструктор
 	 */
 	private AsciiDraw() {
-		font = ResourceManager.getSpriteSheet(Constants.ASCII_FONT_KEY);
-		width = font.getWidth() / font.getHorizontalCount();
-		height = font.getHeight() / font.getVerticalCount();
+		m_font = ResourceManager.getSpriteSheet(Constants.ASCII_FONT_KEY);
+		m_width = m_font.getWidth() / m_font.getHorizontalCount();
+		m_height = m_font.getHeight() / m_font.getVerticalCount();
 	}
 
 	/**
@@ -57,7 +57,7 @@ public class AsciiDraw {
 	 * @return
 	 */
 	public int getWidth() {
-		return width;
+		return m_width;
 	}
 
 	/**
@@ -66,7 +66,7 @@ public class AsciiDraw {
 	 * @return
 	 */
 	public int getHeight() {
-		return height;
+		return m_height;
 	}
 
 	/**
@@ -80,28 +80,34 @@ public class AsciiDraw {
 	 * Вывод строки на экран в посимвольных координатах
 	 */
 	public void draw(String str, int x, int y, Color fg, Color bg, Graphics g) {
+		if (str == null || x < 0 || y < 0 || fg == null)
+			throw new IllegalArgumentException("Invalid arguments.");
+
 		int len = str.length();
 		if (len == 0)
 			return;
-		// рисуем фон
-		if (bg != null) {
-			g.setColor(bg);
-			g.fillRect(x * width, y * height, width * len, height);
-		}
-		// рисуем символы
-		Point p;
+
+		Point p = null;
 		int dx, dy, sx, sy;
-		font.startUse();
+		m_font.startUse();
 		for (int i = 0; i < len; i++) {
+			// куда ложить символ на экране
+			dx = (x + i) * m_width;
+			dy = y * m_height;
+			// рисуем фон
+			if (bg != null) {
+				// залитый квадратик фона идет самым первым в битмапе фонта
+				m_font.drawEmbedded(dx, dy, dx + m_width, dy + m_height, 0, 0,
+						m_width, m_height, bg);
+			}
+			// рисуем символ
 			p = codeConvert((int) str.charAt(i));
-			dx = (x + i) * width;
-			dy = y * height;
-			sx = p.x * width;
-			sy = p.y * height;
-			font.drawEmbedded(dx, dy, dx + width - 1, dy + height - 1, sx, sy,
-					sx + width - 1, sy + height - 1, fg);
+			sx = p.x * m_width;
+			sy = p.y * m_height;
+			m_font.drawEmbedded(dx, dy, dx + m_width, dy + m_height, sx, sy, sx
+					+ m_width, sy + m_height, fg);
 		}
-		font.endUse();
+		m_font.endUse();
 	}
 
 	/**
@@ -116,34 +122,40 @@ public class AsciiDraw {
 	 */
 	public void drawFree(String str, int x, int y, Color fg, Color bg,
 			Graphics g) {
+		if (str == null || x < 0 || y < 0 || fg == null)
+			throw new IllegalArgumentException("Invalid arguments.");
+
 		int len = str.length();
 		if (len == 0)
 			return;
-		// рисуем фон
-		if (bg != null) {
-			g.setColor(bg);
-			g.fillRect(x, y, width * len, height);
-		}
+
 		// рисуем символы
-		Point p;
+		Point p = null;
 		int dx, dy, sx, sy;
-		font.startUse();
+		m_font.startUse();
 		for (int i = 0; i < len; i++) {
-			p = codeConvert((int) str.charAt(i));
-			dx = x + (i * width);
+			// куда ложить символ на экране
+			dx = x + (i * m_width);
 			dy = y;
-			sx = p.x * width;
-			sy = p.y * height;
-			font.drawEmbedded(dx, dy, dx + width - 1, dy + height - 1, sx, sy,
-					sx + width - 1, sy + height - 1, fg);
+			// рисуем фон
+			if (bg != null) {
+				// залитый квадратик фона идет самым первым в битмапе фонта
+				m_font.drawEmbedded(dx, dy, dx + m_width, dy + m_height, 0, 0,
+						m_width, m_height, bg);
+			}
+			// рисуем символ
+			p = codeConvert((int) str.charAt(i));
+			sx = p.x * m_width;
+			sy = p.y * m_height;
+			m_font.drawEmbedded(dx, dy, dx + m_width, dy + m_height, sx, sy, sx
+					+ m_width, sy + m_height, fg);
 		}
-		font.endUse();
+		m_font.endUse();
 	}
 
 	/**
 	 * Перевод кода символа в координаты на матрице SpriteSheet-а шрифта
 	 * 
-	 * @param code
 	 * @return
 	 */
 	private Point codeConvert(int code) {
