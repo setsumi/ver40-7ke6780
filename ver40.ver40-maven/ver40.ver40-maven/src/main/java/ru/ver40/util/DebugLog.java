@@ -3,7 +3,6 @@ package ru.ver40.util;
 import java.util.LinkedList;
 
 import org.apache.commons.lang.StringUtils;
-import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 
 /**
@@ -11,20 +10,23 @@ import org.newdawn.slick.Graphics;
  * 
  */
 public class DebugLog {
-	private int m_posX, m_posY, m_width, m_height;
-
-	private LinkedList<String> m_lines = null;
-	private int newCount;
 
 	private static DebugLog m_instance = null;
 
-	public static DebugLog getInstance() {
-		if (m_instance == null)
-			throw new IllegalStateException(
-					"Instance is null. Use create() first.");
-		return m_instance;
-	}
+	private int m_posX, m_posY, m_width, m_height;
+	private LinkedList<String> m_lines = null;
+	private int m_newCount; // счетчик свежих записей
 
+	public static boolean showLog = false; // рисовать лог или нет (рендеру
+											// приложения)
+
+	/**
+	 * Создать единственный объект класса.
+	 * 
+	 * Координаты и размеры указываются в символах.
+	 * 
+	 * @return
+	 */
 	public static DebugLog create(int x, int y, int width, int height) {
 		if (m_instance == null) {
 			m_instance = new DebugLog(x, y, width, height);
@@ -32,6 +34,18 @@ public class DebugLog {
 			throw new IllegalStateException(
 					"Object instance is already created. Use getInstance() instead.");
 		}
+		return m_instance;
+	}
+
+	/**
+	 * Вернуть единственный объект класса.
+	 * 
+	 * @return
+	 */
+	public static DebugLog getInstance() {
+		if (m_instance == null)
+			throw new IllegalStateException(
+					"Instance is null. Use create() first.");
 		return m_instance;
 	}
 
@@ -49,23 +63,31 @@ public class DebugLog {
 		m_width = width;
 		m_height = height;
 		m_lines = new LinkedList<String>();
-		newCount = 0;
+		m_newCount = 0;
 	}
 
+	/**
+	 * Рендер лога
+	 */
 	public void draw(Graphics g) {
 		int i = m_height;
-		int nc = newCount;
-		Color bg = new Color(.0f, .0f, 1.0f, .7f);
+		int nc = m_newCount;
 		for (String line : m_lines) {
-			if (line.length() < m_width) {
-				line += StringUtils.repeat(" ", m_width - line.length());
-			} else if (line.length() > m_width) {
-				line = line.substring(0, m_width - 1);
-				line += ">";
+			String msg = new String(line);
+			if (msg.length() < m_width) {
+				msg += StringUtils.repeat(" ", m_width - msg.length());
+			} else if (msg.length() > m_width) {
+				msg = msg.substring(0, m_width - 1);
+				msg += ">";
 			}
-			AsciiDraw.getInstance().draw(line, m_posX, i + m_posY,
-					nc > 0 ? Color.white : new Color(.75f, .75f, .75f), bg,
-					g);
+			AsciiDraw.getInstance().draw(
+					msg,
+					m_posX,
+					i + m_posY,
+					nc > 0 ? Constants.DEBUG_LOG_COLOR
+							: Constants.DEBUG_LOG_COLOR
+									.darker(Constants.LOG_FADE_FACTOR),
+					Constants.DEBUG_LOG_BACKCOLOR, g);
 			i--;
 			nc--;
 			if (i < 0)
@@ -73,16 +95,27 @@ public class DebugLog {
 		}
 	}
 
-	public void newTurn() {
-		if (Config.showDebugLog)
-			newCount = 0;
+	/**
+	 * Сброс счетчика новых записей.
+	 * 
+	 * Обычно делается после скрытия лога и каждый ход
+	 */
+	public void resetNew() {
+		if (showLog)
+			m_newCount = 0;
 	}
 
+	/**
+	 * Добавить запись в лог.
+	 */
 	public void log(String msg) {
 		m_lines.addFirst(msg);
-		// параноидатьная защита от переполнения
-		if (++newCount < 0)
-			newCount = 0;
+		// ограничение размера лога
+		if (m_lines.size() > Constants.LOG_MAX_SIZE)
+			m_lines.removeLast();
+
+		if (++m_newCount < 0)// параноидальная защита от переполнения
+			m_newCount = m_height;
 		
 		// msg = wordWrap(msg);
 		// int i = 0;

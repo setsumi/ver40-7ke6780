@@ -22,9 +22,10 @@ import ru.ver40.model.MapCell;
 import ru.ver40.model.Player;
 import ru.ver40.service.MapService;
 import ru.ver40.util.AsciiDraw;
+import ru.ver40.util.Constants;
 import ru.ver40.util.DebugLog;
+import ru.ver40.util.GameLog;
 import ru.ver40.util.MyLogSystem;
-import ru.ver40.util.Config;
 import ru.ver40.util.ResourceManager;
 import ru.ver40.util.UnicodeDraw;
 
@@ -36,6 +37,8 @@ public class App extends BasicGame {
 	int radius;
 	Point pos;
 	float track;
+
+	GameLog glog = null;
 	//
 
 	FloorMap m_map;
@@ -56,6 +59,9 @@ public class App extends BasicGame {
 		pos = new Point();
 		radius = 30;
 		track = 0.0f;
+
+		glog = new GameLog(1, 30, Constants.ASCII_SCREEN_WIDTH - 2, 6,
+				Color.darkGray);
 		//
 
 		// Загрузка ресурсов
@@ -122,16 +128,20 @@ public class App extends BasicGame {
 
 		// debug log
 		if (input.isKeyPressed(Input.KEY_GRAVE)) {
-			if (Config.showDebugLog)
-				DebugLog.getInstance().newTurn();
-			Config.showDebugLog = !Config.showDebugLog;
+			if (DebugLog.showLog)
+				DebugLog.getInstance().resetNew();
+			DebugLog.showLog = !DebugLog.showLog;
 		} else if (input.isKeyPressed(Input.KEY_Q)) {
-			DebugLog.getInstance().newTurn();
-			zzz += "Log(" + Integer.toString(xxx++) + ") ";
+			DebugLog.getInstance().resetNew();
+			glog.resetNew();
+			if (xxx < 6)
+				zzz += "Log-" + Integer.toString(++xxx)/* + " " */;
 			Log.debug(zzz);
 			Log.debug(zzz);
 //			m_map.SaveChunks();
 			// gc.exit();
+			glog.log(GameLog.Type.REGULAR, zzz);
+			glog.log(GameLog.Type.REGULAR, zzz + "_");
 		}
 		
 		m_map.setFogOfWar();
@@ -153,8 +163,9 @@ public class App extends BasicGame {
 		UnicodeDraw.getInstance().draw(
 				"Нам не хватает мыла. Замылим помыльнее.", 8, 440, Color.green);
 
-		if (Config.showDebugLog)
+		if (DebugLog.showLog)
 			DebugLog.getInstance().draw(g);
+		glog.draw(g);
 		//
 	}
 
@@ -165,7 +176,7 @@ public class App extends BasicGame {
 	 */
 	public static void main(String[] args) {
 		try {
-			DebugLog.create(0, 0, 80, 20);
+			DebugLog.create(0, 0, Constants.ASCII_SCREEN_WIDTH, 20);
 			Log.setLogSystem(MyLogSystem.getInstance());
 
 			AppGameContainer app = new AppGameContainer(new App());
