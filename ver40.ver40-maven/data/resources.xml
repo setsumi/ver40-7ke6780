@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+	<!-- basedir -->
+	<basedir path="data" />
+	<!-- sounds -->
+	<!-- songs -->
+  <!-- images -->
+	<!-- sheets -->
+	<sheet key="asciifont" file="images/asciiXP(8x12).png" width="8" height="12" transparentColor="0x000000"/>
+	<!-- fonts -->
+  <font key="unicodefont" fontFile="fonts/DejaVuSansMono.ttf" size="14" bold="false" italic="false"/>
+</resources>
