@@ -22,7 +22,7 @@ public abstract class NotificationSource {
 	private List<NotificationListener> listeners;
 	
 	public NotificationSource() {
-		listeners = new LinkedList<>();
+		listeners = new LinkedList<NotificationListener>();
 	}
 	
 	/**
