@@ -50,7 +50,11 @@ public class Constants {
 	public static final Color DEBUG_LOG_BACKCOLOR = new Color(0.0f, 0.0f, 1.0f,
 			0.8f);
 	/**
-	 * Коэффициент затемнение старых записей лога.
+	 * Файл, в который дампить отладочный лог.
+	 */
+	public static final String DEBUG_LOG_FILE = "log.txt";
+	/**
+	 * Коэффициент затемнение старых записей логов.
 	 */
 	public static final float LOG_FADE_FACTOR = 0.25f;
 	/**

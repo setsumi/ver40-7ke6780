@@ -176,9 +176,11 @@ public class App extends BasicGame {
 	 */
 	public static void main(String[] args) {
 		try {
+			// Инициализация логов.
 			DebugLog.create(0, 0, Constants.ASCII_SCREEN_WIDTH, 20);
 			Log.setLogSystem(MyLogSystem.getInstance());
 
+			// Запуск игры.
 			AppGameContainer app = new AppGameContainer(new App());
 			// app.setDisplayMode(640, 480, false);
 			app.start();
