@@ -1,11 +1,13 @@
 package ru.ver40.model;
 
+import ru.ver40.model.time.ITimedEntity;
+
 /**
  * Персонаж игрового мира
  * @author anon
  *
  */
-public class Actor extends GObject {
+public abstract class Actor extends GObject implements ITimedEntity {
 	
 	/*
 	 * Роевые характериктики:
@@ -21,7 +23,9 @@ public class Actor extends GObject {
 	 * Относительная скорость
 	 * 10 - значение по умолчанию
 	 */
-	private int speed = 10;	
+	private int speed = 10;
+
+	private int actionPoints;	
 	
 	public int getSpeed() {
 		return speed;
@@ -72,5 +76,19 @@ public class Actor extends GObject {
 	
 	public MapCell getCell() {
 		return (MapCell) getParent();
+	}
+
+	@Override
+	public abstract int performTimedAction();
+
+	@Override
+	public int getActionPoints() {
+		return actionPoints;
+	}
+
+	@Override
+	public void setActionPoints(int ap) {
+		this.actionPoints = ap;
+		
 	}
 }
