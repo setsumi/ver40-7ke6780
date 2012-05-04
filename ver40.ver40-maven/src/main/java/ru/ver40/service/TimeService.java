@@ -6,12 +6,29 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.ListIterator;
 
 import ru.ver40.model.Player;
+import ru.ver40.model.time.ITimedEntity;
 import ru.ver40.model.time.TimedTask;
 
 /**
- * Сервис, реализующий очередь задач. 
+ * Сервис, реализующий очередь задач.
+ * 
+ * Алгоритм работы: 
+ * Каждая сущность (который может являеться игрок, монстр, 
+ * или зарегистированный в игре класс) реализует интерфейс ITimedEntity.
+ * 
+ * Контрактом данного интерфейса является метод schedule, возвращающий
+ * число тиков на осуществленеие данного события (int). 
+ * 
+ * Данный интерфейс так-же позволяет задавать события которые будут
+ * запланированы одноразово (setFinite(true)) или будут повторяться через
+ * фиксированный промежуток времени (setFiniti(false)). Примером
+ * одноразового события может служать действия игрока или NPC по перемещению
+ * или атаке, примером же бесконечного события может являться 
+ * смена циклов дня и ночи.
+ * 
  * Является серриализуемым.
  * @author anon
  *
@@ -20,13 +37,9 @@ public class TimeService implements Serializable {
 	
 	private static final long serialVersionUID = -5970618929616925733L;
 	
-	private transient int sessionTicksLeft;
+	private LinkedList<ITimedEntity> entities;
 	
-	private int totalTicksLeft;
-	
-	private LinkedList<TaskWrapper> tasks;
-	
-	private static transient TimeService instance;
+	private static TimeService instance;
 	
 	public static TimeService getInstance( ) {
 		if (instance == null) {
@@ -35,89 +48,31 @@ public class TimeService implements Serializable {
 		return instance;
 	}
 	
+	public void register(ITimedEntity entity) {
+		entities.addLast(entity);
+	}
+	
+	public void unregister(ITimedEntity entity) {
+		entities.remove(entity);
+	}
+	
+	public void tick() {
+		if (entities.size() > 0) {
+			ITimedEntity current = entities.pollFirst();
+			current.setActionPoints(current.getSpeed());
+			while (current.getActionPoints() > 0) {
+				current.setActionPoints(current.getActionPoints()
+						- current.performTimedAction());
+			}
+			entities.addLast(current);			
+		}
+	}
+	
+	public ITimedEntity getCurrentActor() {
+		return entities.peekFirst();
+	}
+	
 	private TimeService() {		
-		tasks = new LinkedList<TaskWrapper>();
-	}
-	
-	public void schedule(TimedTask task) {
-		tasks.addLast(new TaskWrapper(task, task.getDuration()));
-		if (task.getActor() instanceof Player) {
-			tick(task.getDuration());
-		}
-	}
-	
-	public void remove(TimedTask task) {
-		Iterator<TaskWrapper> i = tasks.iterator();
-		while (i.hasNext()) {
-			TaskWrapper next = i.next();
-			if (next.getTask() == task) {
-				i.remove();
-				break;
-			}
-			
-		}
-	}
-	
-	public List<TimedTask> getTasks() {
-		List<TimedTask> ret = new ArrayList<TimedTask>();
-		for (TaskWrapper w : tasks) {
-			ret.add(w.getTask());
-		}
-		return Collections.unmodifiableList(ret);
-	}
-	
-	public void tick(int ticks) {
-		while (ticks != 0) {
-			ticks--;		
-			sessionTicksLeft++;
-			totalTicksLeft++;
-			Iterator<TaskWrapper> i = tasks.iterator();
-			while (i.hasNext()) {
-				TaskWrapper next = i.next();
-				if (next.isCompleted()) {
-					next.getTask().perform();
-					i.remove();
-				}
-			}
-		}
-	}
-	
-	private class TaskWrapper {
-		private TimedTask task;
-		private int elapsed;
-		
-		public TaskWrapper(TimedTask task, int elapsed) {
-			this.task = task;
-			this.elapsed = elapsed;
-		}
-		
-		public boolean isCompleted() {
-			elapsed--;
-			return elapsed == 0;
-		}
-
-		public TimedTask getTask() {
-			return task;
-		}		
-	}
-
-	public int getSessionTicksLeft() {
-		return sessionTicksLeft;
-	}
-
-	public void setSessionTicksLeft(int sessionTicksLeft) {
-		this.sessionTicksLeft = sessionTicksLeft;
-	}
-
-	public int getTotalTicksLeft() {
-		return totalTicksLeft;
-	}
-
-	public void setTotalTicksLeft(int totalTicksLeft) {
-		this.totalTicksLeft = totalTicksLeft;
-	}
-
-	public void setTasks(LinkedList<TaskWrapper> tasks) {
-		this.tasks = tasks;
+		entities = new LinkedList<ITimedEntity>();
 	}		
 }
