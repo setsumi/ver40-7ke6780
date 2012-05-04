@@ -61,7 +61,7 @@ public class App extends BasicGame {
 		track = 0.0f;
 
 		glog = new GameLog(1, 30, Constants.ASCII_SCREEN_WIDTH - 2, 6,
-				Color.darkGray);
+				Constants.GAME_LOG_BACKCOLOR);
 		//
 
 		// Загрузка ресурсов
@@ -142,6 +142,17 @@ public class App extends BasicGame {
 			// gc.exit();
 			glog.log(GameLog.Type.REGULAR, zzz);
 			glog.log(GameLog.Type.REGULAR, zzz + "_");
+			glog.log(GameLog.Type.REGULAR, zzz);
+			glog.log(GameLog.Type.REGULAR, zzz + "_");
+			glog.log(GameLog.Type.REGULAR, zzz);
+			glog.log(GameLog.Type.REGULAR, zzz + "_");
+			glog.log(GameLog.Type.REGULAR, zzz);
+			glog.log(GameLog.Type.REGULAR, zzz + "_");
+			glog.log(GameLog.Type.REGULAR, zzz);
+			glog.log(GameLog.Type.REGULAR, zzz + "_");
+		} else if (input.isKeyPressed(Input.KEY_W)) {
+			glog.resetNew();
+			glog.log(GameLog.Type.REGULAR, "Single record.");
 		}
 		
 		m_map.setFogOfWar();
