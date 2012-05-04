@@ -106,15 +106,21 @@ public class App extends BasicGame {
 					c.setFloor(new Floor());
 					c.setBuilding(MapCell.createWall().getBuilding());
 				} else {
-										
+					if (Math.random() < 0.005f) {
+						mm++;
+						Monster m = new Monster();
+						m.setX(i);
+						m.setY(j);
+						c.addPerson(m);
+						TimeService.getInstance().register(m);
+					}
 				}
 			}			
 		}
-		MapCell c = m_map.getCell(10, 10);
-		c.remove(c.getBuilding());
-		Monster m = new Monster();
-		TimeService.getInstance().register(m);
-		c.addPerson(m);
+		
+		
+		
+		
 		
 		System.out.println(mm + " monsters on the map");
 		input.addKeyListener((KeyListener) p);
