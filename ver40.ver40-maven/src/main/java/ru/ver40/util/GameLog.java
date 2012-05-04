@@ -1,5 +1,9 @@
 package ru.ver40.util;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.PrintStream;
+import java.util.Calendar;
 import java.util.LinkedList;
 
 import org.apache.commons.lang.StringUtils;
@@ -17,7 +21,16 @@ public class GameLog {
 	 * Соответствующие цвета в Constants.
 	 */
 	public static enum Type {
-		IMPORTANT, REGULAR;
+		IMPORTANT("IMPORTANT"), REGULAR("REGULAR");
+		private final String m_name;
+
+		private Type(String name) {
+			m_name = name;
+		}
+
+		public String getName() {
+			return m_name;
+		}
 	}
 
 	private class Entry {
@@ -36,6 +49,7 @@ public class GameLog {
 	private Color m_backColor = null;
 	private LinkedList<Entry> m_lines = null;
 	private int m_newCount; // счетчик свежих записей
+	private PrintStream m_out; // файл куда дампить лог
 
 	/**
 	 * Конструктор
@@ -53,23 +67,31 @@ public class GameLog {
 		m_backColor = new Color(bg);
 		m_lines = new LinkedList<Entry>();
 		m_newCount = 0;
+		try {
+			m_out = new PrintStream(new FileOutputStream(
+					Constants.GAME_LOG_FILE));
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**
 	 * Рендер лога
 	 */
 	public void draw(Graphics g) {
-		int i = 0;
+		int i = 0, posY = m_posY;
 		int nc = m_newCount;
-		int h = m_height;
-		if (nc > h) {
-			i -= nc - h;
-			h += Math.abs(i);
-			if (i < 0)
-				i = 0;
+		int height = m_height;
+		// поднимаем верхнюю границу лога если новые записи не помещаются
+		if (nc > height) {
+			posY -= nc - height;
+			height += nc - height;
+			if (posY < 0)
+				posY = 0;
 		}
 		for (Entry line : m_lines) {
-			// форматируем строки
+			// обрезаем длинные строки и добавляем счетчик наложений если
+			// необходимо
 			String msg = new String(line.msg);
 			String tail = "";
 			if (line.stack > 1)
@@ -88,12 +110,12 @@ public class GameLog {
 			AsciiDraw.getInstance().draw(
 					msg,
 					m_posX,
-					i + m_posY,
+					posY + i,
 					nc > 0 ? getColor(line.type) : getColor(line.type).darker(
 							Constants.LOG_FADE_FACTOR), m_backColor, g);
 			i++;
 			nc--;
-			if (i >= h)
+			if (i >= height)
 				break;
 		}
 	}
@@ -119,7 +141,18 @@ public class GameLog {
 	/**
 	 * Добавить запись в лог.
 	 */
+	public void log(String msg) {
+		log(Type.REGULAR, msg);
+	}
+
+	/**
+	 * Добавить запись в лог.
+	 */
 	public void log(Type type, String msg) {
+		// пишем в файл
+		m_out.println(Calendar.getInstance().getTime() + " " + type.getName()
+				+ ":" + msg);
+
 		// наложение одинаковых последних записей
 		Entry prev = null;
 		if (!m_lines.isEmpty())

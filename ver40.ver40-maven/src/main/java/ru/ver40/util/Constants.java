@@ -50,9 +50,13 @@ public class Constants {
 	public static final Color DEBUG_LOG_BACKCOLOR = new Color(0.0f, 0.0f, 1.0f,
 			0.8f);
 	/**
-	 * Файл, в который дампить отладочный лог.
+	 * Файл в который дампить отладочный лог.
 	 */
-	public static final String DEBUG_LOG_FILE = "log.txt";
+	public static final String DEBUG_LOG_FILE = "debug-log.txt";
+	/**
+	 * Файл в который дампить игровой лог.
+	 */
+	public static final String GAME_LOG_FILE = "game-log.txt";
 	/**
 	 * Коэффициент затемнение старых записей логов.
 	 */
@@ -68,7 +72,12 @@ public class Constants {
 	public static final Color GAME_LOG_REGULARCOLOR = new Color(1.0f, 1.0f,
 			1.0f);
 	/**
-	 * Максимальное количество записей в логах.
+	 * Цвет фона игрового лога
 	 */
-	public static final int LOG_MAX_SIZE = 2048;
+	public static final Color GAME_LOG_BACKCOLOR = new Color(0.0f, 0.0f, 0.0f,
+			0.8f);
+	/**
+	 * Максимальное количество записей внутриигровых вьюверов логов.
+	 */
+	public static final int LOG_MAX_SIZE = 1024;
 }
