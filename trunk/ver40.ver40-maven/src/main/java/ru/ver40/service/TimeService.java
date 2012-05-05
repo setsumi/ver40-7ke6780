@@ -1,16 +1,9 @@
 package ru.ver40.service;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.List;
-import java.util.ListIterator;
 
-import ru.ver40.model.Player;
 import ru.ver40.model.time.ITimedEntity;
-import ru.ver40.model.time.TimedTask;
 
 /**
  * Сервис, реализующий очередь задач.

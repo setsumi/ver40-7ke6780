@@ -8,14 +8,16 @@ import org.newdawn.slick.SpriteSheet;
 
 
 /**
- * Вывод на экран ASCII-строк
+ * Вывод на экран ASCII-строк.
+ * 
+ * Синглтон.
  */
 public class AsciiDraw {
 
 	/**
 	 * Единственный экземпляр класса.
 	 */
-	private static AsciiDraw instance = null;
+	private static AsciiDraw m_instance = null;
 
 	/**
 	 * SpriteSheet с изображением символов
@@ -36,10 +38,10 @@ public class AsciiDraw {
 	 * @return
 	 */
 	public static AsciiDraw getInstance() {
-		if (instance == null) {
-			instance = new AsciiDraw();
+		if (m_instance == null) {
+			m_instance = new AsciiDraw();
 		}
-		return instance;
+		return m_instance;
 	}
 
 	/**

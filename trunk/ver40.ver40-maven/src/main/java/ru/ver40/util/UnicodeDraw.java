@@ -9,14 +9,14 @@ import org.newdawn.slick.font.effects.ColorEffect;
 /**
  * Вывод на экран Unicode-строк.
  * 
- * Мыло мыльное мыльцо, перемыли мыльнецо.
+ * Слишком мыльно, чтобы использовать. Синглтон.
  * 
  */
 public class UnicodeDraw {
 	/**
 	 * Единственный экземпляр класса.
 	 */
-	private static UnicodeDraw instance = null;
+	private static UnicodeDraw m_instance = null;
 
 	/**
 	 * Объект юникодного шрифта слика.
@@ -29,14 +29,14 @@ public class UnicodeDraw {
 	 * @return
 	 */
 	public static UnicodeDraw getInstance() {
-		if (instance == null) {
+		if (m_instance == null) {
 			try {
-				instance = new UnicodeDraw();
+				m_instance = new UnicodeDraw();
 			} catch (SlickException e) {
 				e.printStackTrace();
 			}
 		}
-		return instance;
+		return m_instance;
 	}
 
 	/**

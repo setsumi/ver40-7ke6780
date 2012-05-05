@@ -6,8 +6,9 @@ import org.apache.commons.lang.StringUtils;
 import org.newdawn.slick.Graphics;
 
 /**
- * Псевдо-окошко с отладочным логом
+ * Псевдо-окошко с отладочным логом.
  * 
+ * Синглтон.
  */
 public class DebugLog {
 
@@ -50,7 +51,7 @@ public class DebugLog {
 	}
 
 	/**
-	 * Конструктор
+	 * Конструктор.
 	 * 
 	 * Координаты и размеры указываются в символах.
 	 */
@@ -98,7 +99,7 @@ public class DebugLog {
 	/**
 	 * Сброс счетчика новых записей.
 	 * 
-	 * Обычно делается после скрытия лога и каждый ход
+	 * Обычно делается после скрытия лога и каждый ход.
 	 */
 	public void resetNew() {
 		if (showLog)

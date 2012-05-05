@@ -10,8 +10,7 @@ import org.newdawn.slick.util.DefaultLogSystem;
 /**
  * Перехватчик сликовых логов.
  * 
- * Отправляет логи в файл и вьювер в игре.
- * 
+ * Отправляет логи в файл и вьювер в игре. Синглтон.
  */
 public class MyLogSystem extends DefaultLogSystem {
 

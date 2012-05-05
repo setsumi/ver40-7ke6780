@@ -1,12 +1,9 @@
 package ru.ver40.model;
 
-import java.util.Arrays;
-
 import org.newdawn.slick.Input;
 import org.newdawn.slick.KeyListener;
 
 import ru.ver40.map.FloorMap;
-import ru.ver40.model.time.MovementTask;
 import ru.ver40.service.MapService;
 import ru.ver40.service.TimeService;
 

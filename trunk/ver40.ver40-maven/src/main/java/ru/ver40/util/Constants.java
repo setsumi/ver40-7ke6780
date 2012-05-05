@@ -4,6 +4,26 @@ import org.newdawn.slick.Color;
 
 public class Constants {
 	/**
+	 * Разрешение игры по горизонтали в пикселах.
+	 */
+	public static final int DISPLAY_RESOLUTION_X = 640;
+	/**
+	 * Разрешение игры по вертикали в пикселах.
+	 */
+	public static final int DISPLAY_RESOLUTION_Y = 480;
+	/**
+	 * Флаг полноэкранного режима игры.
+	 */
+	public static final boolean DISPLAY_FULLSCREEN = false;
+	/**
+	 * Название игры для конструктора корневого класса.
+	 */
+	public static final String GAME_NAME = "ver.40-7KE.6780";
+	/**
+	 * Файл с описанием ресурсов для загрузки.
+	 */
+	public static final String RESOURCE_FILE = "data/resources.xml";
+	/**
 	 * Ключ ресурса SpriteSheet-а шрифта для AsciiDraw
 	 */
 	public static final String ASCII_FONT_KEY = "asciifont";
@@ -40,6 +60,10 @@ public class Constants {
 	 */
 	public static final int MAP_MAX_SIZE = Integer.MAX_VALUE
 			- (Integer.MAX_VALUE % MAP_CHUNK_SIZE);
+	/**
+	 * Высота отладочного лога в строках.
+	 */
+	public static final int DEBUG_LOG_HEIGHT = 20;
 	/**
 	 * Цвет шрифта отладочного лога.
 	 */
@@ -80,4 +104,18 @@ public class Constants {
 	 * Максимальное количество записей внутриигровых вьюверов логов.
 	 */
 	public static final int LOG_MAX_SIZE = 1024;
+
+	// Стейты.
+	/**
+	 * Стейт главного меню.
+	 */
+	public static final int MAINMENU_STATE = 0;
+	/**
+	 * Стейт игры.
+	 */
+	public static final int GAMEPLAY_STATE = 1;
+	/**
+	 * Стейт модального диалога инвентаря.
+	 */
+	public static final int INVENTORY_DIALOG_STATE = 2;
 }
