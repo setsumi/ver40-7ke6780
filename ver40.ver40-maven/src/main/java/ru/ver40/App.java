@@ -42,7 +42,9 @@ public class App extends BasicGame {
 	Point pos;
 	float track;
 
-	GameLog glog = null;
+	// TODO: сервис или фиксить или думать
+	//
+	public static GameLog glog = null;
 	//
 
 	FloorMap m_map;

@@ -32,7 +32,8 @@ public class Player extends Actor implements KeyListener {
 	private int keyCode;
 	
 	public Player(String name) {
-		this.name = name;			
+		this.name = name;
+		this.setPassable(true);
 		tService = TimeService.getInstance();
 		mService = MapService.getInstance();
 		getSymbol().setFgColor(0xB5044B);

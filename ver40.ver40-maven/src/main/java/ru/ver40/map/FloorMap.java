@@ -113,24 +113,44 @@ public class FloorMap implements ILosBoard {
 		}
 	}
 	
-	public void translateActor(Actor p, int newX, int newY) {
+	/**
+	 * Перемещает персонажа на карте.
+	 * Если перемещение возможно, возвращает null.
+	 * Если перемещенеи невозможно, возвращает MapCell, 
+	 * на который персонаж наткнулся
+	 * @param p - персонаж
+	 * @param newX - новый X
+	 * @param newY - новый Y
+	 * @return - непроходимую ячейку или null
+	 */
+	public MapCell translateActor(Actor p, int newX, int newY) {
 		// Проверяем можно ли перенести:
 		//
 		if (newX >= 0 && newY >= 0 && newX < Constants.MAP_MAX_SIZE
 				&& newX < Constants.MAP_MAX_SIZE) {
 			MapCell newCell = getCell(newX, newY);
 			if (newCell != null && newCell.isPassable()) {
-				// Задаем координаты:
+				// Проверить нет ли на ней других персонажей
 				//
-				p.setX(newX);
-				p.setY(newY);
-				// Удаляем из старого списка:
-				//
-				MapCell oldCell = p.getCell();
-				oldCell.remove(p);
-				newCell.addPerson(p);
+				if (newCell.getPersons().isEmpty()) {
+					// Задаем координаты:
+					//
+					p.setX(newX);
+					p.setY(newY);
+					// Удаляем из старого списка:
+					//
+					MapCell oldCell = p.getCell();
+					oldCell.remove(p);
+					newCell.addPerson(p);
+					return null;
+				} else {
+					return newCell;
+				}
+			} else {
+				return newCell;
 			}
 		}
+		return new MapCell();
 	}
 
 	@Override
@@ -141,7 +161,7 @@ public class FloorMap implements ILosBoard {
 
 	@Override
 	public boolean isObstacle(int x, int y) {
-		return !getCell(x, y).isPassable();
+		return !getCell(x, y).isPassable() ;
 	}
 
 	@Override
