@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import rlforj.los.ILosBoard;
 import ru.ver40.model.Actor;
 import ru.ver40.model.MapCell;
+import ru.ver40.model.Player;
 import ru.ver40.model.VisibilityState;
 import ru.ver40.util.Constants;
 
@@ -25,6 +26,8 @@ public class FloorMap implements ILosBoard {
 	private String m_path;
 	
 	private ArrayList<MapCell> oldVisible;
+	
+	private Player player;
 	
 	/**
 	 * Конструктор
@@ -154,5 +157,13 @@ public class FloorMap implements ILosBoard {
 			cell.setVisible(VisibilityState.FOG_OF_WAR);
 		}
 		oldVisible.clear();
+	}
+
+	public Player getPlayer() {
+		return player;
+	}
+
+	public void setPlayer(Player player) {
+		this.player = player;
 	}
 }
