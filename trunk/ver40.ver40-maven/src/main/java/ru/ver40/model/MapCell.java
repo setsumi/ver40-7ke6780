@@ -136,7 +136,7 @@ public class MapCell extends GObject  {
 	public boolean isPassable() {
 		boolean passable = true;
 		for (Actor p : persons) {
-			passable = passable && p.isPassable();
+				passable = passable && p.isPassable();
 		}
 		return passable && floor.isPassable() 
 				&& (building == null ? true : building.isPassable());

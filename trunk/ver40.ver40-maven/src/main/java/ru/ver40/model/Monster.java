@@ -16,6 +16,7 @@ public class Monster extends Actor {
 		setPassable(false);
 		getSymbol().setBgColor(0xC41212);
 		getSymbol().setSymbol('M');
+	
 	}
 
 	@Override
