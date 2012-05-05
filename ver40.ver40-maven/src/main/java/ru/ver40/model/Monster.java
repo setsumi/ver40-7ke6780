@@ -1,5 +1,7 @@
 package ru.ver40.model;
 
+import ru.ver40.service.TimeService;
+
 
 /**
  * Тестовый монстр
@@ -60,5 +62,12 @@ public class Monster extends Actor {
 	
 	public AIProvider getAi() {
 		return ai;
+	}
+	
+	@Override
+	protected void die() {
+		super.die();
+		getCell().remove(this);
+		TimeService.getInstance().unregister(this);
 	}
 }
