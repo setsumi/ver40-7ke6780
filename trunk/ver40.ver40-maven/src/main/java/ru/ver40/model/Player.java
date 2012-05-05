@@ -3,9 +3,11 @@ package ru.ver40.model;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.KeyListener;
 
+import ru.ver40.App;
 import ru.ver40.map.FloorMap;
 import ru.ver40.service.MapService;
 import ru.ver40.service.TimeService;
+import ru.ver40.util.Rng;
 
 /**
  * Класс для описания той самой маленькой '@' 
@@ -52,32 +54,36 @@ public class Player extends Actor implements KeyListener {
 		FloorMap map = mService.getMap();
 		switch (keyCode) {
 		case Input.KEY_Q:
-		case Input.KEY_NUMPAD8:
-			map.translateActor(this, getX() , getY() - 1);			
-			return 10;
+		case Input.KEY_NUMPAD8:			
+			return move(map,  getX() , getY() - 1);			
 		case Input.KEY_NUMPAD2:
-			map.translateActor(this, this.getX() , this.getY() + 1);	
-			return 10;
+			return move(map,  getX() , getY() + 1);
 		case Input.KEY_NUMPAD6:
-			map.translateActor(this, this.getX() + 1 , this.getY());
-			return 10;
+			return move(map,  getX() + 1 , getY());
 		case Input.KEY_NUMPAD4:
-			map.translateActor(this, this.getX() - 1 , this.getY());
-			return 10;
+			return move(map,  getX() - 1 , getY());			
 		case Input.KEY_NUMPAD9:
-			map.translateActor(this, this.getX() + 1 , this.getY() - 1);
-			return 10;
+			return move(map,  getX() + 1 , getY() - 1);			
 		case Input.KEY_NUMPAD3:
-			map.translateActor(this, this.getX() + 1 , this.getY() + 1);
-			return 10;
+			return move(map,  getX() + 1 , getY() + 1);
 		case Input.KEY_NUMPAD1:
-			map.translateActor(this, this.getX() - 1 , this.getY() + 1);
-			return 10;
+			return move(map,  getX() - 1 , getY() + 1);
 		case Input.KEY_NUMPAD7:
-			map.translateActor(this, this.getX() - 1 , this.getY() - 1);
-			return 10;
+			return move(map,  getX() - 1 , getY() - 1);
 		}
 		return 0;
+	}
+	
+	private int move(FloorMap map, int x, int y) {
+		MapCell cell = map.translateActor(this, x , y);
+		if (cell != null && !cell.getPersons().isEmpty()) {
+			Actor a = cell.getPersons().get(0);
+			int dmg = Rng.d(8);
+			a.setHp(a.getHp() - dmg);
+			App.glog.log("Player hit monster for " + dmg + " damage.");
+			App.glog.log("Monster has " + a.getHp() + " hp");
+		}
+		return 10;				
 	}
 
 	@Override
@@ -87,8 +93,7 @@ public class Player extends Actor implements KeyListener {
 
 	@Override
 	public boolean isAcceptingInput() {
-//		return tService.getCurrentActor() == this;
-		return true;
+		return tService.getCurrentActor() == this;
 	}
 
 	@Override

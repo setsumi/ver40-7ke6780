@@ -1,5 +1,6 @@
 package ru.ver40.model;
 
+import ru.ver40.App;
 import ru.ver40.model.time.ITimedEntity;
 
 /**
@@ -48,7 +49,7 @@ public abstract class Actor extends GObject implements ITimedEntity {
 	}
 
 	public void setHp(int hp) {
-		if (hp < 0) {
+		if (hp <= 0) {
 			die();
 		}
 		this.hp = hp;
@@ -70,8 +71,8 @@ public abstract class Actor extends GObject implements ITimedEntity {
 		this.y = y;
 	}
 
-	private void die() {
-		System.out.println(this + "dies");		
+	protected void die() {
+		App.glog.log(this.getClass().getName() + " dies");
 	}	
 	
 	public MapCell getCell() {
