@@ -24,7 +24,7 @@ public class MapService {
 		return instance;
 	}
 
-	public FloorMap getcMap() {
+	public FloorMap getMap() {
 		return cMap;
 	}
 

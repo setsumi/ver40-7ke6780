@@ -26,7 +26,7 @@ public class MovementTask extends TimedTask {
 
 	@Override
 	public void perform() {
-		FloorMap map = MapService.getInstance().getcMap();
+		FloorMap map = MapService.getInstance().getMap();
 		Actor person = getActor();
 		switch (position) {
 		case NORTH:

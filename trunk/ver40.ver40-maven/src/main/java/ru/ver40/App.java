@@ -18,6 +18,7 @@ import rlforj.los.IFovAlgorithm;
 import rlforj.los.PrecisePermissive;
 import ru.ver40.map.FloorMap;
 import ru.ver40.map.Viewport;
+import ru.ver40.model.AttackOnSeeAI;
 import ru.ver40.model.Floor;
 import ru.ver40.model.MapCell;
 import ru.ver40.model.Monster;
@@ -110,6 +111,7 @@ public class App extends BasicGame {
 						Monster m = new Monster();
 						m.setX(i);
 						m.setY(j);
+						m.setAi(new AttackOnSeeAI());
 						c.addPerson(m);
 						TimeService.getInstance().register(m);
 					}
@@ -123,7 +125,7 @@ public class App extends BasicGame {
 		
 		System.out.println(mm + " monsters on the map");
 		input.addKeyListener((KeyListener) p);
-		
+		m_map.setPlayer(p);
 		fov = new PrecisePermissive();
 	}
 

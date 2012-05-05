@@ -42,7 +42,9 @@ public class TimeService implements Serializable {
 	}
 	
 	public void register(ITimedEntity entity) {
+		entity.setActionPoints(0);
 		entities.addLast(entity);
+		
 	}
 	
 	public void unregister(ITimedEntity entity) {
@@ -52,7 +54,8 @@ public class TimeService implements Serializable {
 	public void tick() {
 		if (entities.size() > 0) {
 			ITimedEntity current = entities.pollFirst();
-			current.setActionPoints(current.getSpeed());
+			current.setActionPoints(
+					current.getActionPoints() + current.getSpeed());
 			while (current.getActionPoints() > 0) {
 				current.setActionPoints(current.getActionPoints()
 						- current.performTimedAction());

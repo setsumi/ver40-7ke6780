@@ -48,7 +48,7 @@ public class Player extends Actor implements KeyListener {
 
 	@Override
 	public int performTimedAction() {
-		FloorMap map = mService.getcMap();
+		FloorMap map = mService.getMap();
 		switch (keyCode) {
 		case Input.KEY_Q:
 		case Input.KEY_NUMPAD8:
