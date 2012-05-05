@@ -2,7 +2,6 @@ package ru.ver40;
 
 import java.awt.Point;
 import java.io.IOException;
-import java.security.Timestamp;
 import java.util.Random;
 
 import org.newdawn.slick.AppGameContainer;
