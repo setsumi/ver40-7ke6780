@@ -98,26 +98,13 @@ public class App extends BasicGame {
 		TimeService.getInstance().register(p);
 		Random r = new Random();
 		
-		/*int mm = 0;
+		int mm = 0;
 		for (int i = 1; i < 400; i++) {
 			for (int j = 1; j < 400; j++) {
 				MapCell c = m_map.getCell(i, j);
-				if (Math.random() < 0.1f) {
-					c.setFloor(new Floor());
-					c.setBuilding(MapCell.createWall().getBuilding());
-				} else {
-					if (Math.random() < 0.005f) {
-						mm++;
-						Monster m = new Monster();
-						m.setX(i);
-						m.setY(j);
-						m.setAi(new AttackOnSeeAI());
-						c.addPerson(m);
-						TimeService.getInstance().register(m);
-					}
-				}
+				
 			}			
-		} */
+		} 
 		IMapGenarator gen = new FeatureGenerator();
 		gen.generate(m_map);
 		
