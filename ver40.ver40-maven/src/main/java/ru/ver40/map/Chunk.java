@@ -51,7 +51,7 @@ public class Chunk implements Serializable {
 
 		File f = new File(getFile());
 		if (f.exists()) {
-			load();
+//			load();
 		}
 	}
 
