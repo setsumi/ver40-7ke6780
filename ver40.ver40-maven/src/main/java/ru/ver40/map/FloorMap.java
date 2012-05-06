@@ -10,12 +10,22 @@ import ru.ver40.model.Player;
 import ru.ver40.model.VisibilityState;
 import ru.ver40.util.Constants;
 
-
 /**
  * Карта в виде большого 2D-поля
  * 
  */
 public class FloorMap implements ILosBoard {
+
+	private final class CellLocation {
+		public Chunk m_chunk;
+		public int m_index;
+
+		public CellLocation(Chunk chunk, int index) {
+			m_chunk = chunk;
+			m_index = index;
+		}
+	}
+
 	/**
 	 * Буфер чанков
 	 */
@@ -24,11 +34,11 @@ public class FloorMap implements ILosBoard {
 	 * Путь к каталогу с данными карты
 	 */
 	private String m_path;
-	
+
 	private ArrayList<MapCell> oldVisible;
-	
+
 	private Player player;
-	
+
 	/**
 	 * Конструктор
 	 * 
@@ -62,7 +72,7 @@ public class FloorMap implements ILosBoard {
 	 * 
 	 * @return
 	 */
-	public MapCell getCell(int x, int y) {
+	public CellLocation locateCell(int x, int y) {
 		if (!contains(x, y))
 			new IllegalArgumentException("Invalid map coordinates: " + x + ", "
 					+ y + " (Must be 0.." + (Constants.MAP_MAX_SIZE - 1));
@@ -96,7 +106,25 @@ public class FloorMap implements ILosBoard {
 		// индекс клетки в квадрате
 		int ci = (y % Constants.MAP_CHUNK_SIZE) * Constants.MAP_CHUNK_SIZE
 				+ (x % Constants.MAP_CHUNK_SIZE);
-		return ch.getCell(ci);
+		return new CellLocation(ch, ci);
+	}
+
+	/**
+	 * Вернуть клетку по её координатам на карте.
+	 * 
+	 * @return
+	 */
+	public MapCell getCell(int x, int y) {
+		CellLocation loc = locateCell(x, y);
+		return loc.m_chunk.getCell(loc.m_index);
+	}
+
+	/**
+	 * Присвоить клетку по её координатам на карте.
+	 */
+	public void setCell(MapCell cell, int x, int y) {
+		CellLocation loc = locateCell(x, y);
+		loc.m_chunk.setCell(cell, loc.m_index);
 	}
 
 	/**
@@ -112,15 +140,18 @@ public class FloorMap implements ILosBoard {
 			i++;
 		}
 	}
-	
+
 	/**
-	 * Перемещает персонажа на карте.
-	 * Если перемещение возможно, возвращает null.
-	 * Если перемещенеи невозможно, возвращает MapCell, 
-	 * на который персонаж наткнулся
-	 * @param p - персонаж
-	 * @param newX - новый X
-	 * @param newY - новый Y
+	 * Перемещает персонажа на карте. Если перемещение возможно, возвращает
+	 * null. Если перемещенеи невозможно, возвращает MapCell, на который
+	 * персонаж наткнулся
+	 * 
+	 * @param p
+	 *            - персонаж
+	 * @param newX
+	 *            - новый X
+	 * @param newY
+	 *            - новый Y
 	 * @return - непроходимую ячейку или null
 	 */
 	public MapCell translateActor(Actor p, int newX, int newY) {
@@ -161,16 +192,16 @@ public class FloorMap implements ILosBoard {
 
 	@Override
 	public boolean isObstacle(int x, int y) {
-		return !getCell(x, y).isPassable() ;
+		return !getCell(x, y).isPassable();
 	}
 
 	@Override
-	public void visit(int x, int y) {		
+	public void visit(int x, int y) {
 		MapCell cell = getCell(x, y);
 		cell.setVisible(VisibilityState.VISIBLE);
-		oldVisible.add(cell);		
+		oldVisible.add(cell);
 	}
-	
+
 	// Поменить все видимые клетки вокруг игрока как FOG_OF_WAR
 	public void setFogOfWar() {
 		for (MapCell cell : oldVisible) {

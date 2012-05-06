@@ -65,6 +65,13 @@ public class Chunk implements Serializable {
 	}
 
 	/**
+	 * Присвоить клетку по её индексу в массиве клеток
+	 */
+	public void setCell(MapCell cell, int index) {
+		m_cells.set(index, cell);
+	}
+
+	/**
 	 * Вернуть полный путь файла чанка
 	 * 
 	 * @return

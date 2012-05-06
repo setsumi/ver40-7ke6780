@@ -1,4 +1,4 @@
-package ru.ver40.util;
+package ru.ver40.system.util;
 
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
@@ -29,6 +29,8 @@ import org.newdawn.slick.util.ResourceLoader;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
+
+import ru.ver40.util.Constants;
 
 
 public class ResourceManager {
