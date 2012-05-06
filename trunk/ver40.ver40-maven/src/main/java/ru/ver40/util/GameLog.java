@@ -10,6 +10,8 @@ import org.apache.commons.lang.StringUtils;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 
+import ru.ver40.system.util.AsciiDraw;
+
 /**
  * Псевдо-окошко с игровым логом.
  * 

@@ -1,14 +1,21 @@
 package ru.ver40;
 
+import java.io.IOException;
+
 import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.GameContainer;
+import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 import org.newdawn.slick.util.Log;
 
+import ru.ver40.system.SystemGameState;
+import ru.ver40.system.util.AsciiDraw;
+import ru.ver40.system.util.DebugLog;
+import ru.ver40.system.util.MyLogSystem;
+import ru.ver40.system.util.ResourceManager;
+import ru.ver40.system.util.UnicodeDraw;
 import ru.ver40.util.Constants;
-import ru.ver40.util.DebugLog;
-import ru.ver40.util.MyLogSystem;
 
 /**
  * @author Setsumi
@@ -21,22 +28,6 @@ public class TheGame extends StateBasedGame {
 		return m_game;
 	}
 
-	private MainMenu m_mainMenu = null;
-	private Gameplay m_gameplay = null;
-	private InventoryDialog m_inventoryDialog = null;
-
-	public MainMenu getMainMenu() {
-		return m_mainMenu;
-	}
-
-	public Gameplay getGameplay() {
-		return m_gameplay;
-	}
-
-	public InventoryDialog getInventoryDialog() {
-		return m_inventoryDialog;
-	}
-
 	/**
 	 * Конструктор
 	 */
@@ -45,22 +36,38 @@ public class TheGame extends StateBasedGame {
 
 		m_game = this;
 
-		m_mainMenu = new MainMenu(Constants.MAINMENU_STATE);
-		this.addState(m_mainMenu.getState());
-		m_gameplay = new Gameplay(Constants.GAMEPLAY_STATE);
-		this.addState(m_gameplay.getState());
-		m_inventoryDialog = new InventoryDialog(
-				Constants.INVENTORY_DIALOG_STATE);
-		this.addState(m_inventoryDialog.getState());
+		SystemGameState sys = new SystemGameState(Constants.STATE_MAINMENU);
+		sys.setClient(new StateMainMenu(sys));
+		this.addState(sys);
 
-		// this.addState(new GameplayState(Constants.GAMEPLAY_STATE));
-		m_mainMenu.show();
+		sys = new SystemGameState(Constants.STATE_GAMEPLAY);
+		sys.setClient(new StateGameplay(sys));
+		this.addState(sys);
 	}
 
+	/*
+	 * Инициализация приложения.
+	 */
 	@Override
 	public void initStatesList(GameContainer container) throws SlickException {
 		// this.getState(Constants.MAINMENU_STATE).init(container, this);
 		// this.getState(Constants.GAMEPLAY_STATE).init(container, this);
+
+		// Загрузка ресурсов.
+		try {
+			ResourceManager.loadResources(Constants.RESOURCE_FILE);
+		} catch (IOException e) {
+			Log.error("failed to load resource file '"
+					+ Constants.RESOURCE_FILE + "': " + e.getMessage());
+			throw new SlickException("Resource loading failed!");
+		}
+		// Включение повтора нажатых клавиш.
+		Input input = container.getInput();
+		input.enableKeyRepeat();
+
+		// Создаем глобальные объекты сразу.
+		AsciiDraw.getInstance();
+		UnicodeDraw.getInstance();
 	}
 
 	/**

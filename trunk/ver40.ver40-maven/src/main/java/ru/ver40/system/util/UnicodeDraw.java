@@ -1,9 +1,11 @@
-package ru.ver40.util;
+package ru.ver40.system.util;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.UnicodeFont;
 import org.newdawn.slick.font.effects.ColorEffect;
+
+import ru.ver40.util.Constants;
 
 
 /**

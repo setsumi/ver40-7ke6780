@@ -1,9 +1,11 @@
-package ru.ver40.util;
+package ru.ver40.system.util;
 
 import java.util.LinkedList;
 
 import org.apache.commons.lang.StringUtils;
 import org.newdawn.slick.Graphics;
+
+import ru.ver40.util.Constants;
 
 /**
  * Псевдо-окошко с отладочным логом.
@@ -71,6 +73,9 @@ public class DebugLog {
 	 * Рендер лога
 	 */
 	public void draw(Graphics g) {
+		if (!DebugLog.showLog)
+			return;
+
 		int i = m_height;
 		int nc = m_newCount;
 		for (String line : m_lines) {

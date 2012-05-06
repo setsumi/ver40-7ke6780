@@ -1,4 +1,4 @@
-package ru.ver40.util;
+package ru.ver40.system.util;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -6,6 +6,8 @@ import java.io.PrintStream;
 import java.util.Calendar;
 
 import org.newdawn.slick.util.DefaultLogSystem;
+
+import ru.ver40.util.Constants;
 
 /**
  * Перехватчик сликовых логов.

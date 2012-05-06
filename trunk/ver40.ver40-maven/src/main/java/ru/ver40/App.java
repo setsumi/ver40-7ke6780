@@ -20,20 +20,17 @@ import ru.ver40.map.FloorMap;
 import ru.ver40.map.Viewport;
 import ru.ver40.map.gen.FeatureGenerator;
 import ru.ver40.map.gen.IMapGenarator;
-import ru.ver40.model.AttackOnSeeAI;
-import ru.ver40.model.Floor;
 import ru.ver40.model.MapCell;
-import ru.ver40.model.Monster;
 import ru.ver40.model.Player;
 import ru.ver40.service.MapService;
 import ru.ver40.service.TimeService;
-import ru.ver40.util.AsciiDraw;
+import ru.ver40.system.util.AsciiDraw;
+import ru.ver40.system.util.DebugLog;
+import ru.ver40.system.util.MyLogSystem;
+import ru.ver40.system.util.ResourceManager;
+import ru.ver40.system.util.UnicodeDraw;
 import ru.ver40.util.Constants;
-import ru.ver40.util.DebugLog;
 import ru.ver40.util.GameLog;
-import ru.ver40.util.MyLogSystem;
-import ru.ver40.util.ResourceManager;
-import ru.ver40.util.UnicodeDraw;
 
 	
 public class App extends BasicGame {
@@ -101,10 +98,11 @@ public class App extends BasicGame {
 		int mm = 0;
 		for (int i = 1; i < 400; i++) {
 			for (int j = 1; j < 400; j++) {
-				MapCell c = m_map.getCell(i, j);
-				
-			}			
-		} 
+				// if (r.nextInt(10) > 8) {
+				// m_map.setCell(MapCell.createWall(), i, j);
+				// }
+			}
+		}
 		IMapGenarator gen = new FeatureGenerator();
 		gen.generate(m_map);
 		
@@ -184,8 +182,7 @@ public class App extends BasicGame {
 		UnicodeDraw.getInstance().draw(
 				"Нам не хватает мыла. Замылим помыльнее.", 8, 440, Color.green);
 
-		if (DebugLog.showLog)
-			DebugLog.getInstance().draw(g);
+		DebugLog.getInstance().draw(g);
 		glog.draw(g);
 		//
 	}

@@ -9,7 +9,7 @@ import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.GameState;
 import org.newdawn.slick.state.StateBasedGame;
 
-import ru.ver40.util.AsciiDraw;
+import ru.ver40.system.util.AsciiDraw;
 
 /**
  * @author Setsumi
@@ -68,6 +68,8 @@ public class InventoryDialogState extends BasicGameState {
 		// выходим по нажатию Esc
 		Input input = container.getInput();
 		if (input.isKeyPressed(Input.KEY_ESCAPE)) {
+			// Возвращаемся сликовым методом а не show() родителя, т.к. его не
+			// нужно переинициализировать, а просто вернуться назад в него.
 			TheGame.getInstance().enterState(m_parentState.getID());
 		}
 		input.clearKeyPressedRecord();

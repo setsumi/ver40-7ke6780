@@ -1,10 +1,12 @@
-package ru.ver40.util;
+package ru.ver40.system.util;
 
 import java.awt.Point;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SpriteSheet;
+
+import ru.ver40.util.Constants;
 
 
 /**

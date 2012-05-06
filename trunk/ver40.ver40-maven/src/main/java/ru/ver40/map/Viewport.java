@@ -10,7 +10,7 @@ import org.newdawn.slick.geom.Vector2f;
 import ru.ver40.model.MapCell;
 import ru.ver40.model.Player;
 import ru.ver40.model.VisibilityState;
-import ru.ver40.util.AsciiDraw;
+import ru.ver40.system.util.AsciiDraw;
 import ru.ver40.util.Constants;
 
 /**
