@@ -23,36 +23,7 @@ public class Monster extends Actor {
 
 	@Override
 	public int performTimedAction() {
-		return ai.behave(); /*
-		PositionConstant position = PositionConstant.values()[new Random().nextInt(7)];
-		FloorMap map = MapService.getInstance().getcMap();
-		switch (position) {
-		case NORTH:
-			map.translateActor(this, this.getX() , this.getY() - 1);			
-			return 10;
-		case SOUTH:
-			map.translateActor(this, this.getX() , this.getY() + 1);	
-			return 10;
-		case EAST:
-			map.translateActor(this, this.getX() + 1 , this.getY());
-			return 10;
-		case WEST:
-			map.translateActor(this, this.getX() - 1 , this.getY());
-			return 10;
-		case NORTH_EAST:
-			map.translateActor(this, this.getX() + 1 , this.getY() - 1);
-			return 10;
-		case SOUTH_EAST:
-			map.translateActor(this, this.getX() + 1 , this.getY() + 1);
-			return 10;
-		case SOUTH_WEST:
-			map.translateActor(this, this.getX() - 1 , this.getY() + 1);
-			return 10;
-		case NOTRT_WEST:
-			map.translateActor(this, this.getX() - 1 , this.getY() - 1);
-			return 10;		
-		}
-		return 0; */
+		return ai.behave();	
 	}
 	
 	public void setAi(AIProvider ai) {

@@ -1,5 +1,9 @@
 package ru.ver40;
 
+import java.util.Calendar;
+
+import ru.ver40.map.Chunk;
+import ru.ver40.map.FloorMap;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -33,6 +37,14 @@ public class AppTest
      */
     public void testApp()
     {
-        assertTrue( true );
+        long t1 = System.nanoTime();
+        FloorMap map = new FloorMap("map/test");
+        new Chunk(map, 0, 0);
+        new Chunk(map, 1, 0);
+        new Chunk(map, 0, 1);
+        new Chunk(map, 1, 1);
+        map.SaveChunks();
+        long t2 = System.nanoTime() - t1;
+        System.out.println("4 chunk serrizalization is " + t2 / 1000000 + " ms");
     }
 }

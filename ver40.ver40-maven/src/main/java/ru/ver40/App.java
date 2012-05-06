@@ -18,6 +18,8 @@ import rlforj.los.IFovAlgorithm;
 import rlforj.los.PrecisePermissive;
 import ru.ver40.map.FloorMap;
 import ru.ver40.map.Viewport;
+import ru.ver40.map.gen.FeatureGenerator;
+import ru.ver40.map.gen.IMapGenarator;
 import ru.ver40.model.AttackOnSeeAI;
 import ru.ver40.model.Floor;
 import ru.ver40.model.MapCell;
@@ -95,12 +97,8 @@ public class App extends BasicGame {
 		p = new Player("2ch anonymous");
 		TimeService.getInstance().register(p);
 		Random r = new Random();
-		int x = r.nextInt(50);
-		int y = r.nextInt(50);
-		p.setX(x);
-		p.setY(y);
-		m_map.getCell(x, y).addPerson(p);
-		int mm = 0;
+		
+		/*int mm = 0;
 		for (int i = 1; i < 400; i++) {
 			for (int j = 1; j < 400; j++) {
 				MapCell c = m_map.getCell(i, j);
@@ -119,13 +117,20 @@ public class App extends BasicGame {
 					}
 				}
 			}			
-		}
+		} */
+		IMapGenarator gen = new FeatureGenerator();
+		gen.generate(m_map);
+		
+		int x = r.nextInt(50);
+		int y = r.nextInt(50);
+		p.setX(x);
+		p.setY(y);
+		m_map.getCell(x, y).addPerson(p);
 		
 		
 		
 		
-		
-		System.out.println(mm + " monsters on the map");
+//		System.out.println(mm + " monsters on the map");
 		input.addKeyListener((KeyListener) p);
 		m_map.setPlayer(p);
 		fov = new PrecisePermissive();
