@@ -71,7 +71,11 @@ public class Viewport {
 							getColor(c.getResultFg()).darker(0.8f),
 							getColor(c.getResultBg()).darker(0.8f), gr);
 				} else {
-					// невидимые клетки не рисуем
+					// Для дебага
+					//
+					AsciiDraw.getInstance().draw(str, i + m_posX, j + m_posY,
+							getColor(c.getResultFg()).darker(0.8f),
+							getColor(c.getResultBg()).darker(0.8f), gr);
 				}
 			}
 		}
