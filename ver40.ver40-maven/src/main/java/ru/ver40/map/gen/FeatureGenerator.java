@@ -9,6 +9,7 @@ import java.util.Map;
 import org.apache.commons.lang.math.IntRange;
 
 import ru.ver40.map.FloorMap;
+import ru.ver40.model.Building;
 import ru.ver40.model.MapCell;
 import ru.ver40.util.Rng;
 
@@ -77,14 +78,17 @@ public class FeatureGenerator implements IMapGenarator {
 	}
 	
 	private void fillWall() {
-		for (int y = 1; y < mapHeight; ++y) {
-			for (int x = 1; x < mapWidth; ++x) {
-				map.getCell(x, y).setBuilding(MapCell.createWall()
-						.getBuilding());
+		for (int y = 0; y < mapHeight; ++y) {
+			for (int x = 0; x < mapWidth; ++x) {
+				map.setCell(MapCell.createWall(), x, y);
 			}
 		}
 	}
 	
+	/**
+	 * Вернуть случайную точку, принадлежащую стене какой либо комнаты
+	 * @return
+	 */
 	private Point getRandomPoint() {
 		while (true) {
 			int x = Rng.d(mapWidth);

@@ -95,12 +95,10 @@ public class App extends BasicGame {
 		TimeService.getInstance().register(p);
 		Random r = new Random();
 		
-		int mm = 0;
+		
 		for (int i = 1; i < 400; i++) {
 			for (int j = 1; j < 400; j++) {
-				// if (r.nextInt(10) > 8) {
-				// m_map.setCell(MapCell.createWall(), i, j);
-				// }
+				m_map.getCell(i, j);
 			}
 		}
 		IMapGenarator gen = new FeatureGenerator();
