@@ -23,8 +23,8 @@ import ru.ver40.util.Rng;
  */
 public class FeatureGenerator implements IMapGenarator {
 	
-	private int mapWidth  = 50; // Карта размером 400х400
-	private int mapHeight = 50;
+	private int mapWidth  = 400; // Карта размером 400х400
+	private int mapHeight = 400;
 	
 	private FloorMap map;
 	
@@ -66,7 +66,13 @@ public class FeatureGenerator implements IMapGenarator {
 		//
 		for (int i = 0; i < 5000; ++i) {
 			Point rnd = getRandomPoint();
-			place(ftr.create(), rnd.x, rnd.y);
+			ftr = getRandomFeature();
+			if (place(ftr.create(), rnd.x, rnd.y)) {
+				MapCell door = new MapCell();
+				door.getSymbol().setSymbol('D');
+				carve(door, rnd.x, rnd.y);						
+			}
+			
 		}		
 	}
 	
@@ -100,7 +106,7 @@ public class FeatureGenerator implements IMapGenarator {
 	 * @param x - координата X карты
 	 * @param y - координата Y карты
 	 */
-	private void place(MapCell[][] cells, int x, int y) {
+	private boolean place(MapCell[][] cells, int x, int y) {
 		// Рандомно разворачиваем объект:
 		//
 		Collections.shuffle(rotOrder);
@@ -113,9 +119,11 @@ public class FeatureGenerator implements IMapGenarator {
 			for (Position p : posOrder) {
 				if (fits(obj, x, y, p)) {
 					carve(obj, x, y, p);
+					return true;							
 				}
 			}			
 		}
+		return false;
 	}
 
 	/**
@@ -134,10 +142,13 @@ public class FeatureGenerator implements IMapGenarator {
 		
 		for (y = start.y; y < end.y; ++y) {
 			for (x = start.x; x < end.x; ++x) {
-				map.getCell(x, y).setFloor(obj[y - start.y][x - start.x].getFloor());
-				map.getCell(x, y).setBuilding(obj[y - start.y][x - start.x].getBuilding());
+				map.setCell(obj[y - start.y][x - start.x], x, y);
 			}
 		}		
+	}
+	
+	private void carve(MapCell cell, int x, int y) {
+		map.setCell(cell, x, y);	
 	}
 
 	/**
@@ -178,21 +189,21 @@ public class FeatureGenerator implements IMapGenarator {
 		case TOP:
 			startX = x - width/2;
 			endX   = startX + width;
-			startY = y + 1 + height;
+			startY = y + height;
 			endY   = startY - height;
 			break;
 		case BOTTOM:
 			startX = x - width/2;
 			endX   = startX + width;
-			startY = y - 1 -height;
+			startY = y - height;
 			endY   = startY - height;
 		case LEFT:
-			startX = x - 1 - width;
+			startX = x  - width;
 			endX   = startX + width;
 			startY = y - height/2;
 			endY   = startY + height;
 		case RIGHT:
-			startX = x + 1 + width;
+			startX = x + width;
 			endX   = startX + width;
 			startY = y - height/2;
 			endY   = startY + height;
