@@ -4,48 +4,47 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.state.StateBasedGame;
 
-import ru.ver40.TheGame;
-
 /**
- * Обычный игровой стейт.
+ * Базовый класс изолированного от системы игрового стейта.
  */
-public abstract class UserGameState extends UserGameStateBase {
+public abstract class UserGameState {
 
-	SystemGameState m_owner = null;
+	protected final StateManager m_manager;// Менеджер стейтов приложения.
 
 	/**
 	 * Конструктор.
 	 */
-	public UserGameState(SystemGameState owner) {
-		m_owner = owner;
+	public UserGameState(StateManager manager) {
+		m_manager = manager;
 	}
 
 	/**
-	 * Перейти в другой стейт.
+	 * Вход в стейт.
 	 */
-	public final void enterState(int id) {
-		((SystemGameState) TheGame.getInstance().getState(id)).setCaller(null);
-		TheGame.getInstance().enterState(id);
+	public void enter(GameContainer gc, StateBasedGame game) {
 	}
 
 	/**
-	 * Модально открыть другой стейт.
+	 * Выход из стейта.
 	 */
-	public final void enterStateModal(int id) {
-		((SystemGameState) TheGame.getInstance().getState(id))
-				.setCaller(m_owner);
-		TheGame.getInstance().enterState(id);
+	public void leave(GameContainer container, StateBasedGame game) {
 	}
 
-	@Override
-	public void onRender(GameContainer gc, StateBasedGame game, Graphics g) {
-		// Если этот стейт модальный, то сначала рисуем вызвавший стейт.
-		SystemGameState caller = m_owner.getCaller();
-		if (caller != null) {
-			// Рисуем только клиент вызвавшего стейта, т.к. системная прорисовка
-			// уже есть наша.
-			caller.getClient().onRender(gc, game, g);
-		}
-	}
+	/**
+	 * Инициализация стейта.
+	 */
+	public abstract void onInit(GameContainer gc, StateBasedGame game);
+
+	/**
+	 * Обновление стейта. Крутится в цикле.
+	 */
+	public abstract void onUpdate(GameContainer gc, StateBasedGame game,
+			int delta);
+
+	/**
+	 * Рендер стейта. Крутится в цикле.
+	 */
+	public abstract void onRender(GameContainer gc, StateBasedGame game,
+			Graphics g);
 
 }

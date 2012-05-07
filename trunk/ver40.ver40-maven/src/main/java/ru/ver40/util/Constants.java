@@ -119,8 +119,4 @@ public class Constants {
 	 * Стейт игры.
 	 */
 	public static final int STATE_GAMEPLAY = 1;
-	/**
-	 * Стейт модального диалога инвентаря.
-	 */
-	public static final int STATE_INVENTORY_DIALOG = 2;
 }

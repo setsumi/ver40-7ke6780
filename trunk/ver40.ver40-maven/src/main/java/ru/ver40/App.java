@@ -41,9 +41,6 @@ public class App extends BasicGame {
 	Point pos;
 	float track;
 
-	// TODO: сервис или фиксить или думать
-	//
-	public static GameLog glog = null;
 	//
 
 	FloorMap m_map;
@@ -65,7 +62,7 @@ public class App extends BasicGame {
 		radius = 30;
 		track = 0.0f;
 
-		glog = new GameLog(1, 30, Constants.ASCII_SCREEN_WIDTH - 2, 6,
+		GameLog.create(1, 30, Constants.ASCII_SCREEN_WIDTH - 2, 6,
 				Constants.GAME_LOG_BACKCOLOR);
 		//
 
@@ -95,19 +92,32 @@ public class App extends BasicGame {
 		TimeService.getInstance().register(p);
 		Random r = new Random();
 		
+		// int mm = 1;
+		// for (int i = 1; i < 20; i++) {
+		// m_map.setCell(MapCell.createWall(), i, 1);
+		// if (i < 10)
+		// m_map.setCell(MapCell.createWall(), 1, i);
+		// mm++;
+		// for (int j = 1; j < 10; j++) {
+		// if (r.nextInt(10) > 8) {
+		// m_map.setCell(MapCell.createWall(), i, j);
+		// }
+		// }
+		// }
 		
-		for (int i = 1; i < 400; i++) {
-			for (int j = 1; j < 400; j++) {
-				m_map.getCell(i, j);
-			}
-		}
+		// for (int i = 1; i < 400; i++) {
+		// for (int j = 1; j < 400; j++) {
+		// m_map.getCell(i, j);
+		// }
+		// }
+
 		IMapGenarator gen = new FeatureGenerator();
 		gen.generate(m_map);
 		
 		int x = 200;
 		int y = 200;
-		p.setX(x);
-		p.setY(y);
+		p.setX(70);
+		p.setY(70);
 		m_map.getCell(x, y).addPerson(p);
 		
 		
@@ -119,18 +129,16 @@ public class App extends BasicGame {
 		fov = new PrecisePermissive();
 	}
 
-	static String zzz = new String("");
-	static int xxx = 0;
-
 	@Override
 	public void update(GameContainer gc, int delta) throws SlickException {
 		TimeService t = TimeService.getInstance();
 		while (t.getCurrentActor() != p) {
-			t.tick();			
+			t.tick();
 		}
-		
+
 		m_viewPos.x = p.getX();
-		m_viewPos.y = p.getY();	
+		m_viewPos.y = p.getY();
+
 		Input input = gc.getInput();
 		// debug log
 		if (input.isKeyPressed(Input.KEY_GRAVE)) {
@@ -138,29 +146,10 @@ public class App extends BasicGame {
 				DebugLog.getInstance().resetNew();
 			DebugLog.showLog = !DebugLog.showLog;
 		} else if (input.isKeyPressed(Input.KEY_Q)) {
-			DebugLog.getInstance().resetNew();
-			glog.resetNew();
-			if (xxx < 6)
-				zzz += "Log-" + Integer.toString(++xxx)/* + " " */;
-			Log.debug(zzz);
-			Log.debug(zzz);
-//			m_map.SaveChunks();
+			// m_map.SaveChunks();
 			// gc.exit();
-			glog.log(GameLog.Type.REGULAR, zzz);
-			glog.log(GameLog.Type.REGULAR, zzz + "_");
-			glog.log(GameLog.Type.REGULAR, zzz);
-			glog.log(GameLog.Type.REGULAR, zzz + "_");
-			glog.log(GameLog.Type.REGULAR, zzz);
-			glog.log(GameLog.Type.REGULAR, zzz + "_");
-			glog.log(GameLog.Type.REGULAR, zzz);
-			glog.log(GameLog.Type.REGULAR, zzz + "_");
-			glog.log(GameLog.Type.REGULAR, zzz);
-			glog.log(GameLog.Type.REGULAR, zzz + "_");
-		} else if (input.isKeyPressed(Input.KEY_W)) {
-			glog.resetNew();
-			glog.log(GameLog.Type.REGULAR, "Single record.");
 		}
-		
+
 		m_map.setFogOfWar();
 		fov.visitFieldOfView(m_map, p.getX(), p.getY(), 15);
 	}
@@ -174,14 +163,14 @@ public class App extends BasicGame {
 		g.drawString("View pos: " + m_viewPos.x + ", " + m_viewPos.y, 100, 0);
 
 		//
-		AsciiDraw.getInstance().drawFree("WARNING FoREVer!", 500, pos.y,
-				Color.yellow, Color.red, g);
-		AsciiDraw.getInstance().draw("ASCII Текст.", 1, 35, Color.green);
-		UnicodeDraw.getInstance().draw(
-				"Нам не хватает мыла. Замылим помыльнее.", 8, 440, Color.green);
+		// AsciiDraw.getInstance().drawFree("WARNING FoREVer!", 500, pos.y,
+		// Color.yellow, Color.red, g);
+		// AsciiDraw.getInstance().draw("ASCII Текст.", 1, 35, Color.green);
+		// UnicodeDraw.getInstance().draw(
+		// "Нам не хватает мыла. Замылим помыльнее.", 8, 440, Color.green);
 
 		DebugLog.getInstance().draw(g);
-		glog.draw(g);
+		GameLog.getInstance().draw(g);
 		//
 	}
 

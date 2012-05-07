@@ -7,7 +7,7 @@ import org.newdawn.slick.Input;
 import org.newdawn.slick.state.StateBasedGame;
 import org.newdawn.slick.util.Log;
 
-import ru.ver40.system.SystemGameState;
+import ru.ver40.system.StateManager;
 import ru.ver40.system.UserGameState;
 import ru.ver40.system.util.AsciiDraw;
 import ru.ver40.util.Constants;
@@ -21,13 +21,18 @@ public class StateMainMenu extends UserGameState {
 	/**
 	 * Конструктор.
 	 */
-	public StateMainMenu(SystemGameState owner) {
-		super(owner);
+	public StateMainMenu(StateManager manager) {
+		super(manager);
 	}
 
 	@Override
 	public void enter(GameContainer gc, StateBasedGame game) {
 		Log.debug("StateMainMenu.enter()");
+	}
+
+	@Override
+	public void leave(GameContainer gc, StateBasedGame game) {
+		Log.debug("StateMainMenu.leave()");
 	}
 
 	@Override
@@ -42,7 +47,7 @@ public class StateMainMenu extends UserGameState {
 		if (input.isKeyPressed(Input.KEY_SPACE)
 				|| input.isKeyPressed(Input.KEY_ENTER)) {
 			input.clearKeyPressedRecord();
-			enterState(Constants.STATE_GAMEPLAY);
+			m_manager.enter(Constants.STATE_GAMEPLAY);
 		}
 	}
 
@@ -54,7 +59,7 @@ public class StateMainMenu extends UserGameState {
 				Constants.ASCII_SCREEN_WIDTH / 2 - Constants.GAME_NAME.length()
 						/ 2, 10, Color.green);
 		AsciiDraw.getInstance().draw("press start",
-				Constants.ASCII_SCREEN_WIDTH / 2 - 6, 20, Color.white);
+				Constants.ASCII_SCREEN_WIDTH / 2 - 5, 20, Color.white);
 	}
 
 }
