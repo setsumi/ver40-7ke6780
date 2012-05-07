@@ -104,8 +104,8 @@ public class App extends BasicGame {
 		IMapGenarator gen = new FeatureGenerator();
 		gen.generate(m_map);
 		
-		int x = r.nextInt(50);
-		int y = r.nextInt(50);
+		int x = 200;
+		int y = 200;
 		p.setX(x);
 		p.setY(y);
 		m_map.getCell(x, y).addPerson(p);
