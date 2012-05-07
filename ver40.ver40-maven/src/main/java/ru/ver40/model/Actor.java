@@ -1,7 +1,7 @@
 package ru.ver40.model;
 
-import ru.ver40.App;
 import ru.ver40.model.time.ITimedEntity;
+import ru.ver40.util.GameLog;
 
 /**
  * Персонаж игрового мира
@@ -72,7 +72,7 @@ public abstract class Actor extends GObject implements ITimedEntity {
 	}
 
 	protected void die() {
-		App.glog.log(this.getClass().getName() + " dies");
+		GameLog.getInstance().log(this.getClass().getName() + " dies");
 	}	
 	
 	public MapCell getCell() {

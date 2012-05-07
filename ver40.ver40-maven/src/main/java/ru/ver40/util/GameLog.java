@@ -17,6 +17,23 @@ import ru.ver40.system.util.AsciiDraw;
  * 
  */
 public class GameLog {
+
+	private static GameLog m_instance = null;
+
+	public static GameLog getInstance() {
+		if (m_instance == null) {
+			throw new IllegalStateException("Not created.");
+		}
+		return m_instance;
+	}
+
+	public static void create(int x, int y, int width, int height, Color bg) {
+		if (m_instance != null) {
+			throw new IllegalStateException("Already created.");
+		}
+		m_instance = new GameLog(x, y, width, height, bg);
+	}
+
 	/**
 	 * Типы записей лога.
 	 * 
@@ -35,6 +52,9 @@ public class GameLog {
 		}
 	}
 
+	/**
+	 * Запись лога.
+	 */
 	private class Entry {
 		Type type;
 		String msg;
@@ -58,7 +78,7 @@ public class GameLog {
 	 * 
 	 * Координаты и размеры указываются в символах.
 	 */
-	public GameLog(int x, int y, int width, int height, Color bg) {
+	private GameLog(int x, int y, int width, int height, Color bg) {
 		if (x < 0 || y < 0 || width < 0 || height < 0)
 			throw new IllegalArgumentException("Invalid arguments: " + x + " "
 					+ y + " " + width + " " + height + " (Must be > 0).");
@@ -135,7 +155,7 @@ public class GameLog {
 	 * 
 	 * Обычно делается перед началом каждого ход. Подразумевается, что игровой
 	 * лог нельзя показывать/скрывать (как отладочный), поэтому не нужно делать
-	 * проверку на видимость тут и обработку появления/скрытия лога в игре.
+	 * тут проверку на видимость и обработку появления/скрытия лога в игре.
 	 */
 	public void resetNew() {
 		m_newCount = 0;

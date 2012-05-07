@@ -7,7 +7,7 @@ import org.newdawn.slick.Input;
 import org.newdawn.slick.state.StateBasedGame;
 import org.newdawn.slick.util.Log;
 
-import ru.ver40.system.SystemGameState;
+import ru.ver40.system.StateManager;
 import ru.ver40.system.UserGameState;
 import ru.ver40.system.util.AsciiDraw;
 
@@ -20,13 +20,18 @@ public class StateGameplay extends UserGameState {
 	/**
 	 * Конструктор.
 	 */
-	public StateGameplay(SystemGameState owner) {
-		super(owner);
+	public StateGameplay(StateManager manager) {
+		super(manager);
 	}
 
 	@Override
 	public void enter(GameContainer gc, StateBasedGame game) {
 		Log.debug("StateGameplay.enter()");
+	}
+
+	@Override
+	public void leave(GameContainer gc, StateBasedGame game) {
+		Log.debug("StateGameplay.leave()");
 	}
 
 	@Override
@@ -37,15 +42,13 @@ public class StateGameplay extends UserGameState {
 	@Override
 	public void onUpdate(GameContainer gc, StateBasedGame game, int delta) {
 		Input input = gc.getInput();
-		if (input.isKeyPressed(Input.KEY_I)) {
-			// TheGame.getInstance().getInventoryDialog().show(this);
+		if (input.isKeyPressed(Input.KEY_M)) {
+			this.m_manager.enterModal(2);
 		}
 	}
 
 	@Override
 	public void onRender(GameContainer gc, StateBasedGame game, Graphics g) {
-		super.onRender(gc, game, g);
-
 		AsciiDraw.getInstance().draw("Gameplay state.", 5, 5, Color.blue);
 	}
 

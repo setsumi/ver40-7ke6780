@@ -6,9 +6,9 @@ import rlforj.los.ILosAlgorithm;
 import rlforj.los.PrecisePermissive;
 import rlforj.math.Point2I;
 import rlforj.pathfinding.AStar;
-import ru.ver40.App;
 import ru.ver40.map.FloorMap;
 import ru.ver40.service.MapService;
+import ru.ver40.util.GameLog;
 import ru.ver40.util.Rng;
 
 /**
@@ -64,8 +64,10 @@ public class AttackOnSeeAI implements AIProvider {
 					//
 					int dmg = Rng.d(6);
 					player.setHp(player.getHp() - dmg);
-					App.glog.log("Monster hit player for " + dmg + " damage.");
-					App.glog.log("Player has " + player.getHp() + " hp now.");
+					GameLog.getInstance().log(
+							"Monster hit player for " + dmg + " damage.");
+					GameLog.getInstance().log(
+							"Player has " + player.getHp() + " hp now.");
 				}
 			}
 			return 10;

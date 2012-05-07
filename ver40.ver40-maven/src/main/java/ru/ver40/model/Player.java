@@ -3,10 +3,10 @@ package ru.ver40.model;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.KeyListener;
 
-import ru.ver40.App;
 import ru.ver40.map.FloorMap;
 import ru.ver40.service.MapService;
 import ru.ver40.service.TimeService;
+import ru.ver40.util.GameLog;
 import ru.ver40.util.Rng;
 
 /**
@@ -80,8 +80,9 @@ public class Player extends Actor implements KeyListener {
 			Actor a = cell.getPersons().get(0);
 			int dmg = Rng.d(8);
 			a.setHp(a.getHp() - dmg);
-			App.glog.log("Player hit monster for " + dmg + " damage.");
-			App.glog.log("Monster has " + a.getHp() + " hp");
+			GameLog.getInstance().log(
+					"Player hit monster for " + dmg + " damage.");
+			GameLog.getInstance().log("Monster has " + a.getHp() + " hp");
 		}
 		return 10;				
 	}

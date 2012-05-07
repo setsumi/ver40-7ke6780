@@ -24,8 +24,8 @@ import ru.ver40.util.Rng;
  */
 public class FeatureGenerator implements IMapGenarator {
 	
-	private int mapWidth  = 400; // Карта размером 400х400
-	private int mapHeight = 400;
+	private int mapWidth = 80; // Карта размером 400х400
+	private int mapHeight = 80;
 	
 	private FloorMap map;
 	
