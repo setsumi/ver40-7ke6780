@@ -14,12 +14,10 @@ public class StateModal1 extends UserGameState {
 
 	public StateModal1(StateManager manager) {
 		super(manager);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
 	public void onInit(GameContainer gc, StateBasedGame game) {
-		// TODO Auto-generated method stub
 
 	}
 
