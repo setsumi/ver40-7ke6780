@@ -36,6 +36,7 @@ public class FeatureGenerator implements IMapGenarator {
 	private Map<IntRange, IFeature> features;
 	private List<Rotation> rotOrder;
 	private List<Position> posOrder;
+	private List<IPostProcesser> postProcessers;
 	
 	public FeatureGenerator() {
 		features = new HashMap<>();
@@ -43,16 +44,27 @@ public class FeatureGenerator implements IMapGenarator {
 		rotOrder.addAll(Arrays.asList(Rotation.values()));
 		posOrder = new ArrayList<>();
 		posOrder.addAll(Arrays.asList(Position.values()));
+		postProcessers = new ArrayList<>();
 	}
 	
 	@Override
 	public void generate(FloorMap map) {
 		this.map = map;		
 		registerFeatures();
+		registerPostProcesers();
 		fillWall();
 		doGenerate();
 	}
 	
+	private void registerPostProcesers() {
+		registerPostProcesser(new DeadEndKiller());
+		
+	}
+
+	private void registerPostProcesser(IPostProcesser proc) {
+		postProcessers.add(proc);				
+	}
+
 	private void doGenerate() {
 		// Сгенерировать начальную фичу
 		//
@@ -62,12 +74,13 @@ public class FeatureGenerator implements IMapGenarator {
 		System.out.println(place(ftr.create(), mapWidth/2, mapHeight/2));		
 		// Выбираем рандомную точку
 		//
-		o:for (int i = 0; i < 1000; ++i) {
+		o:for (int i = 0; i < 10000; ++i) {
 			Point rnd = getRandomPoint();
-			System.out.println(i/100);
+			if (i % 100 == 0)
+				System.out.println(i/100);
 			// Для данной точки попыток вставки
 			//
-			for (int j = 0; j < 50; ++j) {
+			for (int j = 0; j < 100; ++j) {
 				ftr = getRandomFeature();
 				if (place(ftr.create(), rnd.x, rnd.y)) {
 					MapCell door = new MapCell();
@@ -79,7 +92,16 @@ public class FeatureGenerator implements IMapGenarator {
 					continue o;
 				}			
 			}			
-		}		
+		}	
+		// Пост процессеры
+		//
+		for (int y = 0; y < mapHeight; ++y) {
+			for (int x = 0; x < mapWidth; ++x) {
+				for (IPostProcesser p : postProcessers) {
+					p.process(map, x, y);
+				}
+			}
+		}
 	}
 	
 	private void fillWall() {
@@ -153,10 +175,10 @@ public class FeatureGenerator implements IMapGenarator {
 		if (start.x > end.x || start.y > end.y)
 			throw new RuntimeException(start + " " + end + " \n" + prettyPring(obj)
 					+ " \n" + pos + " " + new Point(x, y));
-		System.out.println("Carving near [" + x + ", " + y +"]" 
-		+ "starting at [" + start.x + ", " + start.y +"]"
-		+ "ending at [" + end.x + ", " + end.y +"]"
-		+ "on position " + pos);
+//		System.out.println("Carving near [" + x + ", " + y +"]" 
+//		+ "starting at [" + start.x + ", " + start.y +"]"
+//		+ "ending at [" + end.x + ", " + end.y +"]"
+//		+ "on position " + pos);
 		
 		for (y = start.y; y <= end.y; ++y) {
 			for (x = start.x; x <= end.x; ++x) {
@@ -291,6 +313,15 @@ public class FeatureGenerator implements IMapGenarator {
 		return rot;
 	}
 	
+	private MapCell createDoor() {
+		MapCell door = new MapCell();
+		Building dr = new Building();
+		dr.setPassable(true);
+		dr.getSymbol().setSymbol('+');
+		door.setBuilding(dr);
+		return door;
+	}
+	
 	private enum Rotation {
 		NONE, CW90, CW180, CW270;
 	}
@@ -332,6 +363,17 @@ public class FeatureGenerator implements IMapGenarator {
 		
 		MapCell[][] create();		
 
+	}
+	
+	/**
+	 * Интерфейс, который должны реализовывать пост процессоры для карт
+	 * @author anon
+	 *
+	 */
+	public interface IPostProcesser {
+		
+		public void process(FloorMap map, int x, int y);
+		
 	}
 	
 	public class RoomFeature implements IFeature {
@@ -395,5 +437,40 @@ public class FeatureGenerator implements IMapGenarator {
 		public int getDefaultProbability() {
 			return 70;
 		}
+	}
+	
+	public class DeadEndKiller implements IPostProcesser {
+
+		@Override
+		public void process(FloorMap map, int x, int y) {
+			// Убить:
+			// ##     ### 
+			// #      # #
+			// ##
+			//
+			if (x > 2 && y > 2 && x < mapWidth - 2 && y < mapHeight - 2) {
+				if (map.isObstacle(x, y)) {
+					// VERT
+					//
+					if (map.isObstacle(x, y + 1) && map.isObstacle(x, y - 1)) {
+						if ((map.isObstacle(x + 1, y + 1) && map.isObstacle(x + 1, y - 1))
+								&& (map.isObstacle(x - 1, y + 1) || map.isObstacle(x - 1, y - 1))
+								&&  !map.isObstacle(x + 1, y) && !map.isObstacle(x - 1, y)) {
+							map.setCell(createDoor(), x, y);														
+						}
+					}
+					// HOR
+					//
+					if (map.isObstacle(x + 1, y) && map.isObstacle(x - 1, y)) {
+						if ((map.isObstacle(x + 1, y + 1) && map.isObstacle(x - 1, y + 1))
+								&& (map.isObstacle(x + 1, y - 1) || map.isObstacle(x - 1, y - 1))
+								&&  !map.isObstacle(x, y + 1) && !map.isObstacle(x, y - 1)) {
+							map.setCell(createDoor(), x, y);							
+						}
+					}
+				}
+			}
+		}
+		
 	}
 }
