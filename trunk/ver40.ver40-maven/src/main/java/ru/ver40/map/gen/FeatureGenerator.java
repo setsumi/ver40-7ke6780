@@ -80,7 +80,7 @@ public class FeatureGenerator implements IMapGenarator {
 				System.out.println(i/100);
 			// Для данной точки попыток вставки
 			//
-			for (int j = 0; j < 100; ++j) {
+			for (int j = 0; j < 3; ++j) {
 				ftr = getRandomFeature();
 				if (place(ftr.create(), rnd.x, rnd.y)) {
 					MapCell door = new MapCell();
