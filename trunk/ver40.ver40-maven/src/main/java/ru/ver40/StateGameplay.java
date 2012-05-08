@@ -42,9 +42,14 @@ public class StateGameplay extends UserGameState {
 	@Override
 	public void onUpdate(GameContainer gc, StateBasedGame game, int delta) {
 		Input input = gc.getInput();
+		this.m_manager.enterModal(2);
 		if (input.isKeyPressed(Input.KEY_M)) {
 			this.m_manager.enterModal(2);
+		} else if (input.isKeyPressed(Input.KEY_Q)
+				&& (input.isKeyDown(Input.KEY_LCONTROL) || input
+						.isKeyDown(Input.KEY_RCONTROL))) {
 		}
+		return;
 	}
 
 	@Override

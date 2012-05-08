@@ -17,6 +17,7 @@ import ru.ver40.system.util.MyLogSystem;
 import ru.ver40.system.util.ResourceManager;
 import ru.ver40.system.util.UnicodeDraw;
 import ru.ver40.util.Constants;
+import ru.ver40.util.GameLog;
 
 /**
  * Класс приложения игры.
