@@ -10,6 +10,7 @@ import java.util.Map;
 import org.apache.commons.lang.math.IntRange;
 
 import ru.ver40.map.FloorMap;
+import ru.ver40.model.Building;
 import ru.ver40.model.MapCell;
 import ru.ver40.util.Rng;
 
@@ -61,7 +62,7 @@ public class FeatureGenerator implements IMapGenarator {
 		System.out.println(place(ftr.create(), mapWidth/2, mapHeight/2));		
 		// Выбираем рандомную точку
 		//
-		for (int i = 0; i < 5000; ++i) {
+		for (int i = 0; i < 1000; ++i) {
 			Point rnd = getRandomPoint();
 			System.out.println(i/100);
 			// Для данной точки попыток вставки
@@ -69,6 +70,12 @@ public class FeatureGenerator implements IMapGenarator {
 			for (int j = 0; j < 50; ++j) {
 				ftr = getRandomFeature();
 				if (place(ftr.create(), rnd.x, rnd.y)) {
+					MapCell door = new MapCell();
+					Building dr = new Building();
+					dr.setPassable(true);
+					dr.getSymbol().setSymbol(String.valueOf(i).toCharArray()[0]);
+					door.setBuilding(dr);
+					carve(door, rnd.x, rnd.y);
 					break;
 				}			
 			}			
@@ -101,28 +108,6 @@ public class FeatureGenerator implements IMapGenarator {
 				}						
 			}
 		}
-		
-		// Получть все точки, являющиеся стенами:
-		// такие точки, которые obstacle, для которых хотя-бы одна стена рядом 
-		// не является obstacle
-		//
-		/**
-		List<Point> points = new ArrayList<>();
-		for (int y = 1; y < mapHeight - 1; ++y) {
-			for (int x = 1; x < mapWidth - 1; ++x) {
-				if (map.isObstacle(x, y)) {
-					if (!map.isObstacle(x + 1, y)
-							|| !map.isObstacle(x, y + 1)
-							|| !map.isObstacle(x - 1, y)
-							|| !map.isObstacle(x, y - 1)) {
-						points.add(new Point(x, y));		
-					}						
-				}
-			}
-		}
-		Collections.shuffle(points);
-		return points.get(Rng.d(points.size() - 1));
-		*/
 	}
 
 	/**
@@ -142,8 +127,8 @@ public class FeatureGenerator implements IMapGenarator {
 			//
 			Collections.shuffle(posOrder);
 			for (Position p : posOrder) {
-				if (fits(obj, x, y, p)) {
-					carve(obj, x, y, p);
+				if (fits(obj, x, y, Position.TOP)) {
+					carve(obj, x, y, Position.TOP);
 					return true;							
 				}
 			}			
@@ -165,13 +150,15 @@ public class FeatureGenerator implements IMapGenarator {
 		Point start = getPoint(x, y, width, height, pos, true);
 		Point end   = getPoint(x, y, width, height, pos, false);
 		
+		if (start.x > end.x || start.y > end.y)
+			throw new RuntimeException();
 		System.out.println("Carving near [" + x + ", " + y +"]" 
 		+ "starting at [" + start.x + ", " + start.y +"]"
 		+ "ending at [" + end.x + ", " + end.y +"]"
 		+ "on position " + pos);
 		
 		for (y = start.y; y < end.y; ++y) {
-			for (x = start.x; x <= end.x; ++x) {
+			for (x = start.x; x < end.x; ++x) {
 				map.setCell(obj[y - start.y][x - start.x], x, y);
 			}
 		}		
@@ -190,18 +177,19 @@ public class FeatureGenerator implements IMapGenarator {
 	 * @return
 	 */
 	private boolean fits(MapCell[][] obj, int x, int y, Position pos) {
-		int width = obj[0].length + 2;
-		int height = obj.length + 2;
+		int width = obj[0].length;
+		int height = obj.length;
 		
 		Point start = getPoint(x, y, width, height, pos, true);
 		Point end   = getPoint(x, y, width, height, pos, false);
 		// Проверка на края карты
 		//
-		if (start.x <= 0 || start.y <= 0 || end.x >= mapWidth || end.y >= mapHeight) {
+		if (start.x <= 1 || start.y <= 1 || end.x >= mapWidth - 1 || end.y >= mapHeight - 1) {
 			return false;
 		}
-		for (y = start.y; y <= end.y; ++y) {
-			for (x = start.x; x <= end.x; ++x) {
+		
+		for (y = start.y - 1 ; y <= end.y + 1; ++y) {
+			for (x = start.x - 1; x <= end.x + 1; ++x) {
 				if (!map.isObstacle(x, y)) {
 					return false;
 				}
@@ -210,17 +198,16 @@ public class FeatureGenerator implements IMapGenarator {
 		return true;		
 	}
 	
-	private Point getPoint(int x, int y, int width, int height, 
+	public Point getPoint(int x, int y, int width, int height, 
 			Position pos, boolean start) {
-		Point ret = new Point();
 		int startX = 0, endX = 0;
 		int startY = 0, endY = 0;
 		switch (pos) {
 		case TOP:
 			startX = x - width/2;
 			endX   = startX + width - 1;
-			startY = y - height;
-			endY   = startY + height - 1;
+			startY = y - height ;
+			endY   = startY + height;
 			break;
 		case BOTTOM:
 			startX = x - width/2;
@@ -241,14 +228,7 @@ public class FeatureGenerator implements IMapGenarator {
 			endY   = startY + height;
 			break;
 		}
-		if (start) {
-			ret.x = startX;
-			ret.y = startY;
-		} else {
-			ret.x = endX;
-			ret.y = endY;
-		}
-		return ret;
+		return start ? new Point(startX, startY) : new Point(endX, endY);
 	}
 	
 	
@@ -304,11 +284,11 @@ public class FeatureGenerator implements IMapGenarator {
 		NONE, CW90, CW180, CW270;
 	}
 	
-	private enum Position {
+	public enum Position {
 		TOP, BOTTOM, LEFT, RIGHT;
 	}
 	
-	private class Point {
+	public class Point {
 		
 		public int x,y;
 		
@@ -319,7 +299,12 @@ public class FeatureGenerator implements IMapGenarator {
 		Point(int x, int y) {
 			this.x = x;
 			this.y = y;
-		}	
+		}
+		
+		@Override
+		public String toString() {
+			return "[" + x + ", " + y + "]";
+		}
 	}
 	
 	/**
@@ -378,11 +363,11 @@ public class FeatureGenerator implements IMapGenarator {
 			if (lenSize < 5) {
 				// Короткий коридор таких большинство
 				//
-				len = Rng.d(3) + 1;
+				len = Rng.d(3) + 3;
 			} else if (lenSize < 8) {
 				// Средний
 				//
-				len = Rng.d(10) + 1;
+				len = Rng.d(10) + 2;
 			} else {
 				// Длинный
 				//
