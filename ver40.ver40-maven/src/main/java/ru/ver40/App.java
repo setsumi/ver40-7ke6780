@@ -90,34 +90,14 @@ public class App extends BasicGame {
 		m_viewPos = new Point(200, 200);
 		p = new Player("2ch anonymous");
 		TimeService.getInstance().register(p);
-		Random r = new Random();
-		
-		// int mm = 1;
-		// for (int i = 1; i < 20; i++) {
-		// m_map.setCell(MapCell.createWall(), i, 1);
-		// if (i < 10)
-		// m_map.setCell(MapCell.createWall(), 1, i);
-		// mm++;
-		// for (int j = 1; j < 10; j++) {
-		// if (r.nextInt(10) > 8) {
-		// m_map.setCell(MapCell.createWall(), i, j);
-		// }
-		// }
-		// }
-		
-		// for (int i = 1; i < 400; i++) {
-		// for (int j = 1; j < 400; j++) {
-		// m_map.getCell(i, j);
-		// }
-		// }
 
 		IMapGenarator gen = new FeatureGenerator();
 		gen.generate(m_map);
 		
 		int x = 200;
 		int y = 200;
-		p.setX(70);
-		p.setY(70);
+		p.setX(x);
+		p.setY(x);
 		m_map.getCell(x, y).addPerson(p);
 		
 		
