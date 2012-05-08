@@ -54,20 +54,94 @@ public class AppTest extends TestCase {
 	public void testGetPointLEFT() {
 		FeatureGenerator gen = new FeatureGenerator();
 		MapCell[][] cells = new MapCell[3][3];
+		fill(cells);
+		Point s = gen.getPoint(10, 10, cells[0].length, cells.length, Position.LEFT, true);
+		Point e = gen.getPoint(10, 10, cells[0].length, cells.length, Position.LEFT, false);
+		assertEquals(s.x, 7);
+		assertEquals(s.y, 9);
+		assertEquals(e.x, 9);
+		assertEquals(e.y, 11);	
+		
+		cells = new MapCell[1][5];
+		fill(cells);
+		s = gen.getPoint(10, 10, cells[0].length, cells.length, Position.LEFT, true);
+		e = gen.getPoint(10, 10, cells[0].length, cells.length, Position.LEFT, false);
+		assertEquals(s.x, 5);
+		assertEquals(s.y, 10);		
+		assertEquals(e.x, 9);
+		assertEquals(e.y, 10);				
+	}
+	
+	public void testGetPointRIGHT() {
+		FeatureGenerator gen = new FeatureGenerator();
+		MapCell[][] cells = new MapCell[3][3];
+		fill(cells);
+		Point s = gen.getPoint(10, 10, cells[0].length, cells.length, Position.RIGHT, true);
+		Point e = gen.getPoint(10, 10, cells[0].length, cells.length, Position.RIGHT, false);
+		assertEquals(s.x, 11);
+		assertEquals(s.y, 9);
+		assertEquals(e.x, 13);
+		assertEquals(e.y, 11);	
+		
+		cells = new MapCell[1][5];
+		fill(cells);
+		s = gen.getPoint(10, 10, cells[0].length, cells.length, Position.RIGHT, true);
+		e = gen.getPoint(10, 10, cells[0].length, cells.length, Position.RIGHT, false);
+		assertEquals(s.x, 11);
+		assertEquals(s.y, 10);		
+		assertEquals(e.x, 15);
+		assertEquals(e.y, 10);				
+	}
+	
+	public void testGetPointTOP() {
+		FeatureGenerator gen = new FeatureGenerator();
+		MapCell[][] cells = new MapCell[3][3];
+		fill(cells);
+		Point s = gen.getPoint(10, 10, cells[0].length, cells.length, Position.TOP, true);
+		Point e = gen.getPoint(10, 10, cells[0].length, cells.length, Position.TOP, false);
+		assertEquals(s.x, 9);
+		assertEquals(s.y, 7);		
+		assertEquals(e.x, 11);
+		assertEquals(e.y, 9);
+		
+		cells = new MapCell[1][5];
+		fill(cells);
+		s = gen.getPoint(10, 10, cells[0].length, cells.length, Position.TOP, true);
+		e = gen.getPoint(10, 10, cells[0].length, cells.length, Position.TOP, false);
+		assertEquals(s.x, 8);
+		assertEquals(s.y, 9);		
+		assertEquals(e.x, 12);
+		assertEquals(e.y, 9);				
+	}
+	
+	public void testGetPointBOTTOM() {
+		FeatureGenerator gen = new FeatureGenerator();
+		MapCell[][] cells = new MapCell[3][3];
+		fill(cells);
+		Point s = gen.getPoint(10, 10, cells[0].length, cells.length, Position.BOTTOM, true);
+		Point e = gen.getPoint(10, 10, cells[0].length, cells.length, Position.BOTTOM, false);
+		System.out.println(s + " " + e);
+		assertEquals(s.x, 9);
+		assertEquals(s.y, 11);		
+		assertEquals(e.x, 11);
+		assertEquals(e.y, 13);
+		
+		cells = new MapCell[1][5];
+		fill(cells);
+		s = gen.getPoint(10, 10, cells[0].length, cells.length, Position.BOTTOM, true);
+		e = gen.getPoint(10, 10, cells[0].length, cells.length, Position.BOTTOM, false);
+		System.out.println(s + " " + e);
+		assertEquals(s.x, 8);
+		assertEquals(s.y, 11);		
+		assertEquals(e.x, 12);
+		assertEquals(e.y, 11);				
+	}
+	
+	private void fill(MapCell[][] cells) {
 		for (int r = 0; r < cells.length; ++r) {
 			for (int c = 0; c < cells[r].length; ++c) {
 				cells[r][c] = new MapCell();
 			}
 		}
-		Point s = gen.getPoint(10, 10, cells[0].length, 
-				cells.length, Position.LEFT, true);
-		System.out.println(s);
-		assertEquals(s.x, 7);
-		assertEquals(s.y, 9);
-		Point e = gen.getPoint(10, 10, cells[0].length, 
-				cells.length, Position.LEFT, false);
-		System.out.println(s);
-		assertEquals(e.x, 9);
-		assertEquals(e.y, 11);
 	}
 }

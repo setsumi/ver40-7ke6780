@@ -25,8 +25,8 @@ import ru.ver40.util.Rng;
  */
 public class FeatureGenerator implements IMapGenarator {
 	
-	private int mapWidth = 80; // Карта размером 400х400
-	private int mapHeight = 80;
+	private int mapWidth = 400; // Карта размером 400х400
+	private int mapHeight = 400;
 	
 	private FloorMap map;
 	
@@ -62,7 +62,7 @@ public class FeatureGenerator implements IMapGenarator {
 		System.out.println(place(ftr.create(), mapWidth/2, mapHeight/2));		
 		// Выбираем рандомную точку
 		//
-		for (int i = 0; i < 1000; ++i) {
+		o:for (int i = 0; i < 1000; ++i) {
 			Point rnd = getRandomPoint();
 			System.out.println(i/100);
 			// Для данной точки попыток вставки
@@ -73,10 +73,10 @@ public class FeatureGenerator implements IMapGenarator {
 					MapCell door = new MapCell();
 					Building dr = new Building();
 					dr.setPassable(true);
-					dr.getSymbol().setSymbol(String.valueOf(i).toCharArray()[0]);
+					dr.getSymbol().setSymbol('+');
 					door.setBuilding(dr);
 					carve(door, rnd.x, rnd.y);
-					break;
+					continue o;
 				}			
 			}			
 		}		
@@ -127,8 +127,8 @@ public class FeatureGenerator implements IMapGenarator {
 			//
 			Collections.shuffle(posOrder);
 			for (Position p : posOrder) {
-				if (fits(obj, x, y, Position.TOP)) {
-					carve(obj, x, y, Position.TOP);
+				if (fits(obj, x, y, p)) {
+					carve(obj, x, y, p);
 					return true;							
 				}
 			}			
@@ -151,17 +151,29 @@ public class FeatureGenerator implements IMapGenarator {
 		Point end   = getPoint(x, y, width, height, pos, false);
 		
 		if (start.x > end.x || start.y > end.y)
-			throw new RuntimeException();
+			throw new RuntimeException(start + " " + end + " \n" + prettyPring(obj)
+					+ " \n" + pos + " " + new Point(x, y));
 		System.out.println("Carving near [" + x + ", " + y +"]" 
 		+ "starting at [" + start.x + ", " + start.y +"]"
 		+ "ending at [" + end.x + ", " + end.y +"]"
 		+ "on position " + pos);
 		
-		for (y = start.y; y < end.y; ++y) {
-			for (x = start.x; x < end.x; ++x) {
+		for (y = start.y; y <= end.y; ++y) {
+			for (x = start.x; x <= end.x; ++x) {
 				map.setCell(obj[y - start.y][x - start.x], x, y);
 			}
 		}		
+	}
+	
+	private String prettyPring(MapCell[][] cells) {
+		StringBuilder b = new StringBuilder();
+		for (int r = 0; r < cells.length; ++r) {
+			for (int c = 0; c < cells[r].length; ++c) {
+				b.append(cells[r][c].isPassable() ? "." : "#");
+			}
+			b.append("\n");
+		}
+		return b.toString();
 	}
 	
 	private void carve(MapCell cell, int x, int y) {
@@ -198,34 +210,33 @@ public class FeatureGenerator implements IMapGenarator {
 		return true;		
 	}
 	
-	public Point getPoint(int x, int y, int width, int height, 
-			Position pos, boolean start) {
+	public Point getPoint(int x, int y, int width, int height, Position pos, boolean start) {
 		int startX = 0, endX = 0;
 		int startY = 0, endY = 0;
 		switch (pos) {
 		case TOP:
 			startX = x - width/2;
 			endX   = startX + width - 1;
-			startY = y - height ;
-			endY   = startY + height;
+			endY = y - 1;
+			startY   = y - height;
 			break;
 		case BOTTOM:
-			startX = x - width/2;
-			endX   = startX + width - 1;
+			endX = x + width/2;
+			startX   = endX - width + 1;
 			startY = y + 1;
-			endY   = startY + height - 1;
+			endY   = y + height;
 			break;
 		case LEFT:
 			startX = x - width;
 			endX   = startX + width - 1;
 			startY = y - height/2;
-			endY   = startY + height;
+			endY   = startY + height - 1;
 			break;
 		case RIGHT:
-			startX = x + width;
-			endX   = startX + width - 1;
-			startY = y - height/2;
-			endY   = startY + height;
+			endX = x + width;
+			startX   =endX - width + 1;	
+			endY = y + height/2;
+			startY   = endY - height + 1;						
 			break;
 		}
 		return start ? new Point(startX, startY) : new Point(endX, endY);
