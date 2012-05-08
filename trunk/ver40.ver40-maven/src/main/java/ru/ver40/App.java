@@ -116,8 +116,8 @@ public class App extends BasicGame {
 			t.tick();
 		}
 
-		m_viewPos.x = p.getX();
-		m_viewPos.y = p.getY();
+		// m_viewPos.x = p.getX();
+		// m_viewPos.y = p.getY();
 
 		Input input = gc.getInput();
 		// debug log
@@ -128,6 +128,14 @@ public class App extends BasicGame {
 		} else if (input.isKeyPressed(Input.KEY_Q)) {
 			// m_map.SaveChunks();
 			// gc.exit();
+		} else if (input.isKeyPressed(Input.KEY_NUMPAD6)) {
+			m_viewPos.translate(1, 0);
+		} else if (input.isKeyPressed(Input.KEY_NUMPAD4)) {
+			m_viewPos.translate(-1, 0);
+		} else if (input.isKeyPressed(Input.KEY_NUMPAD2)) {
+			m_viewPos.translate(0, 1);
+		} else if (input.isKeyPressed(Input.KEY_NUMPAD8)) {
+			m_viewPos.translate(0, -1);
 		}
 
 		m_map.setFogOfWar();

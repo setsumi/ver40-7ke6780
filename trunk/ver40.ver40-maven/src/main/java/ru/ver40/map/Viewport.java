@@ -55,7 +55,7 @@ public class Viewport {
 				if (c.getVisible() == VisibilityState.VISIBLE) {
 					// затенение освещения
 					// TODO радиус обзора должен быть в кричере (Player)?
-					float grad = 0.8f / 15;
+					float grad = 0.6f / 15;
 					Vector2f trg = new Vector2f(viewX, vy);
 					Vector2f src = new Vector2f(p.getX(), p.getY());
 
@@ -68,14 +68,14 @@ public class Viewport {
 							getColor(c.getResultBg()), gr);
 				} else if (c.getVisible() == VisibilityState.FOG_OF_WAR) {
 					AsciiDraw.getInstance().draw(str, i + m_posX, j + m_posY,
-							getColor(c.getResultFg()).darker(0.8f),
-							getColor(c.getResultBg()).darker(0.8f), gr);
+							getColor(c.getResultFg()).darker(0.6f),
+							getColor(c.getResultBg()).darker(0.6f), gr);
 				} else {
 					// Для дебага
 					//
 					AsciiDraw.getInstance().draw(str, i + m_posX, j + m_posY,
-							getColor(c.getResultFg()).darker(0.8f),
-							getColor(c.getResultBg()).darker(0.8f), gr);
+							getColor(c.getResultFg()).darker(0.6f),
+							getColor(c.getResultBg()).darker(0.6f), gr);
 				}
 			}
 		}
