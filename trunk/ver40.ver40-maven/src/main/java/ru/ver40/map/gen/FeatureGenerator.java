@@ -74,7 +74,7 @@ public class FeatureGenerator implements IMapGenarator {
 		System.out.println(place(ftr.create(), mapWidth/2, mapHeight/2));		
 		// Выбираем рандомную точку
 		//
-		o:for (int i = 0; i < 10000; ++i) {
+		o:for (int i = 0; i < 50000; ++i) {
 			Point rnd = getRandomPoint();
 			if (i % 100 == 0)
 				System.out.println(i/100);
@@ -488,7 +488,7 @@ public class FeatureGenerator implements IMapGenarator {
 					if (map.isObstacle(x, y + 1) && map.isObstacle(x, y - 1)) {
 						if ((map.isObstacle(x + 1, y + 1) && map.isObstacle(x + 1, y - 1))
 								&& (map.isObstacle(x - 1, y + 1) || map.isObstacle(x - 1, y - 1))
-								&&  !map.isObstacle(x + 1, y) && !map.isObstacle(x - 1, y)) {
+								&& (!map.isObstacle(x + 1, y) && !map.isObstacle(x - 1, y))) {
 							map.setCell(createDoor(), x, y);														
 						}
 					}
