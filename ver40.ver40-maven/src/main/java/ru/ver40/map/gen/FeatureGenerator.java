@@ -269,6 +269,7 @@ public class FeatureGenerator implements IMapGenarator {
 	private void registerFeatures() {
 		register(new RoomFeature());
 		register(new CorridorFeature());
+		register(new HallwayFeature());
 	}
 	
 	private void register(IFeature feature) {
@@ -400,7 +401,7 @@ public class FeatureGenerator implements IMapGenarator {
 
 		@Override
 		public int getDefaultProbability() {
-			return 30;
+			return 75;
 		}		
 	}
 	
@@ -435,8 +436,40 @@ public class FeatureGenerator implements IMapGenarator {
 
 		@Override
 		public int getDefaultProbability() {
-			return 70;
+			return 25;
 		}
+	}
+	
+	public class HallwayFeature implements IFeature {
+
+		@Override
+		public int getDefaultProbability() {
+			return 10;
+		}
+
+		@Override
+		public MapCell[][] create() {
+			int width = 0;
+			int rng = Rng.d(10);
+			if (rng <= 2) {
+				width = 2;
+			} else if (rng >= 9) {
+				width = 4;
+			} else {
+				width = 3;
+			}
+			int len = Rng.d(3, 8, 3);	
+			MapCell[][] data = new MapCell[len][width];
+			// Создаем данные:
+			//
+			for (int r = 0; r < data.length; ++r) {
+				for (int c = 0; c < data[r].length; ++c) {
+					data[r][c] = new MapCell();
+				}
+			}
+			return data;
+		}
+		
 	}
 	
 	public class DeadEndKiller implements IPostProcesser {
