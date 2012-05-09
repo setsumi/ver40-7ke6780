@@ -28,7 +28,7 @@ public class DeadEndKiller implements IPostProcesser {
 				//
 				if (map.isObstacle(x + 1, y) && map.isObstacle(x - 1, y)) {
 					if ((map.isObstacle(x + 1, y + 1) && map.isObstacle(x - 1, y + 1))
-							&& (map.isObstacle(x + 1, y - 1) || map.isObstacle(x - 1, y - 1))
+							&& (map.isObstacle(x + 1, y - 1) || map.isObstacle(x + 1, y + 1))
 							&&  !map.isObstacle(x, y + 1) && !map.isObstacle(x, y - 1)) {
 						map.setCell(MapCell.createDoor(), x, y);							
 					}
