@@ -63,11 +63,11 @@ public class AttackOnSeeAI implements AIProvider {
 					// В игрока, атакуем!
 					//
 					int dmg = Rng.d(6);
-					player.setHp(player.getHp() - dmg);
+					player.setStructure(player.getStructure() - dmg);
 					GameLog.getInstance().log(
 							"Monster hit player for " + dmg + " damage.");
 					GameLog.getInstance().log(
-							"Player has " + player.getHp() + " hp now.");
+							"Player has " + player.getStructure() + " hp now.");
 				}
 			}
 			return 10;

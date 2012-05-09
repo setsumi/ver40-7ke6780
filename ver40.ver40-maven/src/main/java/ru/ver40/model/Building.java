@@ -9,9 +9,29 @@ package ru.ver40.model;
  *
  */
 public class Building extends GObject {
-
+	
 	/**
-	 * 
+	 * Можно ли использовать этот предмет
+	 */
+	private boolean active;
+	
+	/**
+	 * Серийная версия класса
 	 */
 	private static final long serialVersionUID = 3828996418331215629L;
+	
+	/**
+	 * Вызывается когда используют данное сооружение
+	 */
+	protected void use() {		
+	}
+
+	public boolean isActive() {
+		return active;
+	}
+
+	public void setActive(boolean active) {
+		this.active = active;
+	}
+	
 }
