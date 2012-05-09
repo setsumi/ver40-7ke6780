@@ -6,12 +6,14 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.lang.math.IntRange;
 
+import rlforj.math.Point2I;
 import ru.ver40.map.FloorMap;
-import ru.ver40.model.Building;
 import ru.ver40.model.MapCell;
+import ru.ver40.util.GridMath;
 import ru.ver40.util.Rng;
 
 /**
@@ -265,6 +267,7 @@ public class FeatureGenerator implements IMapGenarator {
 		register(new RoomFeature());
 		register(new CorridorFeature());
 		register(new HallwayFeature());
+		register(new LargeCisternFeature());
 	}
 	
 	private void register(IFeature feature) {
@@ -454,6 +457,32 @@ public class FeatureGenerator implements IMapGenarator {
 				}
 			}
 			return data;
+		}		
+	}
+	
+	public class LargeCisternFeature implements IFeature {
+
+		@Override
+		public int getDefaultProbability() {
+			return 5;
+		}
+
+		@Override
+		public MapCell[][] create() {
+			int rad = Rng.d(3, 6, 2);
+			MapCell[][] cells = new MapCell[rad][rad];
+			Set<Point2I> ftr = GridMath.filledCircle(rad/2, rad/2, rad);
+			for (int r = 0; r < cells.length; ++r) {
+				for (int c = 0; c < cells[r].length; ++c) {
+					if (ftr.contains(new Point2I(c, r))) {
+						cells[r][c] = new MapCell();
+					} else {
+						cells[r][c] = MapCell.createWall();
+					}
+				}
+			}
+			System.out.println(prettyPring(cells));
+			return cells;
 		}
 		
 	}

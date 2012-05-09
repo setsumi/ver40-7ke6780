@@ -30,9 +30,17 @@ public class MapCell {
 	
 //	private Trap trap;
 	
-//	private List<Item> items;
+ 	private List<Item> items;
 	
-    private List<Actor> persons;
+    public List<Item> getItems() {
+		return Collections.unmodifiableList(items);
+	}
+
+	public void setItems(List<Item> items) {
+		this.items = items;
+	}
+
+	private List<Actor> persons;
     
     private VisibilityState visible;
 
@@ -72,6 +80,12 @@ public class MapCell {
 		person.setParent(this);
 		persons.add(person);
 	}
+	
+	public void addItem(Item item) {
+		item.setParent(this);
+		items.add(item);
+	}
+	
 	
 	public List<Actor> getPersons() {
 		return Collections.unmodifiableList(persons);
