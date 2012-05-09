@@ -2,7 +2,6 @@ package ru.ver40.model;
 
 import ru.ver40.service.TimeService;
 
-
 /**
  * Тестовый монстр
  * @author anon
@@ -17,8 +16,7 @@ public class Monster extends Actor {
 	public Monster() {
 		setPassable(false);
 		getSymbol().setBgColor(0xC41212);
-		getSymbol().setSymbol('M');
-	
+		getSymbol().setSymbol('M');	
 	}
 
 	@Override

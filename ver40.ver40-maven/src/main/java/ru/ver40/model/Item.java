@@ -8,8 +8,13 @@ import java.util.Map;
  * @author anon
  *
  */
-public class Item {
+public class Item extends GObject {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6321287344580534790L;
+
 	/**
 	 * Аттрибут, который проверяет при использовании предемета
 	 */
