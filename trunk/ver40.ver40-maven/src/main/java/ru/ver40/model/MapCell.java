@@ -17,7 +17,7 @@ import java.util.List;
  * @author anon
  *
  */
-public class MapCell extends GObject  {
+public class MapCell {
 	
 	/**
 	 * 
@@ -52,19 +52,6 @@ public class MapCell extends GObject  {
 		persons = new LinkedList<Actor>();
 	}
 	
-	/**
-	 * Статический фактори-метод, создаюший обычную стену.
-	 * @return
-	 */
-	public static MapCell createWall() {
-		MapCell ret = new MapCell();
-		Building wall = new Building();
-		wall.setSymbol(new Symbol('#'));
-		wall.setPassable(false);
-		ret.setBuilding(wall);
-		return ret;
-	}
-
 	public Floor getFloor() {
 		return floor;
 	}
@@ -132,7 +119,6 @@ public class MapCell extends GObject  {
 		}
 	}
 	
-	@Override
 	public boolean isPassable() {
 		boolean passable = true;
 		for (Actor p : persons) {
@@ -141,4 +127,34 @@ public class MapCell extends GObject  {
 		return passable && floor.isPassable() 
 				&& (building == null ? true : building.isPassable());
 	}
+	
+	/*
+	 * Статические фабрики
+	 */
+	
+	/**
+	 * Создать клетку со стеной
+	 * @return
+	 */
+	public static MapCell createWall() {
+		MapCell ret = new MapCell();
+		Building wall = new Building();
+		wall.setSymbol(new Symbol('#'));
+		wall.setPassable(false);
+		ret.setBuilding(wall);
+		return ret;
+	}
+	
+	/**
+	 * Создать клетку с дверью
+	 * @return
+	 */
+	public static MapCell createDoor() {
+		MapCell ret = new MapCell();
+		Building wall = new Door();
+		ret.setBuilding(wall);
+		return ret;
+	}	
 }
+
+

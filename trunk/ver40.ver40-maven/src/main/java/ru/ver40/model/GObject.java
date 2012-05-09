@@ -11,12 +11,17 @@ import java.io.Serializable;
  * @author anon
  *
  */
-public abstract class GObject extends NotificationSource implements Serializable {
+public abstract class GObject implements Serializable {
 	
 	/**
-	 * Родительский GObject
+	 * Ячейка, на которой находится объект
 	 */
-	private GObject parent;
+	private MapCell cell;
+	
+	/**
+	 * Владелец данного предмета
+	 */
+	private Actor owner;
 	
 	/**
 	 * Серийная версия класса
@@ -67,11 +72,19 @@ public abstract class GObject extends NotificationSource implements Serializable
 		this.symbol = symbol;
 	}
 
-	public GObject getParent() {
-		return parent;
+	public MapCell getParent() {
+		return cell;
 	}
 
-	public void setParent(GObject parent) {
-		this.parent = parent;
+	public void setParent(MapCell parent) {
+		this.cell = parent;
+	}
+
+	public Actor getOwner() {
+		return owner;
+	}
+
+	public void setOwner(Actor owner) {
+		this.owner = owner;
 	}	
 }

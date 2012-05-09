@@ -79,10 +79,10 @@ public class Player extends Actor implements KeyListener {
 		if (cell != null && !cell.getPersons().isEmpty()) {
 			Actor a = cell.getPersons().get(0);
 			int dmg = Rng.d(8);
-			a.setHp(a.getHp() - dmg);
+			a.setStructure(a.getStructure() - dmg);
 			GameLog.getInstance().log(
 					"Player hit monster for " + dmg + " damage.");
-			GameLog.getInstance().log("Monster has " + a.getHp() + " hp");
+			GameLog.getInstance().log("Monster has " + a.getStructure() + " hp");
 		}
 		return 10;				
 	}

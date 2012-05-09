@@ -82,13 +82,8 @@ public class FeatureGenerator implements IMapGenarator {
 			//
 			for (int j = 0; j < 3; ++j) {
 				ftr = getRandomFeature();
-				if (place(ftr.create(), rnd.x, rnd.y)) {
-					MapCell door = new MapCell();
-					Building dr = new Building();
-					dr.setPassable(true);
-					dr.getSymbol().setSymbol('+');
-					door.setBuilding(dr);
-					carve(door, rnd.x, rnd.y);
+				if (place(ftr.create(), rnd.x, rnd.y)) {					
+					carve(MapCell.createDoor(), rnd.x, rnd.y);
 					continue o;
 				}			
 			}			
@@ -314,15 +309,6 @@ public class FeatureGenerator implements IMapGenarator {
 		return rot;
 	}
 	
-	private MapCell createDoor() {
-		MapCell door = new MapCell();
-		Building dr = new Building();
-		dr.setPassable(true);
-		dr.getSymbol().setSymbol('+');
-		door.setBuilding(dr);
-		return door;
-	}
-	
 	private enum Rotation {
 		NONE, CW90, CW180, CW270;
 	}
@@ -489,7 +475,7 @@ public class FeatureGenerator implements IMapGenarator {
 						if ((map.isObstacle(x + 1, y + 1) && map.isObstacle(x + 1, y - 1))
 								&& (map.isObstacle(x - 1, y + 1) || map.isObstacle(x - 1, y - 1))
 								&& (!map.isObstacle(x + 1, y) && !map.isObstacle(x - 1, y))) {
-							map.setCell(createDoor(), x, y);														
+							map.setCell(MapCell.createDoor(), x, y);														
 						}
 					}
 					// HOR
@@ -498,7 +484,7 @@ public class FeatureGenerator implements IMapGenarator {
 						if ((map.isObstacle(x + 1, y + 1) && map.isObstacle(x - 1, y + 1))
 								&& (map.isObstacle(x + 1, y - 1) || map.isObstacle(x - 1, y - 1))
 								&&  !map.isObstacle(x, y + 1) && !map.isObstacle(x, y - 1)) {
-							map.setCell(createDoor(), x, y);							
+							map.setCell(MapCell.createDoor(), x, y);							
 						}
 					}
 				}
