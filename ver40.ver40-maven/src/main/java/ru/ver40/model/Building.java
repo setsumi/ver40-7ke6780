@@ -23,7 +23,7 @@ public class Building extends GObject {
 	/**
 	 * Вызывается когда используют данное сооружение
 	 */
-	protected void use() {		
+	public void use() {		
 	}
 
 	public boolean isActive() {

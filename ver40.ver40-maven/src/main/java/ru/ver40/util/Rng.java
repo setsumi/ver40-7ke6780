@@ -53,4 +53,13 @@ public class Rng {
 	public double random() {
 		return rng.nextDouble();
 	}
+	
+	/**
+	 * Возвращает, 'сбылось' ли событие, указанное в процентах.
+	 * @param percent - процент - 1 - 100
+	 * @return 
+	 */
+	public static boolean percent(int percent) {
+		return d(100) <= percent;		
+	}
 }

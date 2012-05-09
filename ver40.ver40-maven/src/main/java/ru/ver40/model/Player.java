@@ -30,7 +30,6 @@ public class Player extends Actor implements KeyListener {
 	private static final long serialVersionUID = -272256474863920368L;
 	
 	private String name;
-	private Input input;
 	private int keyCode;
 	
 	public Player(String name) {
@@ -89,7 +88,6 @@ public class Player extends Actor implements KeyListener {
 
 	@Override
 	public void setInput(Input input) {
-		this.input = input;		
 	}
 
 	@Override

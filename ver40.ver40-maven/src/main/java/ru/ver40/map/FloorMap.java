@@ -178,6 +178,10 @@ public class FloorMap implements ILosBoard {
 					return newCell;
 				}
 			} else {
+				if (newCell.getBuilding().isActive()) {
+					newCell.getBuilding().use();
+					return null;
+				}
 				return newCell;
 			}
 		}

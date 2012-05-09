@@ -6,14 +6,11 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.commons.lang.math.IntRange;
 
-import rlforj.math.Point2I;
 import ru.ver40.map.FloorMap;
 import ru.ver40.model.MapCell;
-import ru.ver40.util.GridMath;
 import ru.ver40.util.Rng;
 
 /**
@@ -70,9 +67,7 @@ public class FeatureGenerator implements IMapGenarator {
 	private void doGenerate() {
 		// Сгенерировать начальную фичу
 		//
-		IFeature ftr = 
-//				getRandomFeature();
-				new RoomFeature();
+		IFeature ftr = 	getRandomFeature();
 		System.out.println(place(ftr.create(), mapWidth/2, mapHeight/2));		
 		// Выбираем рандомную точку
 		//
@@ -95,7 +90,7 @@ public class FeatureGenerator implements IMapGenarator {
 		for (int y = 0; y < mapHeight; ++y) {
 			for (int x = 0; x < mapWidth; ++x) {
 				for (IPostProcesser p : postProcessers) {
-					p.process(map, x, y);
+					p.process(map, x, y, mapWidth, mapHeight);
 				}
 			}
 		}
@@ -362,163 +357,7 @@ public class FeatureGenerator implements IMapGenarator {
 	 */
 	public interface IPostProcesser {
 		
-		public void process(FloorMap map, int x, int y);
-		
-	}
-	
-	public class RoomFeature implements IFeature {
-		
-		private MapCell[][] data;
-		private int width, height;
-	
-		@Override
-		public MapCell[][] create() {
-			// Создаем комнату:
-			//
-			width  = Rng.d(5) + 2;
-			height = Rng.d(5) + 2;
-			data = new MapCell[height][width];
-			// Создаем данные:
-			//
-			for (int r = 0; r < data.length; ++r) {
-				for (int c = 0; c < data[r].length; ++c) {
-					data[r][c] = new MapCell();
-				}
-			}
-			return data;
-		}
-
-		@Override
-		public int getDefaultProbability() {
-			return 75;
-		}		
-	}
-	
-	public class CorridorFeature implements IFeature {
-		
-		private MapCell[][] data;
-		private int len;		
-
-		@Override
-		public MapCell[][] create() {
-			int lenSize = Rng.d(10);			
-			len = 0;
-			if (lenSize < 5) {
-				// Короткий коридор таких большинство
-				//
-				len = Rng.d(3) + 3;
-			} else if (lenSize < 8) {
-				// Средний
-				//
-				len = Rng.d(10) + 2;
-			} else {
-				// Длинный
-				//
-				len = Rng.d(30) + 1;
-			}
-			data = new MapCell[1][len];
-			for (int l = 0; l < data[0].length; ++l) {
-				data[0][l] = new MapCell();
-			}
-			return data;					
-		}
-
-		@Override
-		public int getDefaultProbability() {
-			return 25;
-		}
-	}
-	
-	public class HallwayFeature implements IFeature {
-
-		@Override
-		public int getDefaultProbability() {
-			return 10;
-		}
-
-		@Override
-		public MapCell[][] create() {
-			int width = 0;
-			int rng = Rng.d(10);
-			if (rng <= 2) {
-				width = 2;
-			} else if (rng >= 9) {
-				width = 4;
-			} else {
-				width = 3;
-			}
-			int len = Rng.d(3, 8, 3);	
-			MapCell[][] data = new MapCell[len][width];
-			// Создаем данные:
-			//
-			for (int r = 0; r < data.length; ++r) {
-				for (int c = 0; c < data[r].length; ++c) {
-					data[r][c] = new MapCell();
-				}
-			}
-			return data;
-		}		
-	}
-	
-	public class LargeCisternFeature implements IFeature {
-
-		@Override
-		public int getDefaultProbability() {
-			return 5;
-		}
-
-		@Override
-		public MapCell[][] create() {
-			int rad = Rng.d(3, 6, 2);
-			MapCell[][] cells = new MapCell[rad][rad];
-			Set<Point2I> ftr = GridMath.filledCircle(rad/2, rad/2, rad);
-			for (int r = 0; r < cells.length; ++r) {
-				for (int c = 0; c < cells[r].length; ++c) {
-					if (ftr.contains(new Point2I(c, r))) {
-						cells[r][c] = new MapCell();
-					} else {
-						cells[r][c] = MapCell.createWall();
-					}
-				}
-			}
-			System.out.println(prettyPring(cells));
-			return cells;
-		}
-		
-	}
-	
-	public class DeadEndKiller implements IPostProcesser {
-
-		@Override
-		public void process(FloorMap map, int x, int y) {
-			// Убить:
-			// ##     ### 
-			// #      # #
-			// ##
-			//
-			if (x > 2 && y > 2 && x < mapWidth - 2 && y < mapHeight - 2) {
-				if (map.isObstacle(x, y)) {
-					// VERT
-					//
-					if (map.isObstacle(x, y + 1) && map.isObstacle(x, y - 1)) {
-						if ((map.isObstacle(x + 1, y + 1) && map.isObstacle(x + 1, y - 1))
-								&& (map.isObstacle(x - 1, y + 1) || map.isObstacle(x - 1, y - 1))
-								&& (!map.isObstacle(x + 1, y) && !map.isObstacle(x - 1, y))) {
-							map.setCell(MapCell.createDoor(), x, y);														
-						}
-					}
-					// HOR
-					//
-					if (map.isObstacle(x + 1, y) && map.isObstacle(x - 1, y)) {
-						if ((map.isObstacle(x + 1, y + 1) && map.isObstacle(x - 1, y + 1))
-								&& (map.isObstacle(x + 1, y - 1) || map.isObstacle(x - 1, y - 1))
-								&&  !map.isObstacle(x, y + 1) && !map.isObstacle(x, y - 1)) {
-							map.setCell(MapCell.createDoor(), x, y);							
-						}
-					}
-				}
-			}
-		}
+		public void process(FloorMap map, int x, int y, int mapWidth, int mapHeight);
 		
 	}
 }

@@ -93,15 +93,17 @@ public class App extends BasicGame {
 
 		IMapGenarator gen = new FeatureGenerator();
 		gen.generate(m_map);
-		
-		int x = 200;
-		int y = 200;
-		p.setX(x);
-		p.setY(x);
-		m_map.getCell(x, y).addPerson(p);
-		
-		
-		
+
+		o:for (int y = 190; y < 210; ++y) {
+			for (int x = 190; x < 210; ++x) {
+				if (!m_map.isObstacle(x, y)) {
+					p.setX(x);
+					p.setY(x);
+					m_map.getCell(x, y).addPerson(p);
+					break o;
+				}
+			}
+		}		
 		
 //		System.out.println(mm + " monsters on the map");
 		input.addKeyListener((KeyListener) p);
@@ -115,9 +117,9 @@ public class App extends BasicGame {
 		while (t.getCurrentActor() != p) {
 			t.tick();
 		}
-
-		// m_viewPos.x = p.getX();
-		// m_viewPos.y = p.getY();
+		
+		 m_viewPos.x = p.getX();
+		 m_viewPos.y = p.getY();
 
 		Input input = gc.getInput();
 		// debug log
@@ -128,14 +130,6 @@ public class App extends BasicGame {
 		} else if (input.isKeyPressed(Input.KEY_Q)) {
 			// m_map.SaveChunks();
 			// gc.exit();
-		} else if (input.isKeyPressed(Input.KEY_NUMPAD6)) {
-			m_viewPos.translate(1, 0);
-		} else if (input.isKeyPressed(Input.KEY_NUMPAD4)) {
-			m_viewPos.translate(-1, 0);
-		} else if (input.isKeyPressed(Input.KEY_NUMPAD2)) {
-			m_viewPos.translate(0, 1);
-		} else if (input.isKeyPressed(Input.KEY_NUMPAD8)) {
-			m_viewPos.translate(0, -1);
 		}
 
 		m_map.setFogOfWar();

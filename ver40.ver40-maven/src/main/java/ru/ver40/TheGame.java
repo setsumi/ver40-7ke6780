@@ -32,7 +32,6 @@ public class TheGame extends StateBasedGame {
 	 */
 	public TheGame() {
 		super(Constants.GAME_NAME);
-
 		m_stateManager = new StateManager(this);
 
 		SystemGameState state = new SystemGameState(Constants.STATE_MAINMENU,
@@ -97,7 +96,7 @@ public class TheGame extends StateBasedGame {
 			app.setDisplayMode(Constants.DISPLAY_RESOLUTION_X,
 					Constants.DISPLAY_RESOLUTION_Y,
 					Constants.DISPLAY_FULLSCREEN);
-			app.start();
+			app.start();			
 		} catch (SlickException e) {
 			e.printStackTrace();
 		}
