@@ -1,5 +1,6 @@
 package ru.ver40.model;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -17,7 +18,7 @@ import java.util.List;
  * @author anon
  *
  */
-public class MapCell {
+public class MapCell implements Serializable {
 	
 	/**
 	 * 
@@ -34,10 +35,6 @@ public class MapCell {
 	
     public List<Item> getItems() {
 		return Collections.unmodifiableList(items);
-	}
-
-	public void setItems(List<Item> items) {
-		this.items = items;
 	}
 
 	private List<Actor> persons;
@@ -104,30 +101,30 @@ public class MapCell {
 	// Работа с графичкой слика
 	//
 	public String getResultString() {
-		if (building != null) {
-			return Character.toString(building.getSymbol().getSymbol());
-		} else if (!persons.isEmpty()) {
+		if (!persons.isEmpty()) {
 			return Character.toString(persons.get(persons.size() - 1).getSymbol().getSymbol());
+		} else if (building != null) {
+			return Character.toString(building.getSymbol().getSymbol());			
 		} else {
 			return Character.toString(floor.getSymbol().getSymbol());
 		}
 	}
 	
 	public int getResultBg() {
-		if (building != null) {
-			return (building.getSymbol().getBgColor());
-		} else if (!persons.isEmpty()) {
+		if (!persons.isEmpty()) {
 			return persons.get(persons.size() - 1).getSymbol().getBgColor();
+		} else if (building != null) {
+			return (building.getSymbol().getBgColor());
 		} else {
 			return floor.getSymbol().getBgColor();
 		}
 	}
 	
 	public int getResultFg() {
-		if (building != null) {
-			return (building.getSymbol().getFgColor());
-		} else if (!persons.isEmpty()) {
+		if (!persons.isEmpty()) {
 			return persons.get(persons.size() - 1).getSymbol().getFgColor();
+		} else if (building != null) {
+			return (building.getSymbol().getFgColor());
 		} else {
 			return floor.getSymbol().getFgColor();
 		}

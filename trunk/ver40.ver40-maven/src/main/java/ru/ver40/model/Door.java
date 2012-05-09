@@ -17,7 +17,7 @@ public class Door extends Building {
 	}
 	
 	@Override
-	protected void use() {
+	public void use() {
 		if (!opened) {
 			getSymbol().setSymbol('/');
 			setPassable(true);

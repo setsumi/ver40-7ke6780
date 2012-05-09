@@ -43,7 +43,7 @@ public class GridMath {
 	
 	public static Set<Point2I> filledCircle(int x0, int y0, int r) {
 		Set<Point2I> ret = new HashSet<>();	
-		for (int i = 1; i <= r; ++i) {
+		for (int i = 0; i <= r; ++i) {
 			ret.addAll(circle(x0, y0, i));
 		}		
 		return ret;
