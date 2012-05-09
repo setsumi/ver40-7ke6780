@@ -174,7 +174,9 @@ public class FeatureGenerator implements IMapGenarator {
 		
 		for (y = start.y; y <= end.y; ++y) {
 			for (x = start.x; x <= end.x; ++x) {
-				map.setCell(obj[y - start.y][x - start.x], x, y);
+				if (obj[y - start.y][x - start.x] != null) {
+					map.setCell(obj[y - start.y][x - start.x], x, y);
+				}
 			}
 		}		
 	}
@@ -217,13 +219,33 @@ public class FeatureGenerator implements IMapGenarator {
 		for (y = start.y - 1 ; y <= end.y + 1; ++y) {
 			for (x = start.x - 1; x <= end.x + 1; ++x) {
 				if (!map.isObstacle(x, y)) {
-					return false;
+					// Если для данной точки есть перехлестывющая точка карты
+					//
+					if (hasNearPoint(x - start.x, y - start.y, obj)) {
+						return false;
+					}
+					
 				}
 			}
 		}
 		return true;		
 	}
 	
+	private boolean hasNearPoint(int x, int y, MapCell[][] obj) {
+		for (int ry = y - 1; ry <= y + 1; ++ry) {
+			for (int rx = x - 1; rx <= x + 1; ++rx) {
+				// Валидность
+				//
+				if (!(rx < 0 || ry < 0 || rx >= obj[0].length || ry >= obj.length)) {
+					if (obj[ry][rx] != null) {
+						return true; 
+					}
+				}
+			}
+		}
+		return false;
+	}
+
 	public Point getPoint(int x, int y, int width, int height, Position pos, boolean start) {
 		int startX = 0, endX = 0;
 		int startY = 0, endY = 0;
@@ -258,11 +280,12 @@ public class FeatureGenerator implements IMapGenarator {
 	
 	
 
-	private void registerFeatures() {
+	public void registerFeatures() {
 		register(new RoomFeature());
 		register(new CorridorFeature());
 		register(new HallwayFeature());
 		register(new LargeCisternFeature());
+		register(new CrossFeature());
 	}
 	
 	private void register(IFeature feature) {

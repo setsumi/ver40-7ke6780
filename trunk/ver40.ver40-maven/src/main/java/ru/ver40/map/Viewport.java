@@ -73,9 +73,9 @@ public class Viewport {
 				} else {
 					// Для дебага
 					//
-					/*AsciiDraw.getInstance().draw(str, i + m_posX, j + m_posY,
+					AsciiDraw.getInstance().draw(str, i + m_posX, j + m_posY,
 							getColor(c.getResultFg()).darker(0.6f),
-							getColor(c.getResultBg()).darker(0.6f), gr);*/
+							getColor(c.getResultBg()).darker(0.6f), gr);
 				}
 			}
 		}
