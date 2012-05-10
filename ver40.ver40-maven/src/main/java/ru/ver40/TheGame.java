@@ -24,7 +24,17 @@ import ru.ver40.util.Constants;
  */
 public class TheGame extends StateBasedGame {
 
-	StateManager m_stateManager = null;// Менеджер игровых стейтов.
+	/**
+	 * Менеджер игровых стейтов.
+	 */
+	private static StateManager m_stateManager = null;
+
+	/**
+	 * Вернуть менеджер стейтов.
+	 */
+	public static StateManager getStateManager() {
+		return m_stateManager;
+	}
 
 	/**
 	 * Конструктор
@@ -33,19 +43,16 @@ public class TheGame extends StateBasedGame {
 		super(Constants.GAME_NAME);
 		m_stateManager = new StateManager(this);
 
-		SystemGameState state = new SystemGameState(Constants.STATE_MAINMENU,
-				m_stateManager);
-		state.setClient(new StateMainMenu(m_stateManager));
+		SystemGameState state;
+		state = new SystemGameState(Constants.STATE_MAINMENU, m_stateManager);
 		m_stateManager.add(state);
+		new StateMainMenu();
 
 		state = new SystemGameState(Constants.STATE_GAMEPLAY, m_stateManager);
-		state.setClient(new StateGameplay(m_stateManager));
 		m_stateManager.add(state);
 
 		state = new SystemGameState(Constants.STATE_DLG_ITEMS, m_stateManager);
-		state.setClient(new StateDlgItems(m_stateManager));
 		m_stateManager.add(state);
-
 	}
 
 	/*

@@ -8,9 +8,9 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.state.StateBasedGame;
 
-import ru.ver40.system.StateManager;
 import ru.ver40.system.UserGameState;
 import ru.ver40.system.util.AsciiDraw;
+import ru.ver40.util.Constants;
 
 public class StateDlgItems extends UserGameState {
 
@@ -27,12 +27,15 @@ public class StateDlgItems extends UserGameState {
 	/**
 	 * Конструктор.
 	 */
-	public StateDlgItems(StateManager manager) {
-		super(manager);
+	public StateDlgItems() {
+		super();
+		attachToSystemState(Constants.STATE_DLG_ITEMS);
 	}
 
 	@Override
 	public void onInit(GameContainer gc, StateBasedGame game) {
+		super.onInit(gc, game);
+
 		m_items = new LinkedList<Item>();
 		m_items.add(new Item("Small gun"));
 		m_items.add(new Item("Gun"));
@@ -61,6 +64,7 @@ public class StateDlgItems extends UserGameState {
 
 	@Override
 	public void onUpdate(GameContainer gc, StateBasedGame game, int delta) {
+		super.onUpdate(gc, game, delta);
 	}
 
 	@Override

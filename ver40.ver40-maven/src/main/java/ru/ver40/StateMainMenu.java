@@ -7,7 +7,6 @@ import org.newdawn.slick.Input;
 import org.newdawn.slick.state.StateBasedGame;
 import org.newdawn.slick.util.Log;
 
-import ru.ver40.system.StateManager;
 import ru.ver40.system.UserGameState;
 import ru.ver40.system.util.AsciiDraw;
 import ru.ver40.util.Constants;
@@ -17,12 +16,18 @@ import ru.ver40.util.Constants;
  * 
  */
 public class StateMainMenu extends UserGameState {
+	/**
+	 * Для прорисовки надписи "Loading..." перед выходом отсюда.
+	 * 0 - висим тут и рисуем заставку; 1 - рисуем "Loading..." и выходим
+	 */
+	private int exitCountdown = 1;
 
 	/**
 	 * Конструктор.
 	 */
-	public StateMainMenu(StateManager manager) {
-		super(manager);
+	public StateMainMenu() {
+		super();
+		attachToSystemState(Constants.STATE_MAINMENU);
 	}
 
 	@Override
@@ -39,13 +44,14 @@ public class StateMainMenu extends UserGameState {
 
 	@Override
 	public void onInit(GameContainer gc, StateBasedGame game) {
+		super.onInit(gc, game);
 		Log.debug("StateMainMenu.onInit()");
 	}
 
 	@Override
 	public void onKeyPressed(int key, char c) {
 		if (key == Input.KEY_SPACE || key == Input.KEY_ENTER) {
-			m_manager.enter(Constants.STATE_GAMEPLAY);
+			exitCountdown = 1; // Начать отсчет до выхода.
 		}
 	}
 
@@ -55,16 +61,28 @@ public class StateMainMenu extends UserGameState {
 
 	@Override
 	public void onUpdate(GameContainer gc, StateBasedGame game, int delta) {
+		super.onUpdate(gc, game, delta);
 	}
 
 	@Override
 	public void onRender(GameContainer gc, StateBasedGame game, Graphics g) {
-		// Крутая заставка.
-		AsciiDraw.getInstance().draw(
-				Constants.GAME_NAME,
-				Constants.ASCII_SCREEN_WIDTH / 2 - Constants.GAME_NAME.length()
-						/ 2, 12, Color.green);
-		AsciiDraw.getInstance().draw("press enter",
-				Constants.ASCII_SCREEN_WIDTH / 2 - 5, 22, Color.white);
+		if (exitCountdown == 0) {
+			// Крутая заставка.
+			AsciiDraw.getInstance()
+					.draw(Constants.GAME_NAME,
+							Constants.ASCII_SCREEN_WIDTH / 2
+									- Constants.GAME_NAME.length() / 2, 12,
+							Color.green);
+			AsciiDraw.getInstance().draw("press enter",
+					Constants.ASCII_SCREEN_WIDTH / 2 - 5, 22, Color.white);
+		} else {
+			// Надпись "Loading..."
+			if (exitCountdown > 1) {
+				StateGameplay gameplay = new StateGameplay();
+				gameplay.show();
+			}
+			AsciiDraw.getInstance().draw("LOADING...", 65, 37, Color.white);
+			exitCountdown++;
+		}
 	}
 }

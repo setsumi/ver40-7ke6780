@@ -19,7 +19,6 @@ import ru.ver40.map.gen.IMapGenarator;
 import ru.ver40.model.Player;
 import ru.ver40.service.MapService;
 import ru.ver40.service.TimeService;
-import ru.ver40.system.StateManager;
 import ru.ver40.system.UserGameState;
 import ru.ver40.system.util.DebugLog;
 import ru.ver40.util.Constants;
@@ -41,8 +40,9 @@ public class StateGameplay extends UserGameState {
 	/**
 	 * Конструктор.
 	 */
-	public StateGameplay(StateManager manager) {
-		super(manager);
+	public StateGameplay() {
+		super();
+		attachToSystemState(Constants.STATE_GAMEPLAY);
 	}
 
 	@Override
@@ -59,6 +59,7 @@ public class StateGameplay extends UserGameState {
 
 	@Override
 	public void onInit(GameContainer gc, StateBasedGame game) {
+		super.onInit(gc, game);
 		Log.debug("StateGameplay.onInit()");
 		
 		FloorMap map = new FloorMap("map/test");
@@ -101,6 +102,8 @@ public class StateGameplay extends UserGameState {
 
 	@Override
 	public void onUpdate(GameContainer gc, StateBasedGame game, int delta) {
+		super.onUpdate(gc, game, delta);
+
 		TimeService t = TimeService.getInstance();
 		while (t.getCurrentActor() != player) {
 			t.tick();
