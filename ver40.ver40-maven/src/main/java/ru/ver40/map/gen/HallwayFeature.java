@@ -43,5 +43,10 @@ public class HallwayFeature implements IFeature {
 			}
 		}
 		return data;
-	}		
+	}
+
+	@Override
+	public boolean isMapAware() {
+		return false;
+	}	
 }

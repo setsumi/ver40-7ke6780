@@ -35,5 +35,10 @@ public class RoomFeature implements IFeature {
 	@Override
 	public int getDefaultProbability() {
 		return 75;
+	}
+
+	@Override
+	public boolean isMapAware() {
+		return false;
 	}		
 }

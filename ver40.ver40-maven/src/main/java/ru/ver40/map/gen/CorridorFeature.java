@@ -37,4 +37,9 @@ public class CorridorFeature implements IFeature {
 	public int getDefaultProbability() {
 		return 25;
 	}
+
+	@Override
+	public boolean isMapAware() {
+		return false;
+	}
 }
