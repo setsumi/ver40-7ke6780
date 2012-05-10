@@ -24,9 +24,6 @@ import ru.ver40.util.Constants;
  */
 public class TheGame extends StateBasedGame {
 
-	/**
-	 * Менеджер игровых стейтов.
-	 */
 	private static StateManager m_stateManager = null;
 
 	/**
@@ -39,7 +36,7 @@ public class TheGame extends StateBasedGame {
 	/**
 	 * Конструктор
 	 */
-	public TheGame() {
+	public TheGame() {		
 		super(Constants.GAME_NAME);
 		m_stateManager = new StateManager(this);
 
