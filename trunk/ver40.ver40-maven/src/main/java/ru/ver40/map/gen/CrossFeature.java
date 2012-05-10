@@ -45,4 +45,8 @@ public class CrossFeature implements IFeature {
 		return data;
 	}
 
+	@Override
+	public boolean isMapAware() {
+		return false;
+	}
 }

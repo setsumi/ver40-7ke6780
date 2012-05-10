@@ -67,14 +67,16 @@ public class FeatureGenerator implements IMapGenarator {
 	private void doGenerate() {
 		// Сгенерировать начальную фичу
 		//
-		IFeature ftr = 	getRandomFeature();
-		System.out.println(place(ftr.create(), mapWidth/2, mapHeight/2));		
+		long l = System.nanoTime();
+		IFeature ftr = 	null;
+		do {
+			ftr = getRandomFeature();
+		} while (ftr.isMapAware());
+		place(ftr.create(), mapWidth/2, mapHeight/2);		
 		// Выбираем рандомную точку
 		//
 		o:for (int i = 0; i < 50000; ++i) {
 			Point rnd = getRandomPoint();
-			if (i % 100 == 0)
-				System.out.println(i/100);
 			// Для данной точки попыток вставки
 			//
 			for (int j = 0; j < 3; ++j) {
@@ -94,6 +96,8 @@ public class FeatureGenerator implements IMapGenarator {
 				}
 			}
 		}
+		long t2 = System.nanoTime() - l;
+		System.out.println("Generated in " + t2 / 1000000 + " ms");
 	}
 	
 	private void fillWall() {
@@ -367,10 +371,15 @@ public class FeatureGenerator implements IMapGenarator {
 	 */
 	public interface IFeature {
 		
+		boolean isMapAware();
+		
 		int getDefaultProbability();
 		
-		MapCell[][] create();		
-
+		MapCell[][] create();
+	}
+	
+	public interface IMapAwareFeature extends IFeature {
+		MapCell[][] create (FloorMap map);
 	}
 	
 	/**

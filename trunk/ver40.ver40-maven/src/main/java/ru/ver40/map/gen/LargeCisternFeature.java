@@ -63,5 +63,9 @@ public class LargeCisternFeature implements IFeature {
 		}			
 		return cells; 
 	}
-	
+
+	@Override
+	public boolean isMapAware() {
+		return false;
+	}	
 }
