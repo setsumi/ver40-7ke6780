@@ -7,7 +7,8 @@ import org.newdawn.slick.state.StateBasedGame;
 import ru.ver40.TheGame;
 
 /**
- * Базовый класс изолированного от системы игрового стейта.
+ * Базовый класс изолированного от системы игрового стейта. Обязательно
+ * выполнять attachToSystemState() и все суперы.
  */
 public abstract class UserGameState {
 	/**
@@ -16,7 +17,8 @@ public abstract class UserGameState {
 	 */
 	private int m_id = -1;
 	protected final StateManager m_manager; // Менеджер стейтов приложения.
-	private boolean m_isInitialised = false;
+	private boolean m_isInitialized = false; // Флаг для инициализации через
+												// onUpdate()
 
 	/**
 	 * Конструктор.
@@ -35,37 +37,35 @@ public abstract class UserGameState {
 	}
 
 	/**
-	 * Активировать свой системный стейт (перейти на него).
+	 * Активировать себя.
 	 */
 	public void show() {
-
 		m_manager.enter(m_id);
 	}
 
 	/**
-	 * Активировать свой системный стейт модально (повесить поверх предыдущих
-	 * стейтов).
+	 * Активировать себя модально (повесить поверх предыдущих стейтов).
 	 */
 	public void showModal() {
 		m_manager.enterModal(m_id);
 	}
 
 	/**
-	 * Выйти из своего системного модального стейта в предыдущий.
+	 * Выйти из себя в предыдущий стейт.
 	 */
 	public void exit() {
 		m_manager.exitModal();
 	}
 
 	/**
-	 * Событие входа в стейт.
+	 * Событие входа в стейт. Обязательно вызывать этот супер в наследниках.
 	 */
 	public void onEnter(GameContainer gc, StateBasedGame game) {
 		gc.getInput().clearKeyPressedRecord();
 	}
 
 	/**
-	 * Событие выхода из стейта.
+	 * Событие выхода из стейта. Обязательно вызывать этот супер в наследниках.
 	 */
 	public void onLeave(GameContainer gc, StateBasedGame game) {
 		gc.getInput().clearKeyPressedRecord();
@@ -75,7 +75,7 @@ public abstract class UserGameState {
 	 * Инициализация стейта. Обязательно вызывать этот супер в наследниках.
 	 */
 	public void onInit(GameContainer gc, StateBasedGame game) {
-		m_isInitialised = true;
+		m_isInitialized = true;
 	}
 
 	/**
@@ -83,8 +83,7 @@ public abstract class UserGameState {
 	 * наследниках.
 	 */
 	public void onUpdate(GameContainer gc, StateBasedGame game, int delta) {
-		if (!m_isInitialised) {
-			m_isInitialised = true;
+		if (!m_isInitialized) {
 			onInit(gc, game);
 		}
 	}
@@ -96,16 +95,12 @@ public abstract class UserGameState {
 			Graphics g);
 
 	/**
-	 * Прием нажатия клавиш. (пустая)
+	 * Прием нажатия клавиш.
 	 */
-	public void onKeyPressed(int key, char c) {
-		// Пустая.
-	}
+	public abstract void onKeyPressed(int key, char c);
 
 	/**
-	 * Прием отпускания клавиш. (пустая)
+	 * Прием отпускания клавиш.
 	 */
-	public void onKeyReleased(int key, char c) {
-		// Пустая.
-	}
+	public abstract void onKeyReleased(int key, char c);
 }
