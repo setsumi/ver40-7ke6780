@@ -9,7 +9,7 @@ import org.newdawn.slick.state.StateBasedGame;
  */
 public abstract class UserGameState {
 
-	protected final StateManager m_manager;// Менеджер стейтов приложения.
+	protected final StateManager m_manager; // Менеджер стейтов приложения.
 
 	/**
 	 * Конструктор.
@@ -21,13 +21,15 @@ public abstract class UserGameState {
 	/**
 	 * Вход в стейт.
 	 */
-	public void enter(GameContainer gc, StateBasedGame game) {
+	public void onEnter(GameContainer gc, StateBasedGame game) {
+		gc.getInput().clearKeyPressedRecord();
 	}
 
 	/**
 	 * Выход из стейта.
 	 */
-	public void leave(GameContainer container, StateBasedGame game) {
+	public void onLeave(GameContainer gc, StateBasedGame game) {
+		gc.getInput().clearKeyPressedRecord();
 	}
 
 	/**
@@ -47,4 +49,17 @@ public abstract class UserGameState {
 	public abstract void onRender(GameContainer gc, StateBasedGame game,
 			Graphics g);
 
+	/**
+	 * Прием нажатия клавиш. (пустая)
+	 */
+	public void onKeyPressed(int key, char c) {
+		// Пустая.
+	}
+
+	/**
+	 * Прием отпускания клавиш. (пустая)
+	 */
+	public void onKeyReleased(int key, char c) {
+		// Пустая.
+	}
 }

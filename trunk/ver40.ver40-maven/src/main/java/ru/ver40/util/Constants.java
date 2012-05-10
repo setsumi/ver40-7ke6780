@@ -104,7 +104,7 @@ public class Constants {
 	 * Цвет фона игрового лога
 	 */
 	public static final Color GAME_LOG_BACKCOLOR = new Color(0.0f, 0.0f, 0.0f,
-			0.6f);
+			0.5f);
 	/**
 	 * Максимальное количество записей внутриигровых вьюверов логов.
 	 */
@@ -114,9 +114,15 @@ public class Constants {
 	/**
 	 * Стейт главного меню.
 	 */
-	public static final int STATE_MAINMENU = 0;
+	public static final int STATE_MAINMENU = 10;
 	/**
 	 * Стейт игры.
 	 */
-	public static final int STATE_GAMEPLAY = 1;
+	public static final int STATE_GAMEPLAY = 20;
+	/**
+	 * Стейт диалога предметов.
+	 */
+	public static final int STATE_DLG_ITEMS = 30;
+
 }
+

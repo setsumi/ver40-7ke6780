@@ -26,13 +26,15 @@ public class StateMainMenu extends UserGameState {
 	}
 
 	@Override
-	public void enter(GameContainer gc, StateBasedGame game) {
-		Log.debug("StateMainMenu.enter()");
+	public void onEnter(GameContainer gc, StateBasedGame game) {
+		super.onEnter(gc, game);
+		Log.debug("StateMainMenu.onEnter()");
 	}
 
 	@Override
-	public void leave(GameContainer gc, StateBasedGame game) {
-		Log.debug("StateMainMenu.leave()");
+	public void onLeave(GameContainer gc, StateBasedGame game) {
+		super.onLeave(gc, game);
+		Log.debug("StateMainMenu.onLeave()");
 	}
 
 	@Override
@@ -41,14 +43,18 @@ public class StateMainMenu extends UserGameState {
 	}
 
 	@Override
-	public void onUpdate(GameContainer gc, StateBasedGame game, int delta) {
-		// Запускаем игру по пробелу или вводу.
-		Input input = gc.getInput();
-		if (input.isKeyPressed(Input.KEY_SPACE)
-				|| input.isKeyPressed(Input.KEY_ENTER)) {
-			input.clearKeyPressedRecord();
+	public void onKeyPressed(int key, char c) {
+		if (key == Input.KEY_SPACE || key == Input.KEY_ENTER) {
 			m_manager.enter(Constants.STATE_GAMEPLAY);
 		}
+	}
+
+	@Override
+	public void onKeyReleased(int key, char c) {
+	}
+
+	@Override
+	public void onUpdate(GameContainer gc, StateBasedGame game, int delta) {
 	}
 
 	@Override
@@ -57,9 +63,8 @@ public class StateMainMenu extends UserGameState {
 		AsciiDraw.getInstance().draw(
 				Constants.GAME_NAME,
 				Constants.ASCII_SCREEN_WIDTH / 2 - Constants.GAME_NAME.length()
-						/ 2, 10, Color.green);
-		AsciiDraw.getInstance().draw("press start",
-				Constants.ASCII_SCREEN_WIDTH / 2 - 5, 20, Color.white);
+						/ 2, 12, Color.green);
+		AsciiDraw.getInstance().draw("press enter",
+				Constants.ASCII_SCREEN_WIDTH / 2 - 5, 22, Color.white);
 	}
-
 }
