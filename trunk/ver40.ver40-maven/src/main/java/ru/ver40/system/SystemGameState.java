@@ -2,11 +2,9 @@ package ru.ver40.system;
 
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
-import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
-
 import ru.ver40.system.util.DebugLog;
 import ru.ver40.util.Constants;
 
@@ -75,7 +73,8 @@ public class SystemGameState extends BasicGameState {
 	public void init(GameContainer gc, StateBasedGame game)
 			throws SlickException {
 		// Инициализация клиента.
-		m_client.onInit(gc, game);
+		if (m_client != null)
+			m_client.onInit(gc, game);
 	}
 
 	@Override

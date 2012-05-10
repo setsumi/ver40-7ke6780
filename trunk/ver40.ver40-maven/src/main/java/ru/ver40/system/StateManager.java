@@ -26,6 +26,17 @@ public class StateManager {
 	}
 
 	/**
+	 * Вернуть системный стейт по его ID.
+	 */
+	public SystemGameState getSystemState(int id) {
+		SystemGameState state = m_states.get(id);
+		if (state == null) {
+			throw new RuntimeException("State with id=" + id + " not found.");
+		}
+		return state;
+	}
+
+	/**
 	 * Добавить стейт.
 	 */
 	public void add(SystemGameState state) {

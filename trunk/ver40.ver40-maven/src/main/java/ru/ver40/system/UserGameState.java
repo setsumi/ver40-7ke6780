@@ -4,44 +4,90 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.state.StateBasedGame;
 
+import ru.ver40.TheGame;
+
 /**
  * Базовый класс изолированного от системы игрового стейта.
  */
 public abstract class UserGameState {
-
+	/**
+	 * ID системного стейта-владельца. Обязательно присвоить в конструкторах
+	 * наследников вызовом attachToSystemState().
+	 */
+	private int m_id = -1;
 	protected final StateManager m_manager; // Менеджер стейтов приложения.
+	private boolean m_isInitialised = false;
 
 	/**
 	 * Конструктор.
 	 */
-	public UserGameState(StateManager manager) {
-		m_manager = manager;
+	public UserGameState() {
+		m_manager = TheGame.getStateManager();
 	}
 
 	/**
-	 * Вход в стейт.
+	 * Присоединиться к родному системному стейту. Обязательно выполнить в
+	 * конструкторах наследников.
+	 */
+	protected void attachToSystemState(int id) {
+		m_id = id;
+		m_manager.getSystemState(m_id).setClient(this);
+	}
+
+	/**
+	 * Активировать свой системный стейт (перейти на него).
+	 */
+	public void show() {
+
+		m_manager.enter(m_id);
+	}
+
+	/**
+	 * Активировать свой системный стейт модально (повесить поверх предыдущих
+	 * стейтов).
+	 */
+	public void showModal() {
+		m_manager.enterModal(m_id);
+	}
+
+	/**
+	 * Выйти из своего системного модального стейта в предыдущий.
+	 */
+	public void exit() {
+		m_manager.exitModal();
+	}
+
+	/**
+	 * Событие входа в стейт.
 	 */
 	public void onEnter(GameContainer gc, StateBasedGame game) {
 		gc.getInput().clearKeyPressedRecord();
 	}
 
 	/**
-	 * Выход из стейта.
+	 * Событие выхода из стейта.
 	 */
 	public void onLeave(GameContainer gc, StateBasedGame game) {
 		gc.getInput().clearKeyPressedRecord();
 	}
 
 	/**
-	 * Инициализация стейта.
+	 * Инициализация стейта. Обязательно вызывать этот супер в наследниках.
 	 */
-	public abstract void onInit(GameContainer gc, StateBasedGame game);
+	public void onInit(GameContainer gc, StateBasedGame game) {
+		m_isInitialised = true;
+	}
 
 	/**
-	 * Обновление стейта. Крутится в цикле.
+	 * Обновление стейта. Крутится в цикле. Обязательно вызывать этот супер в
+	 * наследниках.
 	 */
-	public abstract void onUpdate(GameContainer gc, StateBasedGame game,
-			int delta);
+	public void onUpdate(GameContainer gc, StateBasedGame game, int delta) {
+		if (!m_isInitialised) {
+			m_isInitialised = true;
+			onInit(gc, game);
+		}
+	}
 
 	/**
 	 * Рендер стейта. Крутится в цикле.
