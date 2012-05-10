@@ -20,6 +20,10 @@ public class StateDlgItems extends UserGameState {
 		public Item(String name) {
 			this.name = name;
 		}
+
+		public String getName() {
+			return name;
+		}
 	}
 
 	private LinkedList<Item> m_items;
@@ -49,6 +53,12 @@ public class StateDlgItems extends UserGameState {
 		m_items.add(new Item("Cannon fodder"));
 		m_items.add(new Item("Self destruct kit"));
 		m_items.add(new Item("Repair kit"));
+		
+		int maxW = 0;
+		for (Item i : m_items) {
+			// if(i.getName().length()>maxW)
+
+		}
 	}
 
 	@Override

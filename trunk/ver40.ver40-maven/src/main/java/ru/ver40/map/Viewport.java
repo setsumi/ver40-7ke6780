@@ -22,28 +22,84 @@ public class Viewport {
 	private Map<Integer, Color> m_colorCache; // кэш объектов Color для рендера
 	
 	private FloorMap m_map;
+	private int m_scrPosX, m_scrPosY; // положение на экране
 	private int m_width, m_height; // размер в символах
-	private int m_offsetX, m_offsetY; // расстояние от центра до края
-	private int m_posX, m_posY; // положение на экране
+
+	private int m_mapPosX, m_mapPosY; // положение вьюпорта на карте
+	private int m_topX, m_topY; // верхний левый угол вьюпорта на карте
 
 	/**
 	 * Конструктор
 	 */
-	public Viewport(FloorMap map, int width, int height, int posX, int posY) {
+	public Viewport(FloorMap map, int width, int height, int scrPosX,
+			int scrPosY) {
 		m_map = map;
 		m_width = width;
 		m_height = height;
-		m_offsetX = m_width / 2;
-		m_offsetY = m_height / 2;
-		m_posX = posX;
-		m_posY = posY;
+		m_scrPosX = scrPosX;
+		m_scrPosY = scrPosY;
 		m_colorCache = new HashMap<Integer, Color>();
+		moveTo(0, 0);
 	}
 
 	/**
-	 * Рендер вьюпорта
+	 * Переместить вьюпорт в указанную точку на карте.
 	 */
-	public void draw(int x, int y, Graphics gr, Player p) {
+	public void moveTo(int x, int y) {
+		m_mapPosX = m_map.normalizePos(x);
+		m_mapPosY = m_map.normalizePos(y);
+		m_topX = getViewX(m_mapPosX);
+		m_topY = getViewY(m_mapPosY);
+	}
+
+	/**
+	 * Сместить вьюпорт относительно его текущего положения.
+	 */
+	public void moveBy(int x, int y) {
+		moveTo(m_mapPosX + x, m_mapPosY + y);
+	}
+
+	/**
+	 * Нарисовать строку во вьюпорте по указанным координатам на карте.
+	 */
+	public void drawString(String str, int x, int y, Color fc) {
+		drawString(str, x, y, fc, null, null);
+	}
+
+	/**
+	 * Нарисовать строку во вьюпорте по указанным координатам на карте.
+	 */
+	public void drawString(String str, int x, int y, Color fc, Color bc,
+			Graphics g) {
+		if (!m_map.contains(x, y))
+			throw new IllegalArgumentException("Invalid map coordinates x=" + x
+					+ ", y=" + y);
+		// Не рисуем если не попадает во вьюпорт.
+		if (x < m_topX || x >= m_topX + m_width || y < m_topY
+				|| y >= m_topY + m_height)
+			return;
+
+		// Отрисовка.
+		if (bc == null) {
+			AsciiDraw.getInstance().draw(str, m_scrPosX + (x - m_topX),
+					m_scrPosY + (y - m_topY), fc);
+		} else {
+			AsciiDraw.getInstance().draw(str, m_scrPosX + (x - m_topX),
+					m_scrPosY + (y - m_topY), fc, bc, g);
+		}
+	}
+
+	/**
+	 * Рендер вьюпорта в его положении на карте. См. moveTo(), moveBy().
+	 */
+	public void draw(Graphics gr, Player p) {
+		draw(m_mapPosX, m_mapPosY, gr, p);
+	}
+
+	/**
+	 * Рендер вьюпорта в произвольной точке карты.
+	 */
+	private void draw(int x, int y, Graphics gr, Player p) {
 		int viewX = getViewX(x); // верхний угол вьюпорта
 		int viewY = getViewY(y);
 		// цикл отрисовки клеток
@@ -62,19 +118,19 @@ public class Viewport {
 
 					AsciiDraw.getInstance().draw(
 							str,
-							i + m_posX,
-							j + m_posY,
+							i + m_scrPosX,
+							j + m_scrPosY,
 							getColor(c.getResultFg()).darker(
 									trg.distance(src) * grad),
 							getColor(c.getResultBg()), gr);
 				} else if (c.getVisible() == VisibilityState.FOG_OF_WAR) {
-					AsciiDraw.getInstance().draw(str, i + m_posX, j + m_posY,
+					AsciiDraw.getInstance().draw(str, i + m_scrPosX, j + m_scrPosY,
 							getColor(c.getResultFg()).darker(0.6f),
 							getColor(c.getResultBg()).darker(0.6f), gr);
 				} else {
 					// Для дебага
 					//
-					AsciiDraw.getInstance().draw(str, i + m_posX, j + m_posY,
+					AsciiDraw.getInstance().draw(str, i + m_scrPosX, j + m_scrPosY,
 							getColor(c.getResultFg()).darker(0.6f),
 							getColor(c.getResultBg()).darker(0.6f), gr);
 				}
@@ -117,11 +173,9 @@ public class Viewport {
 	/**
 	 * Получить валидные координаты левого верхнего угла вьюпорта по желаемому
 	 * положению на карте его центра
-	 * 
-	 * @return
 	 */
 	public int getViewX(int x) {
-		int viewX = x - m_offsetX;
+		int viewX = x - (m_width / 2);
 		if (viewX < 0)
 			viewX = 0;
 		else if (viewX + m_width > Constants.MAP_MAX_SIZE)
@@ -132,11 +186,9 @@ public class Viewport {
 	/**
 	 * Получить валидные координаты левого верхнего угла вьюпорта по желаемому
 	 * положению на карте его центра
-	 * 
-	 * @return
 	 */
 	public int getViewY(int y) {
-		int viewY = y - m_offsetY;
+		int viewY = y - (m_height / 2);
 		if (viewY < 0)
 			viewY = 0;
 		else if (viewY + m_height > Constants.MAP_MAX_SIZE)
