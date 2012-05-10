@@ -54,7 +54,8 @@ public class Viewport {
 				String str = c.getResultString();
 				if (c.getVisible() == VisibilityState.VISIBLE) {
 					// затенение освещения
-					// TODO радиус обзора должен быть в кричере (Player)?
+					// TODO: радиус обзора должен быть в кричере (Player)?
+					// 
 					float grad = 0.6f / 15;
 					Vector2f trg = new Vector2f(viewX, vy);
 					Vector2f src = new Vector2f(p.getX(), p.getY());

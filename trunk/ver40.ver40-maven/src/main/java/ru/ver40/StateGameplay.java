@@ -20,6 +20,7 @@ import ru.ver40.model.Player;
 import ru.ver40.service.MapService;
 import ru.ver40.service.TimeService;
 import ru.ver40.system.UserGameState;
+import ru.ver40.system.util.AsciiDraw;
 import ru.ver40.system.util.DebugLog;
 import ru.ver40.util.Constants;
 import ru.ver40.util.GameLog;
@@ -36,6 +37,9 @@ public class StateGameplay extends UserGameState {
 	private IFovAlgorithm fov;
 
 	boolean freeLook = false;
+	boolean targetting = false;
+	int targetRadius, tX, tY;
+	private Input input;
 
 	/**
 	 * Конструктор.
@@ -85,8 +89,7 @@ public class StateGameplay extends UserGameState {
 			}
 		}
 
-		// System.out.println(mm + " monsters on the map");
-		Input input = gc.getInput();
+		input = gc.getInput();
 		input.addKeyListener((KeyListener) player);
 		map.setPlayer(player);
 		fov = new PrecisePermissive();
@@ -113,10 +116,10 @@ public class StateGameplay extends UserGameState {
 		map.setFogOfWar();
 		fov.visitFieldOfView(map, player.getX(), player.getY(), 15);
 
-		if (!freeLook) {
+		if (!freeLook && !targetting) {
 			viewPos.x = player.getX();
 			viewPos.y = player.getY();
-		}
+		}		
 	}
 
 	@Override
@@ -145,16 +148,51 @@ public class StateGameplay extends UserGameState {
 				viewPos.translate(1, 1);
 			}
 		}
+		
+		if (targetting) {
+			if (key == Input.KEY_NUMPAD6) {
+				tX++;
+			} else if (key == Input.KEY_NUMPAD4) {
+				tX--;
+			} else if (key == Input.KEY_NUMPAD2) {
+				tY++;
+			} else if (key == Input.KEY_NUMPAD8) {
+				tY--;
+			} else if (key == Input.KEY_NUMPAD7) {
+				tX--;
+				tY--;
+			} else if (key == Input.KEY_NUMPAD9) {
+				tX++;
+				tY--;
+			} else if (key == Input.KEY_NUMPAD1) {
+				tX--;
+				tY++;
+			} else if (key == Input.KEY_NUMPAD3) {
+				tX++;
+				tY++;
+			} else if (key == Input.KEY_NUMPAD5 || key == Input.KEY_ENTER) {
+				targetting = false;
+				input.addKeyListener(player);
+			}
+		
+		}
 		// Кривой детект нового хода.
-		if (key == Input.KEY_NUMPAD6 || key == Input.KEY_NUMPAD4
+/*		if (key == Input.KEY_NUMPAD6 || key == Input.KEY_NUMPAD4
 				|| key == Input.KEY_NUMPAD2 || key == Input.KEY_NUMPAD8
 				|| key == Input.KEY_NUMPAD7 || key == Input.KEY_NUMPAD9
 				|| key == Input.KEY_NUMPAD1 || key == Input.KEY_NUMPAD3) {
 			OnNewTurn();
-		}
+		}*/
 		// Вызов окна с предметами.
 		if (key == Input.KEY_COMMA) {
 
+		}
+		
+		if (key == Input.KEY_K) {
+			tX = player.getX();
+			tY = player.getY();
+			targetting = true;	
+			input.removeKeyListener(player);
 		}
 	}
 
@@ -164,12 +202,22 @@ public class StateGameplay extends UserGameState {
 
 	@Override
 	public void onRender(GameContainer gc, StateBasedGame game, Graphics g) {
+		// Прицеливанивае
+		//
+		if (targetting) {
+			System.out.println(new Point(viewport.getWidth() / 2 + (player.getX() - tX), viewport.getHeight() / 2 + (player.getY() - tY)));
+			AsciiDraw.getInstance().draw("X", viewport.getWidth() / 2 + (player.getX() + tX), 
+					viewport.getHeight() / 2 + (player.getY() + tY), Color.yellow);
+		}
+		
 		viewport.draw(viewPos.x, viewPos.y, g, player);
 		GameLog.getInstance().draw(g);
 
 		// Всякий хлам.
 		g.setColor(Color.red);
 		g.drawString("View pos: " + viewPos.x + ", " + viewPos.y, 100, 0);
+		
+		
 	}
 
 	/**

@@ -3,9 +3,11 @@ package ru.ver40.model;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.KeyListener;
 
+import ru.ver40.TheGame;
 import ru.ver40.map.FloorMap;
 import ru.ver40.service.MapService;
 import ru.ver40.service.TimeService;
+import ru.ver40.system.StateManager;
 import ru.ver40.util.GameLog;
 import ru.ver40.util.Rng;
 
@@ -108,6 +110,10 @@ public class Player extends Actor implements KeyListener {
 		if (provokeTimedAction(key)) {
 			this.keyCode = key;
 			tService.tick();			
+		} else {
+			if (key == Input.KEY_K) {
+				
+			}
 		}
 	}
 
