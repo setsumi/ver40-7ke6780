@@ -65,7 +65,7 @@ public class StateGameplay extends UserGameState {
 	public void onInit(GameContainer gc, StateBasedGame game) {
 		super.onInit(gc, game);
 		Log.debug("StateGameplay.onInit()");
-		
+
 		FloorMap map = new FloorMap("map/test");
 		MapService.getInstance().setcMap(map);
 		viewport = new Viewport(map, 60, 30, 1, 1);
@@ -96,6 +96,7 @@ public class StateGameplay extends UserGameState {
 
 		// Приветственное сообщение.
 		GameLog gl = GameLog.getInstance();
+		gl.log("[K] - enter targeting mode");
 		gl.log("[NUMPAD] - walk/look around");
 		gl.log("[F] - toggle free look mode");
 		gl.log("[`] - system log");
@@ -119,7 +120,8 @@ public class StateGameplay extends UserGameState {
 		if (!freeLook && !targetting) {
 			viewPos.x = player.getX();
 			viewPos.y = player.getY();
-		}		
+		}
+		viewport.moveTo(viewPos.x, viewPos.y);
 	}
 
 	@Override
@@ -148,7 +150,7 @@ public class StateGameplay extends UserGameState {
 				viewPos.translate(1, 1);
 			}
 		}
-		
+
 		if (targetting) {
 			if (key == Input.KEY_NUMPAD6) {
 				tX++;
@@ -174,24 +176,25 @@ public class StateGameplay extends UserGameState {
 				targetting = false;
 				input.addKeyListener(player);
 			}
-		
+
 		}
 		// Кривой детект нового хода.
-/*		if (key == Input.KEY_NUMPAD6 || key == Input.KEY_NUMPAD4
+		if (key == Input.KEY_NUMPAD6 || key == Input.KEY_NUMPAD4
 				|| key == Input.KEY_NUMPAD2 || key == Input.KEY_NUMPAD8
 				|| key == Input.KEY_NUMPAD7 || key == Input.KEY_NUMPAD9
 				|| key == Input.KEY_NUMPAD1 || key == Input.KEY_NUMPAD3) {
 			OnNewTurn();
-		}*/
+		}
 		// Вызов окна с предметами.
 		if (key == Input.KEY_COMMA) {
-
+			StateDlgItems items = new StateDlgItems();
+			items.show();
 		}
-		
+
 		if (key == Input.KEY_K) {
 			tX = player.getX();
 			tY = player.getY();
-			targetting = true;	
+			targetting = true;
 			input.removeKeyListener(player);
 		}
 	}
@@ -202,22 +205,21 @@ public class StateGameplay extends UserGameState {
 
 	@Override
 	public void onRender(GameContainer gc, StateBasedGame game, Graphics g) {
+		viewport.draw(g, player);
+
 		// Прицеливанивае
 		//
 		if (targetting) {
-			System.out.println(new Point(viewport.getWidth() / 2 + (player.getX() - tX), viewport.getHeight() / 2 + (player.getY() - tY)));
-			AsciiDraw.getInstance().draw("X", viewport.getWidth() / 2 + (player.getX() + tX), 
-					viewport.getHeight() / 2 + (player.getY() + tY), Color.yellow);
-		}
-		
-		viewport.draw(viewPos.x, viewPos.y, g, player);
-		GameLog.getInstance().draw(g);
+			g.setColor(Color.yellow);
+			g.drawString("Target: " + tX + ", " + tY, 100, 15);
 
-		// Всякий хлам.
+			viewport.drawString("X", tX, tY, Color.yellow, Color.black, g);
+		}
+
+		GameLog.getInstance().draw(g);
+		// Отладочные сообщения.
 		g.setColor(Color.red);
-		g.drawString("View pos: " + viewPos.x + ", " + viewPos.y, 100, 0);
-		
-		
+		g.drawString("View: " + viewPos.x + ", " + viewPos.y, 100, 0);
 	}
 
 	/**
