@@ -108,8 +108,8 @@ public class GameLog {
 		if (nc > height) {
 			posY -= nc - height;
 			height += nc - height;
-			if (posY < 0)
-				posY = 0;
+			if (posY < 1)
+				posY = 1;
 		}
 		for (Entry line : m_lines) {
 			// обрезаем длинные строки и добавляем счетчик наложений если

@@ -17,7 +17,6 @@ import ru.ver40.system.util.MyLogSystem;
 import ru.ver40.system.util.ResourceManager;
 import ru.ver40.system.util.UnicodeDraw;
 import ru.ver40.util.Constants;
-import ru.ver40.util.GameLog;
 
 /**
  * Класс приложения игры.
@@ -43,12 +42,8 @@ public class TheGame extends StateBasedGame {
 		state.setClient(new StateGameplay(m_stateManager));
 		m_stateManager.add(state);
 
-		state = new SystemGameState(2, m_stateManager);
-		state.setClient(new StateModal1(m_stateManager));
-		m_stateManager.add(state);
-
-		state = new SystemGameState(3, m_stateManager);
-		state.setClient(new StateModal2(m_stateManager));
+		state = new SystemGameState(Constants.STATE_DLG_ITEMS, m_stateManager);
+		state.setClient(new StateDlgItems(m_stateManager));
 		m_stateManager.add(state);
 
 	}

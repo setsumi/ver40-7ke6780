@@ -19,7 +19,10 @@ public class SystemGameState extends BasicGameState {
 	int m_stateID = -1;
 	
 	UserGameState m_client = null; // Пользовательский стейт.
-	StateManager m_manager = null; // Менеджер стейтов.
+	StateManager m_manager = null; // Менеджер всех стейтов.
+
+	// Клавиши зарезервированные за системой.
+	private static final int[] m_systemKeys = { Constants.DEGUG_LOG_SHOWKEY };
 
 	/**
 	 * Конструктор.
@@ -46,12 +49,17 @@ public class SystemGameState extends BasicGameState {
 	}
 
 	@Override
+	public int getID() {
+		return m_stateID;
+	}
+
+	@Override
 	public void enter(GameContainer gc, StateBasedGame game)
 			throws SlickException {
 		super.enter(gc, game);
 
 		// Нотификация клиенту
-		m_client.enter(gc, game);
+		m_client.onEnter(gc, game);
 	}
 
 	@Override
@@ -60,7 +68,7 @@ public class SystemGameState extends BasicGameState {
 		super.leave(gc, game);
 
 		// Нотификация клиенту
-		m_client.leave(gc, game);
+		m_client.onLeave(gc, game);
 	}
 
 	@Override
@@ -84,25 +92,41 @@ public class SystemGameState extends BasicGameState {
 	@Override
 	public void update(GameContainer gc, StateBasedGame game, int delta)
 			throws SlickException {
-		// Сначала обработка системы.
-		Input input = gc.getInput();
-		if (input.isKeyPressed(Constants.DEGUG_LOG_SHOWKEY)) {
-			// Отладочный лог.
+		// Обновление клиенту.
+		m_client.onUpdate(gc, game, delta);
+	}
+
+	@Override
+	public void keyPressed(int key, char c) {
+		boolean isSyskey = false;
+		for (int x : m_systemKeys) {
+			if (x == key) {
+				isSyskey = true;
+				break;
+			}
+		}
+		if (key == Constants.DEGUG_LOG_SHOWKEY) {
 			if (DebugLog.showLog)
 				DebugLog.getInstance().resetNew();
 			DebugLog.showLog = !DebugLog.showLog;
-
-			// Сброс нажатых клавиш.
-			input.clearKeyPressedRecord();
-		} else {
-			// Обработка клиента.
-			m_client.onUpdate(gc, game, delta);
+		}
+		if (!isSyskey) {
+			m_client.onKeyPressed(key, c);
 		}
 	}
 
 	@Override
-	public int getID() {
-		return m_stateID;
+	public void keyReleased(int key, char c) {
+		boolean isSyskey = false;
+		for (int x : m_systemKeys) {
+			if (x == key) {
+				isSyskey = true;
+				break;
+			}
+		}
+		if (!isSyskey) {
+			m_client.onKeyReleased(key, c);
+		}
 	}
 
 }
