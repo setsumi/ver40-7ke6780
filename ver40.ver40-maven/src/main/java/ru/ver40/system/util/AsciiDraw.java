@@ -36,8 +36,6 @@ public class AsciiDraw {
 
 	/**
 	 * Вернуть единственный экземпляр класса.
-	 * 
-	 * @return
 	 */
 	public static AsciiDraw getInstance() {
 		if (m_instance == null) {
@@ -57,8 +55,6 @@ public class AsciiDraw {
 
 	/**
 	 * Ширина символа в пикселах
-	 * 
-	 * @return
 	 */
 	public int getWidth() {
 		return m_width;
@@ -66,11 +62,27 @@ public class AsciiDraw {
 
 	/**
 	 * Высота символа в пикселах
-	 * 
-	 * @return
 	 */
 	public int getHeight() {
 		return m_height;
+	}
+
+	/**
+	 * Залитый цветом прямоугольник.
+	 */
+	public void drawRect(int x, int y, int w, int h, Color c) {
+		int dx, dy;
+		m_font.startUse();
+		for (int i = x; i < x + w; i++) {
+			for (int j = y; j < y + h; j++) {
+				dx = i * m_width;
+				dy = j * m_height;
+				// залитый квадратик фона идет самым первым в битмапе фонта
+				m_font.drawEmbedded(dx, dy, dx + m_width, dy + m_height, 0, 0,
+						m_width, m_height, c);
+			}
+		}
+		m_font.endUse();
 	}
 
 	/**
@@ -159,8 +171,6 @@ public class AsciiDraw {
 
 	/**
 	 * Перевод кода символа в координаты на матрице SpriteSheet-а шрифта
-	 * 
-	 * @return
 	 */
 	private Point codeConvert(int code) {
 		if ((code >= 1040) && (code <= 1087)) { // А-Яа-п

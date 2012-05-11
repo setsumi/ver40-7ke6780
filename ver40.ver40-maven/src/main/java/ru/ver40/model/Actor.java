@@ -4,7 +4,7 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
 import ru.ver40.model.time.ITimedEntity;
-import ru.ver40.util.GameLog;
+import ru.ver40.system.util.GameLog;
 
 /**
  * Персонаж игрового мира

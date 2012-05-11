@@ -1,4 +1,4 @@
-package ru.ver40.util;
+package ru.ver40.system.util;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -10,7 +10,7 @@ import org.apache.commons.lang.StringUtils;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 
-import ru.ver40.system.util.AsciiDraw;
+import ru.ver40.util.Constants;
 
 /**
  * Псевдо-окошко с игровым логом.
