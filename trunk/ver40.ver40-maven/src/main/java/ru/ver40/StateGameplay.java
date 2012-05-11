@@ -22,8 +22,8 @@ import ru.ver40.service.TimeService;
 import ru.ver40.system.UserGameState;
 import ru.ver40.system.util.AsciiDraw;
 import ru.ver40.system.util.DebugLog;
+import ru.ver40.system.util.GameLog;
 import ru.ver40.util.Constants;
-import ru.ver40.util.GameLog;
 
 /**
  * Главный стейт игры.
@@ -97,8 +97,9 @@ public class StateGameplay extends UserGameState {
 		// Приветственное сообщение.
 		GameLog gl = GameLog.getInstance();
 		gl.log("[K] - enter targeting mode");
+		gl.log("[,] - pick up items");
 		gl.log("[NUMPAD] - walk/look around");
-		gl.log("[F] - toggle free look mode");
+		gl.log("[/] - toggle look mode");
 		gl.log("[`] - system log");
 		gl.log(GameLog.Type.IMPORTANT, "Welcome to base reality.");
 		gl.log(GameLog.Type.IMPORTANT, "Substantiation sequence complete.");
@@ -187,8 +188,8 @@ public class StateGameplay extends UserGameState {
 		}
 		// Вызов окна с предметами.
 		if (key == Input.KEY_COMMA) {
-			StateDlgItems items = new StateDlgItems();
-			items.show();
+			StateDlgItems items = new StateDlgItems("Items on the floor:");
+			items.showModal();
 		}
 
 		if (key == Input.KEY_K) {

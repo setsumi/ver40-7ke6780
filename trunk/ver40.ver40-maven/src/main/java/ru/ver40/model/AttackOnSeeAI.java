@@ -8,7 +8,7 @@ import rlforj.math.Point2I;
 import rlforj.pathfinding.AStar;
 import ru.ver40.map.FloorMap;
 import ru.ver40.service.MapService;
-import ru.ver40.util.GameLog;
+import ru.ver40.system.util.GameLog;
 import ru.ver40.util.Rng;
 
 /**

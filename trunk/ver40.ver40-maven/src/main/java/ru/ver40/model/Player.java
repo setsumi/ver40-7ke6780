@@ -8,7 +8,7 @@ import ru.ver40.map.FloorMap;
 import ru.ver40.service.MapService;
 import ru.ver40.service.TimeService;
 import ru.ver40.system.StateManager;
-import ru.ver40.util.GameLog;
+import ru.ver40.system.util.GameLog;
 import ru.ver40.util.Rng;
 
 /**
