@@ -6,7 +6,6 @@ import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
-import org.newdawn.slick.KeyListener;
 import org.newdawn.slick.state.StateBasedGame;
 import org.newdawn.slick.util.Log;
 
@@ -20,7 +19,6 @@ import ru.ver40.model.Player;
 import ru.ver40.service.MapService;
 import ru.ver40.service.TimeService;
 import ru.ver40.system.UserGameState;
-import ru.ver40.system.util.AsciiDraw;
 import ru.ver40.system.util.DebugLog;
 import ru.ver40.system.util.GameLog;
 import ru.ver40.util.Constants;
@@ -39,7 +37,6 @@ public class StateGameplay extends UserGameState {
 	boolean freeLook = false;
 	boolean targetting = false;
 	int targetRadius, tX, tY;
-	private Input input;
 
 	/**
 	 * Конструктор.
@@ -89,8 +86,6 @@ public class StateGameplay extends UserGameState {
 			}
 		}
 
-		input = gc.getInput();
-		input.addKeyListener((KeyListener) player);
 		map.setPlayer(player);
 		fov = new PrecisePermissive();
 
@@ -175,16 +170,18 @@ public class StateGameplay extends UserGameState {
 				tY++;
 			} else if (key == Input.KEY_NUMPAD5 || key == Input.KEY_ENTER) {
 				targetting = false;
-				input.addKeyListener(player);
 			}
 
 		}
-		// Кривой детект нового хода.
-		if (key == Input.KEY_NUMPAD6 || key == Input.KEY_NUMPAD4
-				|| key == Input.KEY_NUMPAD2 || key == Input.KEY_NUMPAD8
-				|| key == Input.KEY_NUMPAD7 || key == Input.KEY_NUMPAD9
-				|| key == Input.KEY_NUMPAD1 || key == Input.KEY_NUMPAD3) {
-			OnNewTurn();
+		if (!targetting && !freeLook) {
+			// Кривой детект нового хода.
+			if (key == Input.KEY_NUMPAD6 || key == Input.KEY_NUMPAD4
+					|| key == Input.KEY_NUMPAD2 || key == Input.KEY_NUMPAD8
+					|| key == Input.KEY_NUMPAD7 || key == Input.KEY_NUMPAD9
+					|| key == Input.KEY_NUMPAD1 || key == Input.KEY_NUMPAD3) {
+				player.setKeyCode(key);			
+				newTurn();
+			}
 		}
 		// Вызов окна с предметами.
 		if (key == Input.KEY_COMMA) {
@@ -196,7 +193,6 @@ public class StateGameplay extends UserGameState {
 			tX = player.getX();
 			tY = player.getY();
 			targetting = true;
-			input.removeKeyListener(player);
 		}
 	}
 
@@ -227,8 +223,9 @@ public class StateGameplay extends UserGameState {
 	 * Надо вызывать из логики игры перед началом нового хода, чтобы обновлять
 	 * состояние логов.
 	 */
-	public void OnNewTurn() {
+	public void newTurn() {
 		DebugLog.getInstance().resetNew();
 		GameLog.getInstance().resetNew();
+		TimeService.getInstance().tick();
 	}
 }

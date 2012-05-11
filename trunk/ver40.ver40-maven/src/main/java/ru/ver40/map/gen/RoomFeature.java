@@ -2,10 +2,12 @@ package ru.ver40.map.gen;
 
 import ru.ver40.map.gen.FeatureGenerator.IFeature;
 import ru.ver40.model.MapCell;
+import ru.ver40.model.Monster;
+import ru.ver40.service.TimeService;
 import ru.ver40.util.Rng;
 
 public class RoomFeature implements IFeature {
-	
+
 	private MapCell[][] data;
 	private int width, height;
 
@@ -29,7 +31,22 @@ public class RoomFeature implements IFeature {
 			data[0][width - 1] = MapCell.createWall();
 			data[height - 1][width - 1] = MapCell.createWall();
 		}
-		return data;
+		
+		// Генерация мобов
+		//
+		if (Rng.percent(40)) {
+			// Рой био-мух
+			//
+			int num = Rng.d(1, 6, 1);
+			for (int n = 0; n < num; ++n) {
+				Monster m = Monster.createWatcherFly();
+				TimeService.getInstance().register(m);
+				data[height/2][width/2].addPerson(m);
+			}
+			
+		}
+		
+		return data;	
 	}
 
 	@Override
@@ -40,5 +57,5 @@ public class RoomFeature implements IFeature {
 	@Override
 	public boolean isMapAware() {
 		return false;
-	}		
+	}
 }
