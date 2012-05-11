@@ -178,7 +178,7 @@ public class FloorMap implements ILosBoard {
 					return newCell;
 				}
 			} else {
-				if (newCell.getBuilding().isActive()) {
+				if (newCell.getBuilding() != null && newCell.getBuilding().isActive()) {
 					newCell.getBuilding().use();
 					return null;
 				}

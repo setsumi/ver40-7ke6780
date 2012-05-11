@@ -10,6 +10,7 @@ import ru.ver40.service.TimeService;
 import ru.ver40.system.StateManager;
 import ru.ver40.system.util.GameLog;
 import ru.ver40.util.Rng;
+import ru.ver40.util.RoleSystem;
 
 /**
  * Класс для описания той самой маленькой '@' 
@@ -17,7 +18,7 @@ import ru.ver40.util.Rng;
  * @author anon
  *
  */
-public class Player extends Actor implements KeyListener {
+public class Player extends Actor {
 	
 	private transient TimeService tService;
 	
@@ -34,12 +35,23 @@ public class Player extends Actor implements KeyListener {
 	private String name;
 	private int keyCode;
 	
+	public int getKeyCode() {
+		return keyCode;
+	}
+
+	public void setKeyCode(int keyCode) {
+		this.keyCode = keyCode;
+	}
+
 	public Player(String name) {
 		this.name = name;
 		this.setPassable(true);
 		tService = TimeService.getInstance();
 		mService = MapService.getInstance();
 		getSymbol().setFgColor(0xB5044B);
+		setBlast(10);
+		setResist(10);
+		setStructure(10);
 	}
 
 	public String getName() {
@@ -78,45 +90,12 @@ public class Player extends Actor implements KeyListener {
 	private int move(FloorMap map, int x, int y) {
 		MapCell cell = map.translateActor(this, x , y);
 		if (cell != null && !cell.getPersons().isEmpty()) {
-			Actor a = cell.getPersons().get(0);
-			int dmg = Rng.d(8);
-			a.setStructure(a.getStructure() - dmg);
-			GameLog.getInstance().log(
-					"Player hit monster for " + dmg + " damage.");
-			GameLog.getInstance().log("Monster has " + a.getStructure() + " hp");
+			RoleSystem.blast(this, cell.getPersons().get(0));		
 		}
 		return 10;				
 	}
 
-	@Override
-	public void setInput(Input input) {
-	}
-
-	@Override
-	public boolean isAcceptingInput() {
-		return tService.getCurrentActor() == this;
-	}
-
-	@Override
-	public void inputEnded() {	
-	}
-
-	@Override
-	public void inputStarted() {
-	}
-
-	@Override
-	public void keyPressed(int key, char c) {
-		if (provokeTimedAction(key)) {
-			this.keyCode = key;
-			tService.tick();			
-		} else {
-			if (key == Input.KEY_K) {
-				
-			}
-		}
-	}
-
+	
 	private boolean provokeTimedAction(int key) {
 		for (int x : codes) {
 			if (x == key) {
@@ -124,9 +103,10 @@ public class Player extends Actor implements KeyListener {
 			}
 		}
 		return false;
-	}
-
-	@Override
-	public void keyReleased(int key, char c) {
 	}	
+	
+	@Override
+	public String toString() {
+		return "Player";
+	}
 }

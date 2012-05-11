@@ -10,6 +10,7 @@ import java.util.Map;
 import org.apache.commons.lang.math.IntRange;
 
 import ru.ver40.map.FloorMap;
+import ru.ver40.model.Actor;
 import ru.ver40.model.MapCell;
 import ru.ver40.util.Rng;
 
@@ -180,6 +181,10 @@ public class FeatureGenerator implements IMapGenarator {
 			for (x = start.x; x <= end.x; ++x) {
 				if (obj[y - start.y][x - start.x] != null) {
 					map.setCell(obj[y - start.y][x - start.x], x, y);
+					for (Actor a : obj[y - start.y][x - start.x].getPersons()) {
+						a.setX(x);
+						a.setY(y);
+					}
 				}
 			}
 		}		

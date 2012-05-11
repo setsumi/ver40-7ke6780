@@ -10,6 +10,7 @@ import ru.ver40.map.FloorMap;
 import ru.ver40.service.MapService;
 import ru.ver40.system.util.GameLog;
 import ru.ver40.util.Rng;
+import ru.ver40.util.RoleSystem;
 
 /**
  * Простое AI.
@@ -62,12 +63,7 @@ public class AttackOnSeeAI implements AIProvider {
 				if (cell.getPersons().contains(player)) {
 					// В игрока, атакуем!
 					//
-					int dmg = Rng.d(6);
-					player.setStructure(player.getStructure() - dmg);
-					GameLog.getInstance().log(
-							"Monster hit player for " + dmg + " damage.");
-					GameLog.getInstance().log(
-							"Player has " + player.getStructure() + " hp now.");
+					RoleSystem.blast(owner, player);
 				}
 			}
 			return 10;
