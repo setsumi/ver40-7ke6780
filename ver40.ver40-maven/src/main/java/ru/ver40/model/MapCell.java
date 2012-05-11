@@ -55,6 +55,7 @@ public class MapCell implements Serializable {
 	public MapCell() {
 		this.floor = new Floor();
 		persons = new LinkedList<Actor>();
+		visible = VisibilityState.INVISIBLE;
 	}
 	
 	public Floor getFloor() {

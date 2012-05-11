@@ -21,6 +21,7 @@ public class WndTooltip extends MockWindow {
 		super(null, 0, 0, 0, 0, fc, bc, "", "", false);
 		//
 		addChild(CTRL_TEXTLABEL, new CtrlLabel(this, INDENT_X, INDENT_Y, fc));
+		setText(" ");
 	}
 
 	public void setText(String text) {

@@ -15,10 +15,13 @@ import ru.ver40.map.FloorMap;
 import ru.ver40.map.Viewport;
 import ru.ver40.map.gen.FeatureGenerator;
 import ru.ver40.map.gen.IMapGenarator;
+import ru.ver40.model.MapCell;
 import ru.ver40.model.Player;
+import ru.ver40.model.VisibilityState;
 import ru.ver40.service.MapService;
 import ru.ver40.service.TimeService;
 import ru.ver40.system.UserGameState;
+import ru.ver40.system.ui.WndTooltip;
 import ru.ver40.system.util.DebugLog;
 import ru.ver40.system.util.GameLog;
 import ru.ver40.util.Constants;
@@ -37,6 +40,7 @@ public class StateGameplay extends UserGameState {
 	boolean freeLook = false;
 	boolean targetting = false;
 	int targetRadius, tX, tY;
+	WndTooltip tooltip;
 
 	/**
 	 * Конструктор.
@@ -89,6 +93,7 @@ public class StateGameplay extends UserGameState {
 		map.setPlayer(player);
 		fov = new PrecisePermissive();
 
+		tooltip = new WndTooltip(Color.white, new Color(0.0f, 0.0f, 1.0f, 0.5f));
 		// Приветственное сообщение.
 		GameLog gl = GameLog.getInstance();
 		gl.log("[K] - enter targeting mode");
@@ -122,10 +127,10 @@ public class StateGameplay extends UserGameState {
 
 	@Override
 	public void onKeyPressed(int key, char c) {
-		if (key == Input.KEY_F) {
+		if (c == '/') {
 			freeLook = !freeLook;
 			GameLog.getInstance().log(
-					freeLook ? "Free look ON" : "Free look OFF");
+					freeLook ? "Look mode ON" : "Look mode OFF");
 		}
 		if (freeLook) {
 			if (key == Input.KEY_NUMPAD6) {
@@ -145,6 +150,16 @@ public class StateGameplay extends UserGameState {
 			} else if (key == Input.KEY_NUMPAD3) {
 				viewPos.translate(1, 1);
 			}
+			// Ограничение координат пределами карты.
+			FloorMap map = MapService.getInstance().getMap();
+			viewPos.x = map.normalizePos(viewPos.x);
+			viewPos.y = map.normalizePos(viewPos.y);
+			// Определение информации о клетке под курсором.
+			String info;
+			MapCell cell = map.getCell(viewPos.x, viewPos.y);
+			info = cell.getVisible() == VisibilityState.INVISIBLE ? "???"
+					: cell.getResultString();
+			tooltip.setText(info);
 		}
 
 		if (targetting) {
@@ -211,6 +226,12 @@ public class StateGameplay extends UserGameState {
 			g.drawString("Target: " + tX + ", " + tY, 100, 15);
 
 			viewport.drawString("X", tX, tY, Color.yellow, Color.black, g);
+		}
+		// Рассматривать окрестности.
+		//
+		if (freeLook) {
+			viewport.drawString("\0", viewPos.x, viewPos.y, Color.white);
+			tooltip.draw(g);
 		}
 
 		GameLog.getInstance().draw(g);
