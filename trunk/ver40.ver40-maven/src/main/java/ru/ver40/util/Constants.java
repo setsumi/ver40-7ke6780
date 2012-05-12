@@ -123,6 +123,10 @@ public class Constants {
 	 * Стейт диалога предметов.
 	 */
 	public static final int STATE_DLG_ITEMS = 30;
+	/**
+	 * Стейт свободного просмотря карты (без привязки к игроку).
+	 */
+	public static final int STATE_FREELOOK = 40;
 
 }
 

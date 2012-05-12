@@ -88,7 +88,7 @@ public class StateDlgItems extends UserGameState {
 	@Override
 	public void onKeyPressed(int key, char c) {
 		if (key == Input.KEY_ESCAPE || key == Input.KEY_ENTER) {
-			m_manager.exitModal();
+			exitModal();
 		}
 		m_wnd.onKeyPressed(key, c);
 	}

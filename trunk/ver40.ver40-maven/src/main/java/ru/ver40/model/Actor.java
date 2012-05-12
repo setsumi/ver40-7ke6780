@@ -129,7 +129,8 @@ public abstract class Actor extends GObject implements ITimedEntity {
 	}
 
 	protected void die() {
-		GameLog.getInstance().log(this.getClass().getName() + " dies");
+		GameLog.getInstance().log(GameLog.Type.IMPORTANT,
+				this.getClass().getName() + " dies");
 	}	
 	
 	public MapCell getCell() {

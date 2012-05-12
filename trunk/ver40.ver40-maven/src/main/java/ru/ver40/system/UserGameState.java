@@ -16,7 +16,7 @@ public abstract class UserGameState {
 	 * наследников вызовом attachToSystemState().
 	 */
 	private int m_id = -1;
-	protected final StateManager m_manager; // Менеджер стейтов приложения.
+	private final StateManager m_manager; // Менеджер стейтов приложения.
 	private boolean m_isInitialized = false; // Флаг для инициализации через
 												// onUpdate()
 
@@ -53,7 +53,7 @@ public abstract class UserGameState {
 	/**
 	 * Выйти из себя в предыдущий стейт.
 	 */
-	public void exit() {
+	public void exitModal() {
 		m_manager.exitModal();
 	}
 

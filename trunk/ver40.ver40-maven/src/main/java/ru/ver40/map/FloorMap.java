@@ -226,7 +226,7 @@ public class FloorMap implements ILosBoard {
 	 * Приводит произвольную координату X или Y в пределы диапазона координат
 	 * карты. (задвигает внутрь если вылезла за края)
 	 */
-	public int normalizePos(int xy) {
+	public static int normalizePos(int xy) {
 		if (xy < 0)
 			xy = 0;
 		if (xy > Constants.MAP_MAX_SIZE - 1)
