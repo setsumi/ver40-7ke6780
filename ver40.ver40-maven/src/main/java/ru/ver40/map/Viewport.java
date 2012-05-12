@@ -46,8 +46,8 @@ public class Viewport {
 	 * Переместить вьюпорт в указанную точку на карте.
 	 */
 	public void moveTo(int x, int y) {
-		m_mapPosX = m_map.normalizePos(x);
-		m_mapPosY = m_map.normalizePos(y);
+		m_mapPosX = FloorMap.normalizePos(x);
+		m_mapPosY = FloorMap.normalizePos(y);
 		m_topX = getViewX(m_mapPosX);
 		m_topY = getViewY(m_mapPosY);
 	}
@@ -168,6 +168,14 @@ public class Viewport {
 
 	public int getHeight() {
 		return m_height;
+	}
+
+	public int getMapPosX() {
+		return m_mapPosX;
+	}
+
+	public int getMapPosY() {
+		return m_mapPosY;
 	}
 
 	/**

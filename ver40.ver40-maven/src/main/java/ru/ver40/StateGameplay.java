@@ -15,17 +15,15 @@ import ru.ver40.map.FloorMap;
 import ru.ver40.map.Viewport;
 import ru.ver40.map.gen.FeatureGenerator;
 import ru.ver40.map.gen.IMapGenarator;
-import ru.ver40.model.MapCell;
 import ru.ver40.model.Player;
-import ru.ver40.model.VisibilityState;
 import ru.ver40.service.MapService;
 import ru.ver40.service.TimeService;
 import ru.ver40.system.UserGameState;
 import ru.ver40.system.ui.WndStatusPanel;
-import ru.ver40.system.ui.WndTooltip;
 import ru.ver40.system.util.DebugLog;
 import ru.ver40.system.util.GameLog;
 import ru.ver40.util.Constants;
+import ru.ver40.util.Helper;
 
 /**
  * Главный стейт игры.
@@ -34,16 +32,14 @@ import ru.ver40.util.Constants;
 public class StateGameplay extends UserGameState {
 
 	Viewport viewport;
-	Point viewPos;
 	private Player player;
 	private IFovAlgorithm fov;
-
-	boolean freeLook = false;
-	boolean targetting = false;
-	int targetRadius, tX, tY;
-	WndTooltip tooltip;
 	WndStatusPanel statusPanel;
-	int time = 0;
+	int timeInGame = 0;
+
+	boolean targetting = false;
+	Point targetPos;
+	int targetRadius;
 
 	/**
 	 * Конструктор.
@@ -73,11 +69,12 @@ public class StateGameplay extends UserGameState {
 		FloorMap map = new FloorMap("map/test");
 		MapService.getInstance().setcMap(map);
 		viewport = new Viewport(map, 60, 30, 1, 1);
-		viewPos = new Point(200, 200);
 		GameLog.create(1, 31, Constants.ASCII_SCREEN_WIDTH - 2, 8,
 				Constants.GAME_LOG_BACKCOLOR);
 		player = new Player("2ch anonymous");
 		TimeService.getInstance().register(player);
+		statusPanel = new WndStatusPanel(62, 1, Color.white, Color.black);
+		targetPos = new Point(0, 0);
 
 		IMapGenarator gen = new FeatureGenerator();
 		gen.generate(map);
@@ -96,14 +93,11 @@ public class StateGameplay extends UserGameState {
 		map.setPlayer(player);
 		fov = new PrecisePermissive();
 
-		tooltip = new WndTooltip(Color.white, new Color(0.0f, 0.0f, 1.0f, 0.5f));
-		statusPanel = new WndStatusPanel(62, 1, Color.white, Color.black);
-
 		// Приветственное сообщение.
 		GameLog gl = GameLog.getInstance();
-		gl.log("[k] - enter targeting mode");
+		gl.log("[k] - targeting mode");
 		gl.log("[,] - pick up items");
-		gl.log("[/] - toggle look mode");
+		gl.log("[/] - look mode");
 		gl.log("[`] - system log");
 		gl.log(GameLog.Type.IMPORTANT, "Welcome to base reality.");
 		gl.log(GameLog.Type.IMPORTANT, "Substantiation sequence complete.");
@@ -122,97 +116,46 @@ public class StateGameplay extends UserGameState {
 		map.setFogOfWar();
 		fov.visitFieldOfView(map, player.getX(), player.getY(), 15);
 
-		if (!freeLook && !targetting) {
-			viewPos.x = player.getX();
-			viewPos.y = player.getY();
+		if (!targetting) {
+			viewport.moveTo(player.getX(), player.getY());
 		}
-		viewport.moveTo(viewPos.x, viewPos.y);
-		statusPanel.updateData(player, time);
+		statusPanel.updateData(player, timeInGame);
 	}
 
 	@Override
 	public void onKeyPressed(int key, char c) {
+		// Обзор карты.
 		if (c == '/') {
-			freeLook = !freeLook;
-			GameLog.getInstance().log(
-					freeLook ? "Look mode ON" : "Look mode OFF");
+			StateFreeLook look = new StateFreeLook(viewport);
+			look.showModal();
 		}
-		if (freeLook) {
-			if (key == Input.KEY_NUMPAD6) {
-				viewPos.translate(1, 0);
-			} else if (key == Input.KEY_NUMPAD4) {
-				viewPos.translate(-1, 0);
-			} else if (key == Input.KEY_NUMPAD2) {
-				viewPos.translate(0, 1);
-			} else if (key == Input.KEY_NUMPAD8) {
-				viewPos.translate(0, -1);
-			} else if (key == Input.KEY_NUMPAD7) {
-				viewPos.translate(-1, -1);
-			} else if (key == Input.KEY_NUMPAD9) {
-				viewPos.translate(1, -1);
-			} else if (key == Input.KEY_NUMPAD1) {
-				viewPos.translate(-1, 1);
-			} else if (key == Input.KEY_NUMPAD3) {
-				viewPos.translate(1, 1);
-			}
-			// Ограничение координат пределами карты.
-			FloorMap map = MapService.getInstance().getMap();
-			viewPos.x = map.normalizePos(viewPos.x);
-			viewPos.y = map.normalizePos(viewPos.y);
-			// Определение информации о клетке под курсором.
-			String info;
-			MapCell cell = map.getCell(viewPos.x, viewPos.y);
-			info = cell.getVisible() == VisibilityState.INVISIBLE ? "???"
-					: cell.getResultString();
-			tooltip.setText(info);
-		}
-
-		if (targetting) {
-			if (key == Input.KEY_NUMPAD6) {
-				tX++;
-			} else if (key == Input.KEY_NUMPAD4) {
-				tX--;
-			} else if (key == Input.KEY_NUMPAD2) {
-				tY++;
-			} else if (key == Input.KEY_NUMPAD8) {
-				tY--;
-			} else if (key == Input.KEY_NUMPAD7) {
-				tX--;
-				tY--;
-			} else if (key == Input.KEY_NUMPAD9) {
-				tX++;
-				tY--;
-			} else if (key == Input.KEY_NUMPAD1) {
-				tX--;
-				tY++;
-			} else if (key == Input.KEY_NUMPAD3) {
-				tX++;
-				tY++;
-			} else if (key == Input.KEY_NUMPAD5 || key == Input.KEY_ENTER) {
-				targetting = false;
-			}
-
-		}
-		if (!targetting && !freeLook) {
-			// Кривой детект нового хода.
-			if (key == Input.KEY_NUMPAD6 || key == Input.KEY_NUMPAD4
-					|| key == Input.KEY_NUMPAD2 || key == Input.KEY_NUMPAD8
-					|| key == Input.KEY_NUMPAD7 || key == Input.KEY_NUMPAD9
-					|| key == Input.KEY_NUMPAD1 || key == Input.KEY_NUMPAD3) {
-				player.setKeyCode(key);			
-				newTurn();
-			}
-		}
-		// Вызов окна с предметами.
-		if (key == Input.KEY_COMMA) {
+		// Окно с предметами.
+		if (c == ',') {
 			StateDlgItems items = new StateDlgItems("Items on the floor:");
 			items.showModal();
 		}
 
 		if (key == Input.KEY_K) {
-			tX = player.getX();
-			tY = player.getY();
+			targetPos.x = player.getX();
+			targetPos.y = player.getY();
 			targetting = true;
+		}
+		if (targetting) {
+			targetPos = Helper.moveMapPointKeyboard(targetPos, key, c);
+			if (key == Input.KEY_NUMPAD5 || key == Input.KEY_ENTER) {
+				targetting = false;
+			}
+
+		}
+		if (!targetting) {
+			// Кривой детект нового хода.
+			if (key == Input.KEY_NUMPAD6 || key == Input.KEY_NUMPAD4
+					|| key == Input.KEY_NUMPAD2 || key == Input.KEY_NUMPAD8
+					|| key == Input.KEY_NUMPAD7 || key == Input.KEY_NUMPAD9
+					|| key == Input.KEY_NUMPAD1 || key == Input.KEY_NUMPAD3) {
+				player.setKeyCode(key);
+				newTurn();
+			}
 		}
 	}
 
@@ -222,28 +165,27 @@ public class StateGameplay extends UserGameState {
 
 	@Override
 	public void onRender(GameContainer gc, StateBasedGame game, Graphics g) {
+		// Базовый интерфейс игры.
+		//
 		viewport.draw(g, player);
 		statusPanel.draw(g);
+		GameLog.getInstance().draw(g);
 
 		// Прицеливанивае
 		//
 		if (targetting) {
+			viewport.drawString("X", targetPos.x, targetPos.y, Color.yellow,
+					Color.black, g);
+			// DEBUG
 			g.setColor(Color.yellow);
-			g.drawString("Target: " + tX + ", " + tY, 100, 15);
-
-			viewport.drawString("X", tX, tY, Color.yellow, Color.black, g);
-		}
-		// Рассматривать окрестности.
-		//
-		if (freeLook) {
-			viewport.drawString("\0", viewPos.x, viewPos.y, Color.white);
-			tooltip.draw(g);
+			g.drawString("Target: " + targetPos.x + ", " + targetPos.y, 100, 15);
 		}
 
-		GameLog.getInstance().draw(g);
-		// Отладочные сообщения.
+		// DEBUG
 		g.setColor(Color.red);
-		g.drawString("View: " + viewPos.x + ", " + viewPos.y, 100, 0);
+		g.drawString(
+				"View: " + viewport.getMapPosX() + ", " + viewport.getMapPosY(),
+				100, 0);
 	}
 
 	/**
@@ -251,7 +193,7 @@ public class StateGameplay extends UserGameState {
 	 * состояние логов.
 	 */
 	public void newTurn() {
-		time++;
+		timeInGame++;
 		DebugLog.getInstance().resetNew();
 		GameLog.getInstance().resetNew();
 		TimeService.getInstance().tick();
