@@ -21,6 +21,7 @@ import ru.ver40.model.VisibilityState;
 import ru.ver40.service.MapService;
 import ru.ver40.service.TimeService;
 import ru.ver40.system.UserGameState;
+import ru.ver40.system.ui.WndStatusPanel;
 import ru.ver40.system.ui.WndTooltip;
 import ru.ver40.system.util.DebugLog;
 import ru.ver40.system.util.GameLog;
@@ -41,6 +42,8 @@ public class StateGameplay extends UserGameState {
 	boolean targetting = false;
 	int targetRadius, tX, tY;
 	WndTooltip tooltip;
+	WndStatusPanel statusPanel;
+	int time = 0;
 
 	/**
 	 * Конструктор.
@@ -94,11 +97,12 @@ public class StateGameplay extends UserGameState {
 		fov = new PrecisePermissive();
 
 		tooltip = new WndTooltip(Color.white, new Color(0.0f, 0.0f, 1.0f, 0.5f));
+		statusPanel = new WndStatusPanel(62, 1, Color.white, Color.black);
+
 		// Приветственное сообщение.
 		GameLog gl = GameLog.getInstance();
 		gl.log("[K] - enter targeting mode");
 		gl.log("[,] - pick up items");
-		gl.log("[NUMPAD] - walk/look around");
 		gl.log("[/] - toggle look mode");
 		gl.log("[`] - system log");
 		gl.log(GameLog.Type.IMPORTANT, "Welcome to base reality.");
@@ -123,6 +127,7 @@ public class StateGameplay extends UserGameState {
 			viewPos.y = player.getY();
 		}
 		viewport.moveTo(viewPos.x, viewPos.y);
+		statusPanel.updateData(player, time);
 	}
 
 	@Override
@@ -218,6 +223,7 @@ public class StateGameplay extends UserGameState {
 	@Override
 	public void onRender(GameContainer gc, StateBasedGame game, Graphics g) {
 		viewport.draw(g, player);
+		statusPanel.draw(g);
 
 		// Прицеливанивае
 		//
@@ -245,6 +251,7 @@ public class StateGameplay extends UserGameState {
 	 * состояние логов.
 	 */
 	public void newTurn() {
+		time++;
 		DebugLog.getInstance().resetNew();
 		GameLog.getInstance().resetNew();
 		TimeService.getInstance().tick();
