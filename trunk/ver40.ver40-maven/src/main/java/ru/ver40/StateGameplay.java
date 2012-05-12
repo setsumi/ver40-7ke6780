@@ -101,7 +101,7 @@ public class StateGameplay extends UserGameState {
 
 		// Приветственное сообщение.
 		GameLog gl = GameLog.getInstance();
-		gl.log("[K] - enter targeting mode");
+		gl.log("[k] - enter targeting mode");
 		gl.log("[,] - pick up items");
 		gl.log("[/] - toggle look mode");
 		gl.log("[`] - system log");
