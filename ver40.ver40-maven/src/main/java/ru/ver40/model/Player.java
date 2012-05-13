@@ -83,6 +83,8 @@ public class Player extends Actor {
 			return move(map,  getX() - 1 , getY() + 1);
 		case Input.KEY_NUMPAD7:
 			return move(map,  getX() - 1 , getY() - 1);
+		case Input.KEY_NUMPAD5:			
+			return 10;			
 		}
 		return 0;
 	}
@@ -90,7 +92,7 @@ public class Player extends Actor {
 	private int move(FloorMap map, int x, int y) {
 		MapCell cell = map.translateActor(this, x , y);
 		if (cell != null && !cell.getPersons().isEmpty()) {
-			RoleSystem.blast(this, cell.getPersons().get(0));		
+			RoleSystem.testBlast(this, cell.getPersons().get(0));		
 		}
 		return 10;				
 	}
