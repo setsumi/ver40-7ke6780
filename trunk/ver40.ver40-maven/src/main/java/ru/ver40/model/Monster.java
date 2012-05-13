@@ -85,7 +85,7 @@ public class Monster extends Actor {
 		ret.setRecover(5);
 		ret.setStructure(5 + Rng.d(1, 6, 1));
 		ret.setEnergy(5 + Rng.d(1, 6, 1));
-		ret.setAi(new FightOnSeeAI());
+		ret.setAi(new ShootOnSeeAI());
 		return ret;
 	}	
 	
