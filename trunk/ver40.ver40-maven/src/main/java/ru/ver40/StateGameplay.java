@@ -15,6 +15,7 @@ import ru.ver40.map.FloorMap;
 import ru.ver40.map.Viewport;
 import ru.ver40.map.gen.FeatureGenerator;
 import ru.ver40.map.gen.IMapGenarator;
+import ru.ver40.model.MapCell;
 import ru.ver40.model.Player;
 import ru.ver40.service.MapService;
 import ru.ver40.service.TimeService;
@@ -24,6 +25,7 @@ import ru.ver40.system.util.DebugLog;
 import ru.ver40.system.util.GameLog;
 import ru.ver40.util.Constants;
 import ru.ver40.util.Helper;
+import ru.ver40.util.RoleSystem;
 
 /**
  * Главный стейт игры.
@@ -31,7 +33,7 @@ import ru.ver40.util.Helper;
  */
 public class StateGameplay extends UserGameState {
 
-	Viewport viewport;
+	public static Viewport viewport;
 	private Player player;
 	private IFovAlgorithm fov;
 	WndStatusPanel statusPanel;
@@ -149,6 +151,16 @@ public class StateGameplay extends UserGameState {
 		if (targetting) {
 			Helper.moveMapPointKeyboard(targetPos, key, c);
 			if (key == Input.KEY_NUMPAD5 || key == Input.KEY_ENTER) {
+				MapCell cell = MapService.getInstance().getMap()
+						.getCell(targetPos.x, targetPos.y);
+				if (!cell.getPersons().isEmpty()) {
+					RoleSystem.testBlast(player, cell.getPersons().get(0));					
+				}					
+				player.setKeyCode(Input.KEY_NUMPAD5);				
+				targetting = false;
+				newTurn();
+			}
+			if (key == Input.KEY_ESCAPE) {
 				targetting = false;
 			}
 

@@ -67,7 +67,7 @@ public class Monster extends Actor {
 		ret.setRecover(30);
 		ret.setStructure(20 + Rng.d(2, 10, 3));
 		ret.setEnergy(10 + Rng.d(3, 6, 2));
-		ret.setAi(new AttackOnSeeAI());
+		ret.setAi(new FightOnSeeAI());
 		return ret;
 	}
 	
@@ -85,7 +85,7 @@ public class Monster extends Actor {
 		ret.setRecover(5);
 		ret.setStructure(5 + Rng.d(1, 6, 1));
 		ret.setEnergy(5 + Rng.d(1, 6, 1));
-		ret.setAi(new AttackOnSeeAI());
+		ret.setAi(new FightOnSeeAI());
 		return ret;
 	}	
 	
