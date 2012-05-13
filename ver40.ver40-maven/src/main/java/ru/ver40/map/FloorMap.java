@@ -2,6 +2,7 @@ package ru.ver40.map;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashSet;
 
 import rlforj.los.ILosBoard;
 import ru.ver40.model.Actor;
@@ -16,9 +17,9 @@ import ru.ver40.util.Constants;
  */
 public class FloorMap implements ILosBoard {
 
-	private final class CellLocation {
-		public Chunk m_chunk;
-		public int m_index;
+	public class CellLocation {
+		public Chunk m_chunk; // Указатель на чанк.
+		public int m_index; // Линейный индекс клетки в чанке.
 
 		public CellLocation(Chunk chunk, int index) {
 			m_chunk = chunk;
@@ -27,13 +28,17 @@ public class FloorMap implements ILosBoard {
 	}
 
 	/**
-	 * Буфер чанков
+	 * Путь к каталогу с данными карты.
+	 */
+	private String m_path;
+	/**
+	 * Буфер чанков.
 	 */
 	private ArrayList<Chunk> m_chunks;
 	/**
-	 * Путь к каталогу с данными карты
+	 * Список линейных индексов чанков, которые были созданы в процессе игры.
 	 */
-	private String m_path;
+	private HashSet<Integer> m_seenChunks;
 
 	private ArrayList<MapCell> oldVisible;
 
@@ -51,43 +56,52 @@ public class FloorMap implements ILosBoard {
 					+ path);
 
 		m_path = path;
-		m_chunks = new ArrayList<Chunk>();
-		m_chunks.ensureCapacity(Constants.MAP_CHUNK_CACHE_SIZE);
+		m_chunks = new ArrayList<Chunk>(Constants.MAP_CHUNK_CACHE_SIZE);
+		m_seenChunks = new HashSet<Integer>(100);
 		oldVisible = new ArrayList<MapCell>();
 	}
 
 	/**
 	 * Вернуть путь к каталогу с данным карты
-	 * 
-	 * @return
 	 */
 	public String getPath() {
 		return m_path;
+	}
+
+	public CellLocation getChunk(int x, int y) {
+		CellLocation loc = locateCell(x, y);
+		// Image ret = loc.m_chunk.getMiniMap();
+		return loc;
 	}
 
 	/**
 	 * Вернуть клетку по её координатам на карте.
 	 * 
 	 * Создает новые чанки по мере необходимости.
-	 * 
-	 * @return
 	 */
 	public CellLocation locateCell(int x, int y) {
 		if (!contains(x, y))
 			new IllegalArgumentException("Invalid map coordinates: " + x + ", "
 					+ y + " (Must be 0.." + (Constants.MAP_MAX_SIZE - 1));
 
-		Chunk ch = null;
 		// координаты чанка
 		int cx = x / Constants.MAP_CHUNK_SIZE;
 		int cy = y / Constants.MAP_CHUNK_SIZE;
+		// линейный индекс чанка
+		int cli = cy * Constants.MAP_MAX_SIZE_CHUNKS + cx;
+		m_seenChunks.add(cli);
 		// ищем чанк в кэше
-		Chunk c;
+		Chunk ch = null, c = null;
 		int i = 0;
 		while (i < m_chunks.size()) {
 			c = m_chunks.get(i);
-			if (c.m_posX == cx && c.m_posY == cy) {
+			if (c.getIndex() == cli) { // нашли в кэше
 				ch = c;
+				// переносим в конец, чтобы дольше жил
+				if (i != m_chunks.size() - 1) {
+					m_chunks.remove(i);
+					m_chunks.add(c);
+				}
 				break;
 			}
 			i++;
@@ -96,11 +110,12 @@ public class FloorMap implements ILosBoard {
 		if (ch == null) {
 			// удаляем лишнее если кэш уже полон
 			if (m_chunks.size() == Constants.MAP_CHUNK_CACHE_SIZE) {
-				m_chunks.get(0).save();
+				// m_chunks.get(0).save();
 				m_chunks.remove(0);
 			}
-			// создаем чанк и заносим в кэш
-			ch = new Chunk(this, cx, cy);
+			// создаем чанк и заносим в кэш (в конец, а старые должны всплыть в
+			// начало)
+			ch = new Chunk(this, cli);
 			m_chunks.add(ch);
 		}
 		// индекс клетки в квадрате
@@ -111,8 +126,6 @@ public class FloorMap implements ILosBoard {
 
 	/**
 	 * Вернуть клетку по её координатам на карте.
-	 * 
-	 * @return
 	 */
 	public MapCell getCell(int x, int y) {
 		CellLocation loc = locateCell(x, y);
@@ -224,7 +237,7 @@ public class FloorMap implements ILosBoard {
 
 	/**
 	 * Приводит произвольную координату X или Y в пределы диапазона координат
-	 * карты. (задвигает внутрь если вылезла за края)
+	 * карты (задвигает внутрь, если вылезла за края).
 	 */
 	public static int normalizePos(int xy) {
 		if (xy < 0)

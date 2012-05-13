@@ -25,42 +25,46 @@ public class Constants {
 	 */
 	public static final String RESOURCE_FILE = "data/resources.xml";
 	/**
-	 * Ключ ресурса SpriteSheet-а шрифта для AsciiDraw
+	 * Ключ ресурса SpriteSheet-а шрифта для AsciiDraw.
 	 */
 	public static final String ASCII_FONT_KEY = "asciifont";
 	/**
-	 * Ключ ресурса UnicodeFont для UnicodeDraw
+	 * Ключ ресурса UnicodeFont для UnicodeDraw.
 	 */
 	public static final String UNICODE_FONT_KEY = "unicodefont";
 	/**
-	 * Антиалиасинг шрифта в UnicodeDraw
+	 * Антиалиасинг шрифта в UnicodeDraw.
 	 */
 	public static final boolean UNICODE_FONT_ANTIALIAS = true;
 	/**
-	 * Ширина экрана в ASCII-тайлах
+	 * Ширина экрана в ASCII-тайлах.
 	 */
 	public static final int ASCII_SCREEN_WIDTH = 80;
 	/**
-	 * Размер стороны чанка (длины стороны квадрата)
+	 * Размер стороны чанка (длины стороны квадрата).
 	 */
 	public static final int MAP_CHUNK_SIZE = 256;
 	/**
-	 * Размер чанка (как линейный индекс)
+	 * Размер чанка (как линейный индекс).
 	 */
 	public static final int MAP_CHUNK_LENGTH = MAP_CHUNK_SIZE * MAP_CHUNK_SIZE;
 	/**
-	 * Размер кэша чанков в карте
+	 * Размер кэша чанков (в классе карты).
 	 */
-	public static final int MAP_CHUNK_CACHE_SIZE = 25;
+	public static final int MAP_CHUNK_CACHE_SIZE = 9;
 	/**
-	 * Центр доступного диапазона координат
+	 * Размер карты в клетках.
 	 */
-	public static final int MAP_CENTER = Integer.MAX_VALUE / 2;
+	public static final int MAP_MAX_SIZE = (int) Math.sqrt(Integer.MAX_VALUE)
+			- (int) (Math.sqrt(Integer.MAX_VALUE) % MAP_CHUNK_SIZE);
 	/**
-	 * Максимальный размер карты
+	 * Центр карты (в клетках).
 	 */
-	public static final int MAP_MAX_SIZE = Integer.MAX_VALUE
-			- (Integer.MAX_VALUE % MAP_CHUNK_SIZE);
+	public static final int MAP_CENTER = MAP_MAX_SIZE / 2;
+	/**
+	 * Размер карты в чанках.
+	 */
+	public static final int MAP_MAX_SIZE_CHUNKS = MAP_MAX_SIZE / MAP_CHUNK_SIZE;
 	/**
 	 * Высота отладочного лога в строках.
 	 */
@@ -127,6 +131,10 @@ public class Constants {
 	 * Стейт свободного просмотря карты (без привязки к игроку).
 	 */
 	public static final int STATE_FREELOOK = 40;
+	/**
+	 * Стейт Просмотра миникарты.
+	 */
+	public static final int STATE_MINIMAP = 50;
 
 }
 
