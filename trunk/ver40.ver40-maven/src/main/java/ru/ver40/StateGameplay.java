@@ -95,6 +95,7 @@ public class StateGameplay extends UserGameState {
 
 		// Приветственное сообщение.
 		GameLog gl = GameLog.getInstance();
+		gl.log("[m] - view map");
 		gl.log("[k] - targeting mode");
 		gl.log("[,] - pick up items");
 		gl.log("[/] - look mode");
@@ -134,6 +135,11 @@ public class StateGameplay extends UserGameState {
 			StateDlgItems items = new StateDlgItems("Items on the floor:");
 			items.showModal();
 		}
+		// Миникарта.
+		if (c == 'm') {
+			StateMinimap mmap = new StateMinimap(8, 12, 0, 0, 256, 256);
+			mmap.showModal();
+		}
 
 		if (key == Input.KEY_K) {
 			targetPos.x = player.getX();
@@ -141,7 +147,7 @@ public class StateGameplay extends UserGameState {
 			targetting = true;
 		}
 		if (targetting) {
-			targetPos = Helper.moveMapPointKeyboard(targetPos, key, c);
+			Helper.moveMapPointKeyboard(targetPos, key, c);
 			if (key == Input.KEY_NUMPAD5 || key == Input.KEY_ENTER) {
 				targetting = false;
 			}

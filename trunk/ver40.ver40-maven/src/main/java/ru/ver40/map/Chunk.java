@@ -25,25 +25,24 @@ public class Chunk implements Serializable {
 	private static final long serialVersionUID = -7430659870673366934L;
 	
 	/**
-	 * Ссылка на карту, которой принадлежит чанк
+	 * Ссылка на карту, которой принадлежит чанк.
 	 */
 	private transient FloorMap m_map;
 	/**
-	 * Список клеток чанка
+	 * Список клеток чанка.
 	 */
 	private ArrayList<MapCell> m_cells;
 	/**
-	 * Координаты чанка на карте
+	 * Линейный индекс чанка на карте.
 	 */
-	public int m_posX, m_posY;
+	private int m_index;
 
 	/**
-	 * Конструктор
+	 * Конструктор.
 	 */
-	public Chunk(FloorMap map, int x, int y) {
+	public Chunk(FloorMap map, int index) {
 		m_map = map;
-		m_posX = x;
-		m_posY = y;
+		m_index = index;
 		m_cells = new ArrayList<MapCell>();
 		m_cells.ensureCapacity(Constants.MAP_CHUNK_LENGTH);
 		for (int i = 0; i < Constants.MAP_CHUNK_LENGTH; i++)
@@ -56,9 +55,7 @@ public class Chunk implements Serializable {
 	}
 
 	/**
-	 * Вернуть клетку по её индексу в массиве клеток
-	 * 
-	 * @return
+	 * Вернуть клетку по её индексу в массиве клеток.
 	 */
 	public MapCell getCell(int index) {
 		return m_cells.get(index);
@@ -72,17 +69,22 @@ public class Chunk implements Serializable {
 	}
 
 	/**
-	 * Вернуть полный путь файла чанка
-	 * 
-	 * @return
+	 * Вернуть полный путь файла чанка.
 	 */
 	public String getFile() {
 		return m_map.getPath() + File.separator
-				+ String.format("%d_%d.ch", m_posX, m_posY);
+				+ String.format("%06d.ch", m_index);
 	}
 
 	/**
-	 * Сохранение чанка в файл
+	 * Вернуть линейный индекс чанка на карте.
+	 */
+	public int getIndex() {
+		return m_index;
+	}
+
+	/**
+	 * Сохранение чанка в файл.
 	 */
 	public void save() {
 		ObjectOutputStream oos = null;
@@ -103,7 +105,7 @@ public class Chunk implements Serializable {
 	}
 
 	/**
-	 * Загрузка чанка из файла
+	 * Загрузка чанка из файла.
 	 */
 	public void load() {
 		ObjectInputStream ois = null;
@@ -113,8 +115,7 @@ public class Chunk implements Serializable {
 					new FileInputStream(getFile())));
 			Chunk c = (Chunk) ois.readObject();
 			this.m_cells = c.m_cells;
-			this.m_posX = c.m_posX;
-			this.m_posY = c.m_posY;
+			this.m_index = c.m_index;
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		} finally {

@@ -14,28 +14,51 @@ public class Helper {
 
 	/**
 	 * Перемещение точки в пределах карты с клавиатуры.
+	 * 
+	 * Меняет поданную позицию по ссылке. Возвращает true если позиция
+	 * сдвинулась.
 	 */
-	public static Point moveMapPointKeyboard(Point pos, int key, char c) {
+	public static boolean moveMapPointKeyboard(Point pos, int key, char c) {
+		return moveMapPointKeyboard(pos, key, c, 1);
+	}
+
+	/**
+	 * Перемещение точки в пределах карты с клавиатуры.
+	 * 
+	 * Меняет поданную позицию по ссылке. Возвращает true если позиция
+	 * сдвинулась.
+	 */
+	public static boolean moveMapPointKeyboard(Point pos, int key, char c,
+			int step) {
+		boolean ret = false;
 		if (key == Input.KEY_NUMPAD6) {
-			pos.translate(1, 0);
+			ret = true;
+			pos.translate(step, 0);
 		} else if (key == Input.KEY_NUMPAD4) {
-			pos.translate(-1, 0);
+			ret = true;
+			pos.translate(-step, 0);
 		} else if (key == Input.KEY_NUMPAD2) {
-			pos.translate(0, 1);
+			ret = true;
+			pos.translate(0, step);
 		} else if (key == Input.KEY_NUMPAD8) {
-			pos.translate(0, -1);
+			ret = true;
+			pos.translate(0, -step);
 		} else if (key == Input.KEY_NUMPAD7) {
-			pos.translate(-1, -1);
+			ret = true;
+			pos.translate(-step, -step);
 		} else if (key == Input.KEY_NUMPAD9) {
-			pos.translate(1, -1);
+			ret = true;
+			pos.translate(step, -step);
 		} else if (key == Input.KEY_NUMPAD1) {
-			pos.translate(-1, 1);
+			ret = true;
+			pos.translate(-step, step);
 		} else if (key == Input.KEY_NUMPAD3) {
-			pos.translate(1, 1);
+			ret = true;
+			pos.translate(step, step);
 		}
 		pos.x = FloorMap.normalizePos(pos.x);
 		pos.y = FloorMap.normalizePos(pos.y);
-		return pos;
+		return ret;
 	}
 
 }
