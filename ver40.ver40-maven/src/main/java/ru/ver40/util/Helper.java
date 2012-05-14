@@ -61,4 +61,10 @@ public class Helper {
 		return ret;
 	}
 
+	/**
+	 * Получить текущее время (в миллисекундах).
+	 */
+	public static int msTime() {
+		return (int) (System.nanoTime() / 1000000);
+	}
 }

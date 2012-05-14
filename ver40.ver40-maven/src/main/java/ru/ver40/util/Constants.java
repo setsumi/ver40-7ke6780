@@ -135,6 +135,10 @@ public class Constants {
 	 * Стейт Просмотра миникарты.
 	 */
 	public static final int STATE_MINIMAP = 50;
+	/**
+	 * Стейт анимации (как ролик на скрипте).
+	 */
+	public static final int STATE_ANIMATION = 60;
 
 }
 
