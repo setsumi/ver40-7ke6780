@@ -56,13 +56,16 @@ public class TheGame extends StateBasedGame {
 
 		state = new SystemGameState(Constants.STATE_MINIMAP, m_stateManager);
 		m_stateManager.add(state);
+
+		state = new SystemGameState(Constants.STATE_ANIMATION, m_stateManager);
+		m_stateManager.add(state);
 	}
 
 	/*
 	 * Инициализация приложения.
 	 */
 	@Override
-	public void initStatesList(GameContainer container) throws SlickException {
+	public void initStatesList(GameContainer gc) throws SlickException {
 		// Загрузка ресурсов.
 		//
 		try {
@@ -74,7 +77,7 @@ public class TheGame extends StateBasedGame {
 		}
 		// Включение повтора нажатых клавиш.
 		//
-		Input input = container.getInput();
+		Input input = gc.getInput();
 		input.enableKeyRepeat();
 
 		// Создаем глобальные объекты сразу.

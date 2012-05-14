@@ -177,6 +177,9 @@ public class StateGameplay extends UserGameState {
 				}					
 				player.setKeyCode(Input.KEY_NUMPAD5);				
 				targetting = false;
+				StateAnimation anime = new StateAnimation(viewport, targetLine,
+						20);
+				anime.showModal();
 				newTurn();
 			}
 			// Передумали стрелять.
