@@ -1,6 +1,7 @@
 package ru.ver40;
 
 import java.awt.Point;
+import java.util.LinkedList;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
@@ -40,8 +41,10 @@ public class StateGameplay extends UserGameState {
 	int timeInGame = 0;
 
 	boolean targetting = false;
-	Point targetPos;
-	int targetRadius;
+	Point targetPos = null;
+	int targetRadius = 15;
+	LinkedList<Point> targetLine = null;
+	boolean targetValid = false;
 
 	/**
 	 * Конструктор.
@@ -144,13 +147,29 @@ public class StateGameplay extends UserGameState {
 		}
 
 		if (key == Input.KEY_K) {
+			targetting = true;
 			targetPos.x = player.getX();
 			targetPos.y = player.getY();
-			targetting = true;
+			if (targetLine != null) {
+				targetLine.clear();
+			}
+			targetValid = true;
 		}
 		if (targetting) {
-			Helper.moveMapPointKeyboard(targetPos, key, c);
-			if (key == Input.KEY_NUMPAD5 || key == Input.KEY_ENTER) {
+			if (Helper.moveMapPointKeyboard(targetPos, key, c)) {
+				// Берем линию до цели.
+				FloorMap map = MapService.getInstance().getMap();
+				targetLine = map.getLosLine(player.getX(), player.getY(),
+						targetPos.x, targetPos.y);
+				// Можно ли стрелять куда указывает прицел.
+				Point last = targetLine.getLast();
+				targetValid = (targetPos.equals(last)
+						&& map.isCellPassable(last.x, last.y) && new Point(
+						player.getX(), player.getY()).distance(targetPos) <= targetRadius);
+			}
+			// Огонь!
+			if (targetValid
+					&& (key == Input.KEY_NUMPAD5 || key == Input.KEY_ENTER)) {
 				MapCell cell = MapService.getInstance().getMap()
 						.getCell(targetPos.x, targetPos.y);
 				if (!cell.getPersons().isEmpty()) {
@@ -160,6 +179,7 @@ public class StateGameplay extends UserGameState {
 				targetting = false;
 				newTurn();
 			}
+			// Передумали стрелять.
 			if (key == Input.KEY_ESCAPE) {
 				targetting = false;
 			}
@@ -192,8 +212,15 @@ public class StateGameplay extends UserGameState {
 		// Прицеливанивае
 		//
 		if (targetting) {
-			viewport.drawString("X", targetPos.x, targetPos.y, Color.yellow,
-					Color.black, g);
+			if (targetLine != null) {
+				for (Point p : targetLine) {
+					viewport.drawString("x", p.x, p.y,
+							targetValid ? Color.yellow : Color.red,
+							Color.black, g);
+				}
+			}
+			viewport.drawString("X", targetPos.x, targetPos.y,
+					targetValid ? Color.yellow : Color.red, Color.black, g);
 			// DEBUG
 			g.setColor(Color.yellow);
 			g.drawString("Target: " + targetPos.x + ", " + targetPos.y, 100, 15);

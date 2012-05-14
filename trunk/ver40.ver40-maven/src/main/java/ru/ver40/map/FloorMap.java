@@ -1,10 +1,16 @@
 package ru.ver40.map;
 
+import java.awt.Point;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedList;
 
+import rlforj.los.BresLos;
+import rlforj.los.ILosAlgorithm;
 import rlforj.los.ILosBoard;
+import rlforj.los.PrecisePermissive;
+import rlforj.math.Point2I;
 import ru.ver40.model.Actor;
 import ru.ver40.model.MapCell;
 import ru.ver40.model.Player;
@@ -57,7 +63,7 @@ public class FloorMap implements ILosBoard {
 
 		m_path = path;
 		m_chunks = new ArrayList<Chunk>(Constants.MAP_CHUNK_CACHE_SIZE);
-		m_seenChunks = new HashSet<Integer>(100);
+		m_seenChunks = new HashSet<Integer>();
 		oldVisible = new ArrayList<MapCell>();
 	}
 
@@ -233,6 +239,26 @@ public class FloorMap implements ILosBoard {
 
 	public void setPlayer(Player player) {
 		this.player = player;
+	}
+
+	/**
+	 * Вернуть проходимость клетки.
+	 */
+	public boolean isCellPassable(int x, int y) {
+		return getCell(x, y).isPassable();
+	}
+
+	/**
+	 * Получить линию зрения от одной точки до другой.
+	 */
+	public LinkedList<Point> getLosLine(int fromX, int fromY, int toX, int toY) {
+		ILosAlgorithm ila = new PrecisePermissive(); // BresLos(false);
+		ila.existsLineOfSight(this, fromX, fromY, toX, toY, true);
+		LinkedList<Point> line = new LinkedList<Point>();
+		for (Point2I p2i : ila.getProjectPath()) {
+			line.add(new Point(p2i.x, p2i.y));
+		}
+		return line;
 	}
 
 	/**
