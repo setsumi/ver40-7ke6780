@@ -1,6 +1,12 @@
 package ru.ver40.util;
 
+import java.awt.Point;
+import java.util.LinkedList;
+
+import ru.ver40.StateGameplay;
 import ru.ver40.model.Actor;
+import ru.ver40.service.MapService;
+import ru.ver40.system.AnimationBulletFlight;
 import ru.ver40.system.util.GameLog;
 
 /**
@@ -12,6 +18,14 @@ import ru.ver40.system.util.GameLog;
 public class RoleSystem {
 
 	public static void testBlast(Actor a1, Actor a2) {
+		// TODO debug test blast anime
+		LinkedList<Point> line = MapService.getInstance().getMap()
+				.getLosLine(a1.getX(), a1.getY(), a2.getX(), a2.getY());
+		AnimationBulletFlight animation = new AnimationBulletFlight(
+				StateGameplay.viewport, line, 20);
+		StateGameplay.animations.add(animation);
+		// end of block
+
 		int b1 = Rng.d(2, 10, a1.getBlast());
 		int b2 = Rng.d(2, 10, a2.getBlast());
 		if (b1 > b2) {

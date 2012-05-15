@@ -1,15 +1,9 @@
 package ru.ver40.model;
 
 import org.newdawn.slick.Input;
-import org.newdawn.slick.KeyListener;
-
-import ru.ver40.TheGame;
 import ru.ver40.map.FloorMap;
 import ru.ver40.service.MapService;
 import ru.ver40.service.TimeService;
-import ru.ver40.system.StateManager;
-import ru.ver40.system.util.GameLog;
-import ru.ver40.util.Rng;
 import ru.ver40.util.RoleSystem;
 
 /**
@@ -24,8 +18,9 @@ public class Player extends Actor {
 	
 	private transient MapService mService;
 	
-	private int[] codes = { Input.KEY_NUMPAD1, Input.KEY_NUMPAD2, Input.KEY_NUMPAD3, Input.KEY_NUMPAD4,
-			Input.KEY_NUMPAD6, Input.KEY_NUMPAD7, Input.KEY_NUMPAD8, Input.KEY_NUMPAD9 };
+	private int[] codes = { Input.KEY_NUMPAD1, Input.KEY_NUMPAD2,
+			Input.KEY_NUMPAD3, Input.KEY_NUMPAD4, Input.KEY_NUMPAD6,
+			Input.KEY_NUMPAD7, Input.KEY_NUMPAD8, Input.KEY_NUMPAD9 };
 	
 	/**
 	 * 
