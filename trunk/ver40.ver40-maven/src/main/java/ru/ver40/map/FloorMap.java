@@ -1,12 +1,11 @@
 package ru.ver40.map;
 
-import java.awt.Point;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.LinkedList;
+import java.util.List;
+import java.util.Vector;
 
-import rlforj.los.BresLos;
 import rlforj.los.ILosAlgorithm;
 import rlforj.los.ILosBoard;
 import rlforj.los.PrecisePermissive;
@@ -75,6 +74,7 @@ public class FloorMap implements ILosBoard {
 	}
 
 	public CellLocation getChunk(int x, int y) {
+		// TODO разобраться с этим хламом от миникарты
 		CellLocation loc = locateCell(x, y);
 		// Image ret = loc.m_chunk.getMiniMap();
 		return loc;
@@ -242,23 +242,16 @@ public class FloorMap implements ILosBoard {
 	}
 
 	/**
-	 * Вернуть проходимость клетки.
-	 */
-	public boolean isCellPassable(int x, int y) {
-		return getCell(x, y).isPassable();
-	}
-
-	/**
 	 * Получить линию зрения от одной точки до другой.
 	 */
-	public LinkedList<Point> getLosLine(int fromX, int fromY, int toX, int toY) {
-		ILosAlgorithm ila = new PrecisePermissive(); // BresLos(false);
-		ila.existsLineOfSight(this, fromX, fromY, toX, toY, true);
-		LinkedList<Point> line = new LinkedList<Point>();
-		for (Point2I p2i : ila.getProjectPath()) {
-			line.add(new Point(p2i.x, p2i.y));
+	public List<Point2I> getLosLine(int fromX, int fromY, int toX, int toY) {
+		ILosAlgorithm los = new PrecisePermissive(); // BresLos(false);
+		los.existsLineOfSight(this, fromX, fromY, toX, toY, true);
+		List<Point2I> ret = los.getProjectPath();
+		if (ret == null) {
+			ret = new Vector<Point2I>();
 		}
-		return line;
+		return ret;
 	}
 
 	/**
