@@ -1,11 +1,12 @@
 package ru.ver40.system;
 
 import java.awt.Point;
-import java.util.LinkedList;
+import java.util.List;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 
+import rlforj.math.Point2I;
 import ru.ver40.map.Viewport;
 
 /**
@@ -15,12 +16,12 @@ import ru.ver40.map.Viewport;
 public class AnimationBulletFlight extends AAnimation {
 
 	Viewport m_view;
-	LinkedList<Point> m_line;
+	List<Point2I> m_line;
 
 	/**
 	 * Конструктор.
 	 */
-	public AnimationBulletFlight(Viewport view, LinkedList<Point> line,
+	public AnimationBulletFlight(Viewport view, List<Point2I> line,
 			int duration) {
 		super(AAnimation.Type.FIXED_FRAME_TIME, line.size(), duration,
 				false);

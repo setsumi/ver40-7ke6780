@@ -9,6 +9,7 @@ import rlforj.pathfinding.AStar;
 import ru.ver40.StateGameplay;
 import ru.ver40.map.FloorMap;
 import ru.ver40.service.MapService;
+import ru.ver40.system.AnimationBulletFlight;
 import ru.ver40.util.RoleSystem;
 
 public class ShootOnSeeAI implements AIProvider {
@@ -38,14 +39,20 @@ public class ShootOnSeeAI implements AIProvider {
 		//
 		if (Point2I.distance(player.getX(), player.getY(), owner.getX(), owner.getY()) < 15
 				&& los.existsLineOfSight(map, owner.getX(), owner.getY(), 
-						player.getX(), player.getY(), true)) {
+						player.getX(), player.getY(), false)) {
 			// Проверить существует ли LOS для выстрела:
 			//
-			if (los.existsLineOfSight(moveAdapter, owner.getX(), owner.getY(), 
-						player.getX(), player.getY(), true)) {
+			if (los.existsLineOfSight(moveAdapter, owner.getX(), owner.getY(),
+					player.getX(), player.getY(), true)) {
 				// Стреляем
 				//
 				RoleSystem.testBlast(owner, player);
+
+				// TODO пока пихнул анимацию сода
+				AnimationBulletFlight animation = new AnimationBulletFlight(
+						StateGameplay.viewport, los.getProjectPath(), 20);
+				StateGameplay.animations.add(animation);
+				// end of block
 				return 10;
 				
 			}

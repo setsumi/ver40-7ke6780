@@ -1,8 +1,7 @@
 package ru.ver40;
 
 import java.awt.Point;
-import java.util.LinkedList;
-
+import java.util.List;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -12,6 +11,7 @@ import org.newdawn.slick.util.Log;
 
 import rlforj.los.IFovAlgorithm;
 import rlforj.los.PrecisePermissive;
+import rlforj.math.Point2I;
 import ru.ver40.map.FloorMap;
 import ru.ver40.map.Viewport;
 import ru.ver40.map.gen.FeatureGenerator;
@@ -46,7 +46,7 @@ public class StateGameplay extends UserGameState {
 	private boolean targetting = false;
 	private Point targetPos = null;
 	private int targetRadius = 15;
-	private LinkedList<Point> targetLine = null;
+	private List<Point2I> targetLine = null;
 	private boolean targetValid = false;
 
 	/**
@@ -167,21 +167,21 @@ public class StateGameplay extends UserGameState {
 				targetLine = map.getLosLine(player.getX(), player.getY(),
 						targetPos.x, targetPos.y);
 				// Можно ли стрелять куда указывает прицел.
-				Point last = targetLine.getLast();
+				Point last = targetLine.get(targetLine.size() - 1);
 				targetValid = (targetPos.equals(last)
-						&& map.isCellPassable(last.x, last.y) && new Point(
+						&& map.isObstacle(last.x, last.y) && new Point(
 						player.getX(), player.getY()).distance(targetPos) <= targetRadius);
 			}
 			// Огонь!
 			if (targetValid
 					&& (key == Input.KEY_NUMPAD5 || key == Input.KEY_ENTER)) {
+				targetting = false;
 				MapCell cell = MapService.getInstance().getMap()
 						.getCell(targetPos.x, targetPos.y);
 				if (!cell.getPersons().isEmpty()) {
 					RoleSystem.testBlast(player, cell.getPersons().get(0));					
 				}					
 				player.setKeyCode(Input.KEY_NUMPAD5);				
-				targetting = false;
 				// добавить анимацию
 				AnimationBulletFlight animation = new AnimationBulletFlight(
 						viewport, targetLine, 20);
