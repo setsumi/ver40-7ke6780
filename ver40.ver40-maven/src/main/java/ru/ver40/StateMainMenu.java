@@ -81,7 +81,8 @@ public class StateMainMenu extends UserGameState {
 				StateGameplay gameplay = new StateGameplay();
 				gameplay.show();
 			}
-			AsciiDraw.getInstance().draw("LOADING...", 65, 37, Color.white);
+			AsciiDraw.getInstance().draw("Loading system...", 58, 37,
+					Color.white);
 			exitCountdown++;
 		}
 	}

@@ -59,6 +59,7 @@ public class TheGame extends StateBasedGame {
 
 		state = new SystemGameState(Constants.STATE_ANIMATION, m_stateManager);
 		m_stateManager.add(state);
+		new StateAnimation();
 	}
 
 	/*

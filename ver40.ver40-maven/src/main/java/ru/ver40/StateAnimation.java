@@ -1,38 +1,64 @@
 package ru.ver40;
 
-import java.awt.Point;
 import java.util.LinkedList;
 
-import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.state.StateBasedGame;
 
-import ru.ver40.map.Viewport;
+import ru.ver40.system.AAnimation;
 import ru.ver40.system.UserGameState;
 import ru.ver40.util.Constants;
 
 /**
  * Проигрывание анимаций (как скриптового ролика).
  * 
+ * Создается глобально и вызывается через менеджер стейтов игры.
  */
 public class StateAnimation extends UserGameState {
 
-	private Viewport m_view;
-	private LinkedList<Point> m_line;
-	private int m_step, m_current;
-	private boolean m_abort;
+	private LinkedList<AAnimation> m_animations; // Анимации для проигрывания.
 
-	public StateAnimation(Viewport view, LinkedList<Point> line, int speed) {
+	/**
+	 * Конструктор.
+	 */
+	public StateAnimation() {
 		super();
 		attachToSystemState(Constants.STATE_ANIMATION);
 		//
-		m_view = view;
-		m_line = line;
-		m_step = speed;
-		m_current = 0;
-		m_abort = (line == null || line.size() < 1);
+		m_animations = new LinkedList<AAnimation>();
+	}
+
+	/**
+	 * Добавить анимацию.
+	 */
+	public void add(AAnimation animation) {
+		m_animations.add(animation);
+	}
+
+	/**
+	 * Запуск всех анимаций.
+	 */
+	private void start() {
+		for (AAnimation a : m_animations) {
+			a.start();
+		}
+	}
+
+	/**
+	 * Удаление всех анимаций и выход из стейта.
+	 */
+	private void exit() {
+		m_animations.clear();
+		exitModal();
+	}
+
+	@Override
+	public void onEnter(GameContainer gc, StateBasedGame game) {
+		super.onEnter(gc, game);
+		//
+		start();
 	}
 
 	@Override
@@ -45,33 +71,29 @@ public class StateAnimation extends UserGameState {
 	public void onUpdate(GameContainer gc, StateBasedGame game, int delta) {
 		super.onUpdate(gc, game, delta);
 		//
-		if (m_abort) {
-			exitModal();
-		} else {
-			m_current += delta;
-			if (m_current > m_step) {
-				m_current = 0;
-				m_line.removeFirst();
-				if (m_line.size() == 0) {
-					m_abort = true;
-				}
+		boolean allStopped = true;
+		for (AAnimation a : m_animations) {
+			a.update(delta);
+			if (!a.isStopped()) {
+				allStopped = false;
 			}
+		}
+		if (allStopped) {
+			exit();
 		}
 	}
 
 	@Override
 	public void onRender(GameContainer gc, StateBasedGame game, Graphics g) {
-		if (!m_abort) {
-			Point p = m_line.getFirst();
-			m_view.drawString("*", p.x, p.y, Color.white, Color.black, g);
+		for (AAnimation a : m_animations) {
+			a.draw(g);
 		}
 	}
 
 	@Override
 	public void onKeyPressed(int key, char c) {
 		if (key == Input.KEY_ESCAPE) {
-			m_abort = true;
-			exitModal();
+			exit();
 		}
 	}
 

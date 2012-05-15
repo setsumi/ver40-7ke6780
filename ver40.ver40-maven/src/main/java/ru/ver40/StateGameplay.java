@@ -20,6 +20,7 @@ import ru.ver40.model.MapCell;
 import ru.ver40.model.Player;
 import ru.ver40.service.MapService;
 import ru.ver40.service.TimeService;
+import ru.ver40.system.AnimationBulletFlight;
 import ru.ver40.system.UserGameState;
 import ru.ver40.system.ui.WndStatusPanel;
 import ru.ver40.system.util.DebugLog;
@@ -177,9 +178,15 @@ public class StateGameplay extends UserGameState {
 				}					
 				player.setKeyCode(Input.KEY_NUMPAD5);				
 				targetting = false;
-				StateAnimation anime = new StateAnimation(viewport, targetLine,
-						20);
-				anime.showModal();
+				// добавить анимацию и проиграть её.
+				AnimationBulletFlight anime = new AnimationBulletFlight(
+						viewport, targetLine, 20);
+				((StateAnimation) TheGame.getStateManager()
+						.getSystemState(Constants.STATE_ANIMATION).getClient())
+						.add(anime);
+				TheGame.getStateManager()
+						.getSystemState(Constants.STATE_ANIMATION).getClient()
+						.showModal();
 				newTurn();
 			}
 			// Передумали стрелять.
