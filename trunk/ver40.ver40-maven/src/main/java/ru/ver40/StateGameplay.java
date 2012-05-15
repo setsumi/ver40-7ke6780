@@ -36,16 +36,18 @@ import ru.ver40.util.RoleSystem;
 public class StateGameplay extends UserGameState {
 
 	public static Viewport viewport;
+	public static StateAnimation animations;
+
 	private Player player;
 	private IFovAlgorithm fov;
-	WndStatusPanel statusPanel;
-	int timeInGame = 0;
+	private WndStatusPanel statusPanel;
+	private int timeInGame = 0;
 
-	boolean targetting = false;
-	Point targetPos = null;
-	int targetRadius = 15;
-	LinkedList<Point> targetLine = null;
-	boolean targetValid = false;
+	private boolean targetting = false;
+	private Point targetPos = null;
+	private int targetRadius = 15;
+	private LinkedList<Point> targetLine = null;
+	private boolean targetValid = false;
 
 	/**
 	 * Конструктор.
@@ -81,6 +83,8 @@ public class StateGameplay extends UserGameState {
 		TimeService.getInstance().register(player);
 		statusPanel = new WndStatusPanel(62, 1, Color.white, Color.black);
 		targetPos = new Point(0, 0);
+		animations = (StateAnimation) TheGame.getStateManager()
+				.getSystemState(Constants.STATE_ANIMATION).getClient();
 
 		IMapGenarator gen = new FeatureGenerator();
 		gen.generate(map);
@@ -178,15 +182,11 @@ public class StateGameplay extends UserGameState {
 				}					
 				player.setKeyCode(Input.KEY_NUMPAD5);				
 				targetting = false;
-				// добавить анимацию и проиграть её.
-				AnimationBulletFlight anime = new AnimationBulletFlight(
+				// добавить анимацию
+				AnimationBulletFlight animation = new AnimationBulletFlight(
 						viewport, targetLine, 20);
-				((StateAnimation) TheGame.getStateManager()
-						.getSystemState(Constants.STATE_ANIMATION).getClient())
-						.add(anime);
-				TheGame.getStateManager()
-						.getSystemState(Constants.STATE_ANIMATION).getClient()
-						.showModal();
+				animations.add(animation);
+
 				newTurn();
 			}
 			// Передумали стрелять.
@@ -200,7 +200,8 @@ public class StateGameplay extends UserGameState {
 			if (key == Input.KEY_NUMPAD6 || key == Input.KEY_NUMPAD4
 					|| key == Input.KEY_NUMPAD2 || key == Input.KEY_NUMPAD8
 					|| key == Input.KEY_NUMPAD7 || key == Input.KEY_NUMPAD9
-					|| key == Input.KEY_NUMPAD1 || key == Input.KEY_NUMPAD3) {
+					|| key == Input.KEY_NUMPAD1 || key == Input.KEY_NUMPAD3
+					|| key == Input.KEY_NUMPAD5) {
 				player.setKeyCode(key);
 				newTurn();
 			}
@@ -252,5 +253,11 @@ public class StateGameplay extends UserGameState {
 		DebugLog.getInstance().resetNew();
 		GameLog.getInstance().resetNew();
 		TimeService.getInstance().tick();
+
+		viewport.moveTo(player.getX(), player.getY());
+		// Запуск анимаций.
+		if (animations.count() > 0) {
+			animations.showModal();
+		}
 	}
 }

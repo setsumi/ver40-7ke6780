@@ -31,6 +31,13 @@ public class StateAnimation extends UserGameState {
 	}
 
 	/**
+	 * Вернуть количество анимаций.
+	 */
+	public int count() {
+		return m_animations.size();
+	}
+
+	/**
 	 * Добавить анимацию.
 	 */
 	public void add(AAnimation animation) {
