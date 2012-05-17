@@ -50,7 +50,7 @@ public class ShootOnSeeAI implements AIProvider {
 
 				// TODO пока пихнул анимацию сода
 				AnimationBulletFlight animation = new AnimationBulletFlight(
-						StateGameplay.viewport, los.getProjectPath(), 20);
+				StateGameplay.viewport, los.getProjectPath(), 20);
 				StateGameplay.animations.add(animation);
 				// end of block
 				return 10;

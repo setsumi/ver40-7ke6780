@@ -40,8 +40,10 @@ public class StateGameplay extends UserGameState {
 
 	private Player player;
 	private IFovAlgorithm fov;
+
 	private WndStatusPanel statusPanel;
 	private int timeInGame = 0;
+
 
 	private boolean targetting = false;
 	private Point targetPos = null;
@@ -119,7 +121,7 @@ public class StateGameplay extends UserGameState {
 		super.onUpdate(gc, game, delta);
 
 		TimeService t = TimeService.getInstance();
-		while (t.getCurrentActor() != player) {
+		while (t.getCurrentActor() != player || player.getActionPoints() < 0) {
 			t.tick();
 		}
 

@@ -35,7 +35,7 @@ public class TimeService implements Serializable {
 	
 	private LinkedList<ITimedEntity> entities;
 	
-	private static TimeService instance;
+	private static transient TimeService instance;
 	
 	public static TimeService getInstance( ) {
 		if (instance == null) {
@@ -56,15 +56,20 @@ public class TimeService implements Serializable {
 	}
 	
 	public void tick() {
-		if (entities.size() > 0) {
-			ITimedEntity current = entities.pollFirst();
-			current.setActionPoints(
-					current.getActionPoints() + current.getSpeed());
-			while (current.getActionPoints() > 0) {
-				current.setActionPoints(current.getActionPoints()
-						- current.performTimedAction());
+		if (entities.size() > 0) {			
+			ITimedEntity current = entities.pollFirst();	
+			if (current.getActionPoints() <= 0) {
+				current.setActionPoints(current.getActionPoints() + current.getSpeed());
 			}
-			entities.addLast(current);			
+			if (current.getActionPoints() > 0) {
+				current.setActionPoints(current.getActionPoints() - current.performTimedAction());
+			}
+			if (current.getActionPoints() > 0) {
+				entities.addFirst(current);	
+			} else {
+				entities.addLast(current);	
+			}	
+			
 		}
 	}
 	

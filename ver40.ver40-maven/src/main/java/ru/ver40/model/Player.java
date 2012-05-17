@@ -14,13 +14,7 @@ import ru.ver40.util.RoleSystem;
  */
 public class Player extends Actor {
 	
-	private transient TimeService tService;
-	
 	private transient MapService mService;
-	
-	private int[] codes = { Input.KEY_NUMPAD1, Input.KEY_NUMPAD2,
-			Input.KEY_NUMPAD3, Input.KEY_NUMPAD4, Input.KEY_NUMPAD6,
-			Input.KEY_NUMPAD7, Input.KEY_NUMPAD8, Input.KEY_NUMPAD9 };
 	
 	/**
 	 * 
@@ -40,7 +34,6 @@ public class Player extends Actor {
 	public Player(String name) {
 		this.name = name;
 		this.setPassable(true);
-		tService = TimeService.getInstance();
 		mService = MapService.getInstance();
 		getSymbol().setSymbol('@');
 		getSymbol().setFgColor(0xB5044B);
@@ -79,20 +72,10 @@ public class Player extends Actor {
 	private int move(FloorMap map, int x, int y) {
 		MapCell cell = map.translateActor(this, x , y);
 		if (cell != null && !cell.getPersons().isEmpty()) {
-			RoleSystem.testBlast(this, cell.getPersons().get(0));		
+			RoleSystem.testFight(this, cell.getPersons().get(0));		
 		}
 		return 10;				
 	}
-
-	
-	private boolean provokeTimedAction(int key) {
-		for (int x : codes) {
-			if (x == key) {
-				return true;
-			}
-		}
-		return false;
-	}	
 	
 //	@Override
 //	public String toString() {
