@@ -40,7 +40,7 @@ public class RoomFeature implements IFeature {
 			int num = Rng.d(1, 6, 1);
 			for (int n = 0; n < num; ++n) {
 				Monster m = Monster.createWatcherFly();
-				TimeService.getInstance().register(m);
+//				TimeService.getInstance().register(m);
 				data[height/2][width/2].addPerson(m);
 			}
 			

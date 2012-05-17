@@ -99,7 +99,7 @@ public class StateGameplay extends UserGameState {
 				}
 			}
 		}
-
+		viewport.moveTo(player.getX(), player.getY());
 		map.setPlayer(player);
 		fov = new PrecisePermissive();
 
@@ -127,9 +127,6 @@ public class StateGameplay extends UserGameState {
 		map.setFogOfWar();
 		fov.visitFieldOfView(map, player.getX(), player.getY(), 15);
 
-		if (!targetting) {
-			viewport.moveTo(player.getX(), player.getY());
-		}
 		statusPanel.updateData(player, timeInGame);
 	}
 
