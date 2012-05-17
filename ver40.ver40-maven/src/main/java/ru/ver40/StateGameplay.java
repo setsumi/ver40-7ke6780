@@ -79,7 +79,7 @@ public class StateGameplay extends UserGameState {
 		viewport = new Viewport(map, 60, 30, 1, 1);
 		GameLog.create(1, 31, Constants.ASCII_SCREEN_WIDTH - 2, 8,
 				Constants.GAME_LOG_BACKCOLOR);
-		player = new Player("2ch anonymous");
+		player = new Player("Player");
 		TimeService.getInstance().register(player);
 		statusPanel = new WndStatusPanel(62, 1, Color.white, Color.black);
 		targetPos = new Point(0, 0);

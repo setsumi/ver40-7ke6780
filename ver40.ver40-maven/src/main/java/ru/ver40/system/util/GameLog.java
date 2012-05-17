@@ -180,11 +180,12 @@ public class GameLog {
 		Entry prev = null;
 		if (!m_lines.isEmpty())
 			prev = m_lines.getFirst();
-		if (prev != null && prev.msg.compareTo(msg) == 0) {
+		// не накладываем на старые записи
+		if (m_newCount > 0 && prev != null && prev.msg.compareTo(msg) == 0) {
 			prev.type = type;
 			prev.stack++;
-			if (m_newCount > 0)
-				m_newCount--;
+//			if (m_newCount > 0)
+			m_newCount--;
 		} else {
 			// добавляем запись
 			Entry entry = new Entry(type, msg);

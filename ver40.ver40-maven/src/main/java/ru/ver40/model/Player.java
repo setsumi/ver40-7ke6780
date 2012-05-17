@@ -27,7 +27,6 @@ public class Player extends Actor {
 	 */
 	private static final long serialVersionUID = -272256474863920368L;
 	
-	private String name;
 	private int keyCode;
 	
 	public int getKeyCode() {
@@ -43,18 +42,11 @@ public class Player extends Actor {
 		this.setPassable(true);
 		tService = TimeService.getInstance();
 		mService = MapService.getInstance();
+		getSymbol().setSymbol('@');
 		getSymbol().setFgColor(0xB5044B);
 		setBlast(10);
 		setResist(10);
 		setStructure(10);
-	}
-
-	public String getName() {
-		return name;
-	}
-	
-	public void setName(String name) {
-		this.name = name;
 	}
 
 	@Override
@@ -102,8 +94,8 @@ public class Player extends Actor {
 		return false;
 	}	
 	
-	@Override
-	public String toString() {
-		return "Player";
-	}
+//	@Override
+//	public String toString() {
+//		return "Player";
+//	}
 }

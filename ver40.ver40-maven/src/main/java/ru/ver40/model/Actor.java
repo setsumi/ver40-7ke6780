@@ -62,6 +62,8 @@ public abstract class Actor extends GObject implements ITimedEntity {
 	public static final String PROP_RECOVER   = "RECOVER";
 	public static final String PROP_BUILD     = "BUILD";
 	
+	protected String name;
+
 	/**
 	 * Координаты на игровой карте
 	 */
@@ -84,11 +86,24 @@ public abstract class Actor extends GObject implements ITimedEntity {
 	}
 
 	private static final long serialVersionUID = 8472085921088558199L;
-	
+
 	public Actor() {
-		getSymbol().setSymbol('@');
+		getSymbol().setSymbol('A');
 		structure.setValue(10);
 		setPassable(false);
+		name = this.getClass().getName();
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String toString() {
+		return name;
 	}
 
 	public int getStructure() {
@@ -129,8 +144,7 @@ public abstract class Actor extends GObject implements ITimedEntity {
 	}
 
 	protected void die() {
-		GameLog.getInstance().log(GameLog.Type.IMPORTANT,
-				this.getClass().getName() + " dies");
+		GameLog.getInstance().log(GameLog.Type.IMPORTANT, name + " dies");
 	}	
 	
 	public MapCell getCell() {

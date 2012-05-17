@@ -16,8 +16,14 @@ public class SystemGameState extends BasicGameState {
 
 	int m_stateID = -1;
 	
-	UserGameState m_client = null; // Пользовательский стейт.
-	StateManager m_manager = null; // Менеджер всех стейтов.
+	UserGameState m_client; // Пользовательский стейт.
+	StateManager m_manager; // Менеджер всех стейтов.
+//	HashMap<Integer, Character> m_keysPressed, m_keysReleased; // Список нажатых
+//																// и отпущенных
+//																// клавиш для
+//																// синхронной с
+//																// игровым лупом
+//																// обработки.
 
 	// Клавиши зарезервированные за системой.
 	private static final int[] m_systemKeys = { Constants.DEGUG_LOG_SHOWKEY };
@@ -28,6 +34,8 @@ public class SystemGameState extends BasicGameState {
 	public SystemGameState(int stateID, StateManager manager) {
 		m_stateID = stateID;
 		m_manager = manager;
+//		m_keysPressed = new HashMap<Integer, Character>();
+//		m_keysReleased = new HashMap<Integer, Character>();
 	}
 
 	/**
@@ -89,7 +97,17 @@ public class SystemGameState extends BasicGameState {
 	@Override
 	public void update(GameContainer gc, StateBasedGame game, int delta)
 			throws SlickException {
-		// Обновление клиенту.
+//		// Посылаем нажатые клавиши клиенту.
+//		for (Map.Entry<Integer, Character> entry : m_keysPressed.entrySet()) {
+//			m_client.onKeyPressed(entry.getKey(), entry.getValue());
+//		}
+//		m_keysPressed.clear();
+//		// Посылаем отпущенные клавиши клиенту.
+//		for (Map.Entry<Integer, Character> entry : m_keysReleased.entrySet()) {
+//			m_client.onKeyReleased(entry.getKey(), entry.getValue());
+//		}
+//		m_keysReleased.clear();
+		// И наконец обновление клиенту.
 		m_client.onUpdate(gc, game, delta);
 	}
 
@@ -109,6 +127,7 @@ public class SystemGameState extends BasicGameState {
 		}
 		if (!isSyskey) {
 			m_client.onKeyPressed(key, c);
+//			m_keysPressed.put(key, c);
 		}
 	}
 
@@ -123,6 +142,7 @@ public class SystemGameState extends BasicGameState {
 		}
 		if (!isSyskey) {
 			m_client.onKeyReleased(key, c);
+//			m_keysReleased.put(key, c);
 		}
 	}
 
