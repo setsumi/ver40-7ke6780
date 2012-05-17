@@ -24,8 +24,6 @@ public class SystemGameState extends BasicGameState {
 
 	/**
 	 * Конструктор.
-	 * 
-	 * Сразу после создания объекта необходимо присвоить клиента.
 	 */
 	public SystemGameState(int stateID, StateManager manager) {
 		m_stateID = stateID;
@@ -33,14 +31,14 @@ public class SystemGameState extends BasicGameState {
 	}
 
 	/**
-	 * Присвоить клиента.
+	 * Присвоить клиента (стейт пользователя, привязанный к этому системному).
 	 */
 	public void setClient(UserGameState client) {
 		m_client = client;
 	}
 
 	/**
-	 * Получить клиента.
+	 * Получить клиента (стейт пользователя, привязанный к этому системному).
 	 */
 	public UserGameState getClient() {
 		return m_client;

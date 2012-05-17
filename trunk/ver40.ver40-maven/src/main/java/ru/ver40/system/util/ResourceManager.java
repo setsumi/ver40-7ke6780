@@ -425,8 +425,8 @@ public class ResourceManager {
 	/**
 	 * set the volume of all sound effects to given volume
 	 * 
-	 * @param sfxVolume
-	 *            a value between 0 and 1
+	 * @param volume
+	 *            - a value between 0 and 1
 	 */
 	public static void setSfxVolume(float volume) {
 		sfxVolume = volume;
@@ -437,8 +437,8 @@ public class ResourceManager {
 	/**
 	 * set the volume of all songs to given volume
 	 * 
-	 * @param musicVolume
-	 *            a value between 0 and 1
+	 * @param volume
+	 *            - a value between 0 and 1
 	 */
 	public static void setMusicVolume(float volume) {
 		musicVolume = volume;

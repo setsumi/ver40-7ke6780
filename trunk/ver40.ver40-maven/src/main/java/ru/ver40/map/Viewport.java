@@ -1,29 +1,35 @@
 package ru.ver40.map;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.math.IntRange;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.geom.Vector2f;
 
+import ru.ver40.model.Actor;
 import ru.ver40.model.MapCell;
 import ru.ver40.model.Player;
 import ru.ver40.model.VisibilityState;
+import ru.ver40.service.TimeService;
 import ru.ver40.system.util.AsciiDraw;
 import ru.ver40.util.Constants;
+
 
 /**
  * Рисует область карты на экране
  * 
  */
-public class Viewport {	
+public class Viewport {
 	
 	private Map<Integer, Color> m_colorCache; // кэш объектов Color для рендера
 	
 	private FloorMap m_map;
 	private int m_scrPosX, m_scrPosY; // положение на экране
 	private int m_width, m_height; // размер в символах
+	private int m_areaWidth, m_areaHeight; // активная зона вокруг
 
 	private int m_mapPosX, m_mapPosY; // положение вьюпорта на карте
 	private int m_topX, m_topY; // верхний левый угол вьюпорта на карте
@@ -36,6 +42,8 @@ public class Viewport {
 		m_map = map;
 		m_width = width;
 		m_height = height;
+		m_areaWidth = (int) ((float) m_width * Constants.VIEWPORT_MAP_ACTIVE_AREA_FACTOR);
+		m_areaHeight = (int) ((float) m_height * Constants.VIEWPORT_MAP_ACTIVE_AREA_FACTOR);
 		m_scrPosX = scrPosX;
 		m_scrPosY = scrPosY;
 		m_colorCache = new HashMap<Integer, Color>();
@@ -48,8 +56,33 @@ public class Viewport {
 	public void moveTo(int x, int y) {
 		m_mapPosX = FloorMap.normalizePos(x);
 		m_mapPosY = FloorMap.normalizePos(y);
-		m_topX = getViewX(m_mapPosX);
-		m_topY = getViewY(m_mapPosY);
+		m_topX = m_map.getViewRectX(m_mapPosX, m_width);
+		m_topY = m_map.getViewRectY(m_mapPosY, m_height);
+
+		// Определение активной зоны.
+		// TODO для всяких обзоров, наверное не надо зону таскать за собой
+		int areaX = m_map.getViewRectX(m_mapPosX, m_areaWidth);
+		int areaY = m_map.getViewRectY(m_mapPosY, m_areaHeight);
+		MapCell cell;
+		List<Actor> persons;
+		TimeService timeService = TimeService.getInstance();
+		// Останавляваем всех выпавших из активной зоны.
+		//
+		timeService.unregisterNotInArea(new IntRange(areaX, areaX + m_areaWidth
+				- 1), new IntRange(areaY, areaY + m_areaHeight - 1));
+		// Активируем всех в активной зоне.
+		//
+		for (int i = areaX; i < areaX + m_areaWidth; i++) {
+			for (int j = areaY; j < areaY + m_areaHeight; j++) {
+				cell = m_map.getCell(i, j);
+				persons = cell.getPersons();
+				for (Actor a : persons) {
+					if (!timeService.isRegistered(a)) {
+						timeService.register(a);
+					}
+				}
+			}
+		}
 	}
 
 	/**
@@ -100,19 +133,20 @@ public class Viewport {
 	 * Рендер вьюпорта в произвольной точке карты.
 	 */
 	private void draw(int x, int y, Graphics gr, Player p) {
-		int viewX = getViewX(x); // верхний угол вьюпорта
-		int viewY = getViewY(y);
+		int viewX = m_map.getViewRectX(x, m_width); // верхний угол вьюпорта
+		int viewY = m_map.getViewRectY(y, m_height);
 		// цикл отрисовки клеток
 		for (int i = 0; i < m_width; i++, viewX++) {
 			int vy = viewY;
 			for (int j = 0; j < m_height; j++, vy++) {
 				MapCell c = m_map.getCell(viewX, vy);
 				String str = c.getResultString();
+				float fade = 0.3f; // TODO DEBUG!!!
 				if (c.getVisible() == VisibilityState.VISIBLE) {
 					// затенение освещения
-					// TODO: радиус обзора должен быть в кричере (Player)? А ТО!
-					// 
-					float grad = 0.6f / 15;
+					// TODO ! А ТО -> радиус обзора должен быть в кричере?
+					//
+					float grad = fade / 15;
 					Vector2f trg = new Vector2f(viewX, vy);
 					Vector2f src = new Vector2f(p.getX(), p.getY());
 
@@ -125,15 +159,15 @@ public class Viewport {
 							getColor(c.getResultBg()), gr);
 				} else if (c.getVisible() == VisibilityState.FOG_OF_WAR) {
 					AsciiDraw.getInstance().draw(str, i + m_scrPosX, j + m_scrPosY,
-							getColor(c.getResultFg()).darker(0.6f),
-							getColor(c.getResultBg()).darker(0.6f), gr);
+							getColor(c.getResultFg()).darker(fade),
+							getColor(c.getResultBg()).darker(fade), gr);
 				} else {
 					// Для дебага
 					//
 					AsciiDraw.getInstance().draw(str, i + m_scrPosX,
 							j + m_scrPosY,
-							getColor(c.getResultFg()).darker(0.6f),
-							getColor(c.getResultBg()).darker(0.6f), gr);
+							getColor(c.getResultFg()).darker(fade),
+							getColor(c.getResultBg()).darker(fade), gr);
 				}
 			}
 		}
@@ -141,8 +175,6 @@ public class Viewport {
 
 	/**
 	 * Получить объект Color из кэша
-	 * 
-	 * @return
 	 */
 	private Color getColor(int colorHex) {
 		Color c = m_colorCache.get(colorHex);
@@ -179,29 +211,4 @@ public class Viewport {
 		return m_mapPosY;
 	}
 
-	/**
-	 * Получить валидные координаты левого верхнего угла вьюпорта по желаемому
-	 * положению на карте его центра
-	 */
-	public int getViewX(int x) {
-		int viewX = x - (m_width / 2);
-		if (viewX < 0)
-			viewX = 0;
-		else if (viewX + m_width > Constants.MAP_MAX_SIZE)
-			viewX = Constants.MAP_MAX_SIZE - m_width;
-		return viewX;
-	}
-
-	/**
-	 * Получить валидные координаты левого верхнего угла вьюпорта по желаемому
-	 * положению на карте его центра
-	 */
-	public int getViewY(int y) {
-		int viewY = y - (m_height / 2);
-		if (viewY < 0)
-			viewY = 0;
-		else if (viewY + m_height > Constants.MAP_MAX_SIZE)
-			viewY = Constants.MAP_MAX_SIZE - m_height;
-		return viewY;
-	}		 		
 }

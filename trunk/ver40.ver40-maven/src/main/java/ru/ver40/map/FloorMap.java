@@ -81,7 +81,7 @@ public class FloorMap implements ILosBoard {
 	}
 
 	/**
-	 * Вернуть клетку по её координатам на карте.
+	 * Вернуть чанк и индекс в чанке по координатам клетки на карте.
 	 * 
 	 * Создает новые чанки по мере необходимости.
 	 */
@@ -132,6 +132,8 @@ public class FloorMap implements ILosBoard {
 
 	/**
 	 * Вернуть клетку по её координатам на карте.
+	 * 
+	 * Создает новые чанки по мере необходимости.
 	 */
 	public MapCell getCell(int x, int y) {
 		CellLocation loc = locateCell(x, y);
@@ -140,6 +142,8 @@ public class FloorMap implements ILosBoard {
 
 	/**
 	 * Присвоить клетку по её координатам на карте.
+	 * 
+	 * Создает новые чанки по мере необходимости.
 	 */
 	public void setCell(MapCell cell, int x, int y) {
 		CellLocation loc = locateCell(x, y);
@@ -264,5 +268,41 @@ public class FloorMap implements ILosBoard {
 		if (xy > Constants.MAP_MAX_SIZE - 1)
 			xy = Constants.MAP_MAX_SIZE - 1;
 		return xy;
+	}
+
+	/**
+	 * Получить валидные координаты левого верхнего угла окна вьюпорта по
+	 * желаемому положению на карте его центра.
+	 * 
+	 * @param y
+	 *            - координата окна (в центре, если окно не у края карты)
+	 * @param w
+	 *            - ширина окна
+	 */
+	public int getViewRectX(int x, int w) {
+		int viewX = x - (w / 2);
+		if (viewX < 0)
+			viewX = 0;
+		else if (viewX + w > Constants.MAP_MAX_SIZE)
+			viewX = Constants.MAP_MAX_SIZE - w;
+		return viewX;
+	}
+
+	/**
+	 * Получить валидные координаты левого верхнего угла окна вьюпорта по
+	 * желаемому положению на карте его центра.
+	 * 
+	 * @param y
+	 *            - координата (в центре, если окно не у края карты)
+	 * @param h
+	 *            - высота окна
+	 */
+	public int getViewRectY(int y, int h) {
+		int viewY = y - (h / 2);
+		if (viewY < 0)
+			viewY = 0;
+		else if (viewY + h > Constants.MAP_MAX_SIZE)
+			viewY = Constants.MAP_MAX_SIZE - h;
+		return viewY;
 	}
 }

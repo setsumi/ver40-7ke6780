@@ -3,6 +3,9 @@ package ru.ver40.service;
 import java.io.Serializable;
 import java.util.LinkedList;
 
+import org.apache.commons.lang.math.IntRange;
+
+import ru.ver40.model.Actor;
 import ru.ver40.model.time.ITimedEntity;
 
 /**
@@ -70,5 +73,27 @@ public class TimeService implements Serializable {
 	
 	private TimeService() {		
 		entities = new LinkedList<ITimedEntity>();
-	}		
+	}
+
+	/**
+	 * Ищет объект среди активных.
+	 */
+	public boolean isRegistered(ITimedEntity entity) {
+		return entities.contains(entity);
+	}
+
+	/**
+	 * Останавливает все объекты не попадающие в указанный диапазон координат на
+	 * карте.
+	 */
+	public void unregisterNotInArea(IntRange rx, IntRange ry) {
+		Actor actor; // TODO ! добавить получение координат в ITimedEntity?
+		for (ITimedEntity te : entities) {
+			actor = (Actor) te;
+			if (!rx.containsInteger(actor.getX())
+					|| !ry.containsInteger(actor.getY())) {
+				unregister(te);
+			}
+		}
+	}
 }

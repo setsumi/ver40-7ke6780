@@ -66,6 +66,10 @@ public class Constants {
 	 */
 	public static final int MAP_MAX_SIZE_CHUNKS = MAP_MAX_SIZE / MAP_CHUNK_SIZE;
 	/**
+	 * Размер активной зоны карты по отношению к размеру вьюпорта.
+	 */
+	public static final float VIEWPORT_MAP_ACTIVE_AREA_FACTOR = 0.5f;
+	/**
 	 * Высота отладочного лога в строках.
 	 */
 	public static final int DEBUG_LOG_HEIGHT = 20;
