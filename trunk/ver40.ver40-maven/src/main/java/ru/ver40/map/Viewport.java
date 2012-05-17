@@ -51,33 +51,49 @@ public class Viewport {
 	}
 
 	/**
-	 * Переместить вьюпорт в указанную точку на карте.
+	 * Переместить вьюпорт в указанную точку на карте. Активная зона
+	 * перемещается тоже.
 	 */
 	public void moveTo(int x, int y) {
+		moveTo(x, y, true);
+	}
+
+	/**
+	 * Переместить вьюпорт в указанную точку на карте.
+	 * 
+	 * @param x
+	 *            - желаемые координаты точки взгляда
+	 * @param y
+	 *            - желаемые координаты точки взгляда
+	 * @param active
+	 *            - перемещать ли активную зону вместе со взглядом
+	 */
+	public void moveTo(int x, int y, boolean active) {
 		m_mapPosX = FloorMap.normalizePos(x);
 		m_mapPosY = FloorMap.normalizePos(y);
 		m_topX = m_map.getViewRectX(m_mapPosX, m_width);
 		m_topY = m_map.getViewRectY(m_mapPosY, m_height);
 
-		// Определение активной зоны.
-		// TODO для всяких обзоров, наверное не надо зону таскать за собой
-		int areaX = m_map.getViewRectX(m_mapPosX, m_areaWidth);
-		int areaY = m_map.getViewRectY(m_mapPosY, m_areaHeight);
-		MapCell cell;
-		List<Actor> persons;
-		TimeService timeService = TimeService.getInstance();
-		// Останавляваем всех выпавших из активной зоны.
+		// Перемещение активной зоны.
 		//
-		timeService.unregisterNotInArea(new IntRange(areaX, areaX + m_areaWidth
-				- 1), new IntRange(areaY, areaY + m_areaHeight - 1));
-		// Активируем всех в активной зоне.
-		//
-		for (int i = areaX; i < areaX + m_areaWidth; i++) {
-			for (int j = areaY; j < areaY + m_areaHeight; j++) {
-				cell = m_map.getCell(i, j);
-				persons = cell.getPersons();
-				for (Actor a : persons) {
-					if (!timeService.isRegistered(a)) {
+		if (active) {
+			int areaX = m_map.getViewRectX(m_mapPosX, m_areaWidth);
+			int areaY = m_map.getViewRectY(m_mapPosY, m_areaHeight);
+			MapCell cell;
+			List<Actor> persons;
+			TimeService timeService = TimeService.getInstance();
+			// Останавляваем всех выпавших из активной зоны.
+			//
+			timeService.unregisterNotInArea(new IntRange(areaX, areaX
+					+ m_areaWidth - 1), new IntRange(areaY, areaY
+					+ m_areaHeight - 1));
+			// Активируем всех в активной зоне.
+			//
+			for (int i = areaX; i < areaX + m_areaWidth; i++) {
+				for (int j = areaY; j < areaY + m_areaHeight; j++) {
+					cell = m_map.getCell(i, j);
+					persons = cell.getPersons();
+					for (Actor a : persons) {
 						timeService.register(a);
 					}
 				}
@@ -141,12 +157,10 @@ public class Viewport {
 			for (int j = 0; j < m_height; j++, vy++) {
 				MapCell c = m_map.getCell(viewX, vy);
 				String str = c.getResultString();
-				float fade = 0.3f; // TODO DEBUG!!!
+				float fade = 0.7f; // TODO DEBUG уровень затемнения
 				if (c.getVisible() == VisibilityState.VISIBLE) {
-					// затенение освещения
-					// TODO ! А ТО -> радиус обзора должен быть в кричере?
-					//
-					float grad = fade / 15;
+					// TODO радиус обзора должен быть в кричере? А то!
+					float grad = fade / 15; // затенение освещения
 					Vector2f trg = new Vector2f(viewX, vy);
 					Vector2f src = new Vector2f(p.getX(), p.getY());
 
@@ -164,10 +178,10 @@ public class Viewport {
 				} else {
 					// Для дебага
 					//
-					AsciiDraw.getInstance().draw(str, i + m_scrPosX,
+					/*AsciiDraw.getInstance().draw(str, i + m_scrPosX,
 							j + m_scrPosY,
 							getColor(c.getResultFg()).darker(fade),
-							getColor(c.getResultBg()).darker(fade), gr);
+							getColor(c.getResultBg()).darker(fade), gr);*/
 				}
 			}
 		}

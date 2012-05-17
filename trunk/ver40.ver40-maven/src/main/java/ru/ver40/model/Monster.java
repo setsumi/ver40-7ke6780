@@ -12,16 +12,6 @@ public class Monster extends Actor {
 
 	private static final long serialVersionUID = 7299922403330474136L;	
 	
-	private String name;
-	
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
 	private AIProvider ai;
 	
 	public Monster() {
@@ -75,7 +65,7 @@ public class Monster extends Actor {
 		Monster ret = new Monster();
 		ret.setName("Watcher Fly");
 		ret.getSymbol().setSymbol('i');
-		ret.getSymbol().setFgColor(0x039942);
+		ret.getSymbol().setFgColor(0x00F000); // 0x039942
 		ret.setBlast(10);
 		ret.setFight(15);
 		ret.setResist(0);
@@ -89,8 +79,8 @@ public class Monster extends Actor {
 		return ret;
 	}	
 	
-	@Override
-	public String toString() {
-		return name;
-	}
+//	@Override
+//	public String toString() {
+//		return name;
+//	}
 }

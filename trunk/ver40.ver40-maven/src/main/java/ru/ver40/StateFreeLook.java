@@ -74,7 +74,7 @@ public class StateFreeLook extends UserGameState {
 		// Двигаем вид.
 		Point pos = new Point(m_viewport.getMapPosX(), m_viewport.getMapPosY());
 		Helper.moveMapPointKeyboard(pos, key, c);
-		m_viewport.moveTo(pos.x, pos.y);
+		m_viewport.moveTo(pos.x, pos.y, false);
 	}
 
 	@Override

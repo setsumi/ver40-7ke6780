@@ -1,11 +1,11 @@
 package ru.ver40.service;
 
 import java.io.Serializable;
+import java.util.Iterator;
 import java.util.LinkedList;
 
 import org.apache.commons.lang.math.IntRange;
 
-import ru.ver40.model.Actor;
 import ru.ver40.model.time.ITimedEntity;
 
 /**
@@ -45,9 +45,10 @@ public class TimeService implements Serializable {
 	}
 	
 	public void register(ITimedEntity entity) {
-		entity.setActionPoints(0);
-		entities.addLast(entity);
-		
+		if (!entities.contains(entity)) {
+			entity.setActionPoints(0);
+			entities.addLast(entity);
+		}
 	}
 	
 	public void unregister(ITimedEntity entity) {
@@ -76,24 +77,18 @@ public class TimeService implements Serializable {
 	}
 
 	/**
-	 * Ищет объект среди активных.
-	 */
-	public boolean isRegistered(ITimedEntity entity) {
-		return entities.contains(entity);
-	}
-
-	/**
-	 * Останавливает все объекты не попадающие в указанный диапазон координат на
-	 * карте.
+	 * Разрегистрирует все объекты не попадающие в указанный диапазон координат
+	 * на карте.
 	 */
 	public void unregisterNotInArea(IntRange rx, IntRange ry) {
-		Actor actor; // TODO ! добавить получение координат в ITimedEntity?
-		for (ITimedEntity te : entities) {
-			actor = (Actor) te;
-			if (!rx.containsInteger(actor.getX())
-					|| !ry.containsInteger(actor.getY())) {
-				unregister(te);
+		Iterator<ITimedEntity> it = entities.iterator();
+		while (it.hasNext()) {
+			ITimedEntity entity = it.next();
+			if (!rx.containsInteger(entity.getX())
+					|| !ry.containsInteger(entity.getY())) {
+				it.remove();
 			}
 		}
 	}
+
 }

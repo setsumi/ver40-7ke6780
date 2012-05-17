@@ -18,4 +18,9 @@ public interface ITimedEntity {
 	int getActionPoints();
 	
 	void setActionPoints(int ap);
+
+	// Для TimeService.unregisterNotInArea()
+	int getX();
+
+	int getY();
 }
