@@ -13,6 +13,7 @@ import rlforj.los.IFovAlgorithm;
 import rlforj.los.PrecisePermissive;
 import rlforj.math.Point2I;
 import ru.ver40.map.FloorMap;
+import ru.ver40.map.ViewMinimap;
 import ru.ver40.map.Viewport;
 import ru.ver40.map.gen.FeatureGenerator;
 import ru.ver40.map.gen.IMapGenarator;
@@ -43,13 +44,14 @@ public class StateGameplay extends UserGameState {
 
 	private WndStatusPanel statusPanel;
 	private int timeInGame = 0;
-
+	private ViewMinimap minimap; // миникарта
 
 	private boolean targetting = false;
 	private Point targetPos = null;
 	private int targetRadius = 15;
 	private List<Point2I> targetLine = null;
 	private boolean targetValid = false;
+
 
 	/**
 	 * Конструктор.
@@ -101,17 +103,19 @@ public class StateGameplay extends UserGameState {
 				}
 			}
 		}
-		viewport.moveTo(player.getX(), player.getY());
 		map.setPlayer(player);
 		fov = new PrecisePermissive();
 
+		viewport.moveTo(player.getX(), player.getY());
+		minimap = new ViewMinimap(59, 31, 20, 8, player.getX(), player.getY(),
+				2, Color.green.darker(0.4f));
+
 		// Приветственное сообщение.
 		GameLog gl = GameLog.getInstance();
-		gl.log("[m] - view map");
-		gl.log("[k] - targeting mode");
-		gl.log("[,] - pick up items");
-		gl.log("[/] - look mode");
-		gl.log("[`] - system log");
+		gl.log("[m] view map");
+		gl.log("[k] targeting mode");
+		gl.log("[,] pick up items");
+		gl.log("[/] look mode");
 		gl.log(GameLog.Type.IMPORTANT, "Welcome to base reality.");
 		gl.log(GameLog.Type.IMPORTANT, "Substantiation sequence complete.");
 	}
@@ -146,7 +150,10 @@ public class StateGameplay extends UserGameState {
 		}
 		// Миникарта.
 		if (c == 'm') {
-			StateMinimap mmap = new StateMinimap(8, 12, 0, 0, 256, 256);
+			StateMinimap mmap = new StateMinimap(viewport.getScreenPosX(),
+					viewport.getScreenPosY() + 1, viewport.getWidth(),
+					viewport.getHeight() - 1, player.getX(), player.getY(), 2,
+					Color.green.darker(0.4f), viewport);
 			mmap.showModal();
 		}
 
@@ -216,6 +223,7 @@ public class StateGameplay extends UserGameState {
 		// Базовый интерфейс игры.
 		//
 		viewport.draw(g, player);
+		minimap.draw(g);
 		statusPanel.draw(g);
 		GameLog.getInstance().draw(g);
 
@@ -254,6 +262,7 @@ public class StateGameplay extends UserGameState {
 		TimeService.getInstance().tick();
 
 		viewport.moveTo(player.getX(), player.getY());
+		minimap.moveTo(player.getX(), player.getY());
 		// Запуск анимаций.
 		if (animations.count() > 0) {
 			animations.showModal();

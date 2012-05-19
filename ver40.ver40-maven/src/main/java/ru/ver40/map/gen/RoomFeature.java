@@ -3,7 +3,6 @@ package ru.ver40.map.gen;
 import ru.ver40.map.gen.FeatureGenerator.IFeature;
 import ru.ver40.model.MapCell;
 import ru.ver40.model.Monster;
-import ru.ver40.service.TimeService;
 import ru.ver40.util.Rng;
 
 public class RoomFeature implements IFeature {

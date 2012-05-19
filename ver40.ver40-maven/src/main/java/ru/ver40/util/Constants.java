@@ -118,6 +118,11 @@ public class Constants {
 	 */
 	public static final int LOG_MAX_SIZE = 1024;
 
+	/**
+	 * Максимальный размер кэша изображений чанков миникарты.
+	 */
+	public static final int MINIMAP_IMAGE_CACHE_SIZE = 25;
+
 	// Стейты.
 	/**
 	 * Стейт главного меню.

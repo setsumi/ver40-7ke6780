@@ -12,6 +12,7 @@ public class Door extends Building {
 	public Door() {
 		opened = false;
 		getSymbol().setSymbol('+');
+		getSymbol().setFgColor(0x808000);
 		setPassable(false);
 		setActive(true);
 	}
