@@ -65,7 +65,7 @@ public class Monster extends Actor {
 		Monster ret = new Monster();
 		ret.setName("Watcher Fly");
 		ret.getSymbol().setSymbol('i');
-		ret.getSymbol().setFgColor(0x00F000); // 0x039942
+		ret.getSymbol().setFgColor(0x039942);
 		ret.setBlast(10);
 		ret.setFight(15);
 		ret.setResist(0);

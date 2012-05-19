@@ -18,15 +18,15 @@ public class Symbol implements Serializable {
 	private int bgColor, fgColor;
 	
 	public Symbol() {
-		this('.', 0x000000, 0xFFFFFF);
+		this('.', 0x000000, 0x808080);
 	}
 	
 	public Symbol(char symbol) {
-		this(symbol, 0x000000, 0xFFFFFF);
+		this(symbol, 0x000000, 0x808080);
 	}
 	
 	public Symbol(char symbol, int bgColor) {
-		this(symbol,bgColor, 0xFFFFFF);
+		this(symbol, bgColor, 0x808080);
 	}
 
 	public Symbol(char c, int bgColor, int fgColor) {

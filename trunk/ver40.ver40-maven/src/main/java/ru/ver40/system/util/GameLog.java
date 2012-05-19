@@ -119,7 +119,7 @@ public class GameLog {
 			if (line.stack > 1)
 				tail = " [" + line.stack + "]";
 			msg += tail;
-			msg += StringUtils.repeat(" ", m_width - msg.length());
+//			msg += StringUtils.repeat(" ", m_width - msg.length());
 			if (msg.length() > m_width) {
 				if (tail.length() > 0)
 					tail = tail.replaceFirst("\\A.", ">");

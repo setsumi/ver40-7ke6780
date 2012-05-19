@@ -1,18 +1,23 @@
 package ru.ver40.system.ui;
 
+import java.util.Enumeration;
+import java.util.StringTokenizer;
+import java.util.Vector;
+
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 
 import ru.ver40.system.util.AsciiDraw;
 
 /**
- * Строчка текста на окне.
+ * Многострочный текст на окне.
  * 
  */
 public class CtrlLabel extends BaseWindow {
 
-	String m_text = null;
-	Color m_backColor = null;
+	private String m_text;
+	private String[] m_lines;
+	private Color m_backColor;
 
 	/**
 	 * Конструктор (без цвета фона).
@@ -53,8 +58,29 @@ public class CtrlLabel extends BaseWindow {
 	 */
 	public void setText(String text) {
 		m_text = text;
-		m_width = m_text.length();
-		m_height = 1;
+
+		StringTokenizer st = new StringTokenizer(m_text, "\n");
+		int maxWidth = 0;
+		Vector<String> v = new Vector<String>();
+		while (st.hasMoreTokens()) {
+			String token = st.nextToken();
+			int width = token.length();
+			maxWidth = (maxWidth < width) ? width : maxWidth;
+			v.addElement(token);
+		}
+		int lines = v.size();
+		if (lines < 1) {
+			m_lines = null;
+			lines = 1;
+		} else {
+			m_lines = new String[lines];
+			int i = 0;
+			for (Enumeration<String> e = v.elements(); e.hasMoreElements(); i++) {
+				m_lines[i] = (String) e.nextElement();
+			}
+		}
+		m_width = maxWidth;
+		m_height = lines;
 	}
 
 	/**
@@ -66,12 +92,19 @@ public class CtrlLabel extends BaseWindow {
 
 	@Override
 	public void draw(Graphics g) {
-		if (m_backColor != null) {
-			AsciiDraw.getInstance().draw(m_text, m_parent.getPosX() + m_posX,
-					m_parent.getPosY() + m_posY, m_color, m_backColor, g);
-		} else {
-			AsciiDraw.getInstance().draw(m_text, m_parent.getPosX() + m_posX,
-					m_parent.getPosY() + m_posY, m_color);
+		if (m_lines != null) {
+			for (int i = 0; i < m_lines.length; i++) {
+				if (m_backColor != null) {
+					AsciiDraw.getInstance().draw(m_lines[i],
+							m_parent.getPosX() + m_posX,
+							m_parent.getPosY() + m_posY + i, m_color,
+							m_backColor, g);
+				} else {
+					AsciiDraw.getInstance().draw(m_lines[i],
+							m_parent.getPosX() + m_posX,
+							m_parent.getPosY() + m_posY + i, m_color);
+				}
+			}
 		}
 	}
 

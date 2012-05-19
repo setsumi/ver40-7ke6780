@@ -157,10 +157,10 @@ public class Viewport {
 			for (int j = 0; j < m_height; j++, vy++) {
 				MapCell c = m_map.getCell(viewX, vy);
 				String str = c.getResultString();
-				float fade = 0.7f; // TODO DEBUG уровень затемнения
+				float fade = 0.6f; // TODO DEBUG уровень затемнения
 				if (c.getVisible() == VisibilityState.VISIBLE) {
 					// TODO радиус обзора должен быть в кричере? А то!
-					float grad = fade / 15; // затенение освещения
+					float grad = 0.0f;// fade / 15; // затенение освещения
 					Vector2f trg = new Vector2f(viewX, vy);
 					Vector2f src = new Vector2f(p.getX(), p.getY());
 
@@ -225,4 +225,19 @@ public class Viewport {
 		return m_mapPosY;
 	}
 
+	public int getScreenPosX() {
+		return m_scrPosX;
+	}
+
+	public int getScreenPosY() {
+		return m_scrPosY;
+	}
+
+	public int getMapTopX() {
+		return m_topX;
+	}
+
+	public int getMapTopY() {
+		return m_topY;
+	}
 }

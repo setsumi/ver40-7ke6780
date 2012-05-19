@@ -1,5 +1,6 @@
 package ru.ver40.map;
 
+import java.awt.Point;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -22,7 +23,7 @@ import ru.ver40.util.Constants;
  */
 public class FloorMap implements ILosBoard {
 
-	public class CellLocation {
+	private class CellLocation {
 		public Chunk m_chunk; // Указатель на чанк.
 		public int m_index; // Линейный индекс клетки в чанке.
 
@@ -73,10 +74,95 @@ public class FloorMap implements ILosBoard {
 		return m_path;
 	}
 
-	public CellLocation getChunk(int x, int y) {
-		// TODO разобраться с этим хламом от миникарты
-		CellLocation loc = locateCell(x, y);
-		// Image ret = loc.m_chunk.getMiniMap();
+	/**
+	 * Получить координаты чанка, которому принадлежит клетка.
+	 */
+	public Point getChunkXY(int cellX, int cellY) {
+		return new Point(cellX / Constants.MAP_CHUNK_SIZE, cellY
+				/ Constants.MAP_CHUNK_SIZE);
+	}
+
+	/**
+	 * Получить индекс чанка из его координат.
+	 */
+	public int getChunkIndex(int chunkX, int chunkY) {
+		return chunkY * Constants.MAP_MAX_SIZE_CHUNKS + chunkX;
+	}
+
+	/**
+	 * Получить индекс клетки в чанке по её координатам на карте.
+	 */
+	public int getCellIndex(int cellX, int cellY) {
+		return (cellY % Constants.MAP_CHUNK_SIZE) * Constants.MAP_CHUNK_SIZE
+				+ (cellX % Constants.MAP_CHUNK_SIZE);
+	}
+
+	/**
+	 * Вернуть указатель на чанк по его координатам. Без создания новых чанков.
+	 * 
+	 * @param chunkX
+	 *            координаты чанка
+	 * @param chunkY
+	 *            координаты чанка
+	 * @return Chunk или null, если чанк не существует.
+	 */
+	public Chunk getChunkPassive(int chunkX, int chunkY) {
+		Chunk ch = null;
+		int index = getChunkIndex(chunkX, chunkY);
+		if (m_seenChunks.contains(index)) {
+			// ищем в кэше
+			for (Chunk c : m_chunks) {
+				if (c.getIndex() == index) {
+					ch = c;
+					break;
+				}
+			}
+			// если нет в кэше, просто грузим в память не трогая кэш
+			if (ch == null) {
+				ch = new Chunk(this, index);
+			}
+		}
+		return ch;
+	}
+
+	/**
+	 * Вернуть чанк и индекс в чанке по координатам клетки на карте. Без
+	 * создания новых чанков.
+	 * 
+	 * @param x
+	 *            координаты клетки на карте
+	 * @param y
+	 *            координаты клетки на карте
+	 * @return CellLocation или null, если чанк не существует.
+	 */
+	public CellLocation getCellLocationPassive(int x, int y) {
+		if (!contains(x, y))
+			new IllegalArgumentException("Invalid map coordinates: " + x + ", "
+					+ y + " (Must be 0.." + (Constants.MAP_MAX_SIZE - 1));
+
+		// координаты чанка
+		int cx = x / Constants.MAP_CHUNK_SIZE;
+		int cy = y / Constants.MAP_CHUNK_SIZE;
+		// линейный индекс чанка
+		int cli = cy * Constants.MAP_MAX_SIZE_CHUNKS + cx;
+		// ищем чанк
+		CellLocation loc = null;
+		if (m_seenChunks.contains(cli)) {
+			// индекс клетки в квадрате чанка
+			int ci = (y % Constants.MAP_CHUNK_SIZE) * Constants.MAP_CHUNK_SIZE
+					+ (x % Constants.MAP_CHUNK_SIZE);
+			// ищем в кэше
+			for (Chunk c : m_chunks) {
+				if (c.getIndex() == cli) {
+					loc = new CellLocation(c, ci);
+					break;
+				}
+			}
+			// если нет в кэше, просто грузим в память не трогая кэш
+			if (loc == null) {
+				loc = new CellLocation(new Chunk(this, cli), ci);
+			}
+		}
 		return loc;
 	}
 
@@ -95,6 +181,7 @@ public class FloorMap implements ILosBoard {
 		int cy = y / Constants.MAP_CHUNK_SIZE;
 		// линейный индекс чанка
 		int cli = cy * Constants.MAP_MAX_SIZE_CHUNKS + cx;
+		// добавляем чанк в существующие
 		m_seenChunks.add(cli);
 		// ищем чанк в кэше
 		Chunk ch = null, c = null;
@@ -274,10 +361,11 @@ public class FloorMap implements ILosBoard {
 	 * Получить валидные координаты левого верхнего угла окна вьюпорта по
 	 * желаемому положению на карте его центра.
 	 * 
-	 * @param y
-	 *            - координата окна (в центре, если окно не у края карты)
+	 * @param x
+	 *            - координата X окна (в центре, если окно не у края карты)
 	 * @param w
 	 *            - ширина окна
+	 * @return
 	 */
 	public int getViewRectX(int x, int w) {
 		int viewX = x - (w / 2);
@@ -293,9 +381,10 @@ public class FloorMap implements ILosBoard {
 	 * желаемому положению на карте его центра.
 	 * 
 	 * @param y
-	 *            - координата (в центре, если окно не у края карты)
+	 *            - координата Y окна (в центре, если окно не у края карты)
 	 * @param h
 	 *            - высота окна
+	 * @return
 	 */
 	public int getViewRectY(int y, int h) {
 		int viewY = y - (h / 2);
