@@ -43,7 +43,7 @@ public class StateUseMapObject extends UserGameState {
 		m_viewport = viewport;
 		m_playerPos = new Point(player.getX(), player.getY());
 		m_selPos = new Point(-1, -1);
-		m_exit = false;
+		m_exit = true;
 		m_color = new Color(1f, 1f, 1f, 0.5f);
 	}
 
@@ -90,9 +90,10 @@ public class StateUseMapObject extends UserGameState {
 				}
 			}
 		}
-		if (m_selPos.x == -1) {
+		if (m_selPos.x == -1 || m_selPos.y == -1) {
 			nothingToUse();
 		}
+		m_exit = false;
 	}
 
 	@Override
