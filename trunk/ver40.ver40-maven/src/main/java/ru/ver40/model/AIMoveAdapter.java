@@ -9,7 +9,7 @@ import ru.ver40.map.FloorMap;
  * @author anon
  *
  */
-class AIMoveAdapter implements ILosBoard {
+public class AIMoveAdapter implements ILosBoard {
 	
 	private FloorMap map;
 	private int srcX, srcY, tgtX, tgtY;		

@@ -1,7 +1,5 @@
 package ru.ver40;
 
-import java.awt.Point;
-import java.util.List;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -11,24 +9,19 @@ import org.newdawn.slick.util.Log;
 
 import rlforj.los.IFovAlgorithm;
 import rlforj.los.PrecisePermissive;
-import rlforj.math.Point2I;
 import ru.ver40.map.FloorMap;
 import ru.ver40.map.ViewMinimap;
 import ru.ver40.map.Viewport;
 import ru.ver40.map.gen.FeatureGenerator;
 import ru.ver40.map.gen.IMapGenarator;
-import ru.ver40.model.MapCell;
 import ru.ver40.model.Player;
 import ru.ver40.service.MapService;
 import ru.ver40.service.TimeService;
-import ru.ver40.system.AnimationBulletFlight;
 import ru.ver40.system.UserGameState;
 import ru.ver40.system.ui.WndStatusPanel;
 import ru.ver40.system.util.DebugLog;
 import ru.ver40.system.util.GameLog;
 import ru.ver40.util.Constants;
-import ru.ver40.util.Helper;
-import ru.ver40.util.RoleSystem;
 
 /**
  * Главный стейт игры.
@@ -36,22 +29,34 @@ import ru.ver40.util.RoleSystem;
  */
 public class StateGameplay extends UserGameState {
 
-	public static Viewport viewport;
-	public static StateAnimation animations;
+	private static StateGameplay instance = null;
+	private static Viewport viewport = null;
+	private static StateAnimation animations = null;
+
+	public static StateGameplay getInstance() {
+		return instance;
+	}
+
+	public static Viewport getViewport() {
+		return viewport;
+	}
+
+	public static StateAnimation getAnimations() {
+		return animations;
+	}
 
 	private Player player;
 	private IFovAlgorithm fov;
-
-	private WndStatusPanel statusPanel;
-	private int timeInGame = 0;
+	private WndStatusPanel statusPanel; // панелька со статусом персонажа
+	private int timeInGame = 0; // счетчик ходов
 	private ViewMinimap minimap; // миникарта
 
-	private boolean targetting = false;
-	private Point targetPos = null;
-	private int targetRadius = 15;
-	private List<Point2I> targetLine = null;
-	private boolean targetValid = false;
+	// непрямой вызов нового хода из других стейтов
+	private boolean m_doNewTurn = false;
 
+	public void provokeNewTurn() {
+		m_doNewTurn = true;
+	}
 
 	/**
 	 * Конструктор.
@@ -59,23 +64,28 @@ public class StateGameplay extends UserGameState {
 	public StateGameplay() {
 		super();
 		attachToSystemState(Constants.STATE_GAMEPLAY);
+		//
+		instance = this;
 	}
 
 	@Override
 	public void onEnter(GameContainer gc, StateBasedGame game) {
 		super.onEnter(gc, game);
+		//
 		Log.debug("StateGameplay.onEnter()");
 	}
 
 	@Override
 	public void onLeave(GameContainer gc, StateBasedGame game) {
 		super.onLeave(gc, game);
+		//
 		Log.debug("StateGameplay.onLeave()");
 	}
 
 	@Override
 	public void onInit(GameContainer gc, StateBasedGame game) {
 		super.onInit(gc, game);
+		//
 		Log.debug("StateGameplay.onInit()");
 
 		FloorMap map = new FloorMap("map/test");
@@ -86,7 +96,6 @@ public class StateGameplay extends UserGameState {
 		player = new Player("Player");
 		TimeService.getInstance().register(player);
 		statusPanel = new WndStatusPanel(62, 1, Color.white, Color.black);
-		targetPos = new Point(0, 0);
 		animations = (StateAnimation) TheGame.getStateManager()
 				.getSystemState(Constants.STATE_ANIMATION).getClient();
 
@@ -123,7 +132,7 @@ public class StateGameplay extends UserGameState {
 	@Override
 	public void onUpdate(GameContainer gc, StateBasedGame game, int delta) {
 		super.onUpdate(gc, game, delta);
-
+		//
 		TimeService t = TimeService.getInstance();
 		while (t.getCurrentActor() != player || player.getActionPoints() < 0) {
 			t.tick();
@@ -134,6 +143,11 @@ public class StateGameplay extends UserGameState {
 		fov.visitFieldOfView(map, player.getX(), player.getY(), 15);
 
 		statusPanel.updateData(player, timeInGame);
+
+		if (m_doNewTurn) {
+			m_doNewTurn = false;
+			newTurn();
+		}
 	}
 
 	@Override
@@ -152,65 +166,23 @@ public class StateGameplay extends UserGameState {
 		if (c == 'm') {
 			StateMinimap mmap = new StateMinimap(viewport.getScreenPosX(),
 					viewport.getScreenPosY() + 1, viewport.getWidth(),
-					viewport.getHeight() - 1, player.getX(), player.getY(), 2,
+					viewport.getHeight() - 1, player.getX(), player.getY(), 1,
 					Color.green.darker(0.4f), viewport);
 			mmap.showModal();
 		}
-
+		// Стрельба.
 		if (key == Input.KEY_K) {
-			targetting = true;
-			targetPos.x = player.getX();
-			targetPos.y = player.getY();
-			if (targetLine != null) {
-				targetLine.clear();
-			}
-			targetValid = true;
+			StateShoot shoot = new StateShoot(player);
+			shoot.showModal();
 		}
-		if (targetting) {
-			if (Helper.moveMapPointKeyboard(targetPos, key, c)) {
-				// Берем линию до цели.
-				FloorMap map = MapService.getInstance().getMap();
-				targetLine = map.getLosLine(player.getX(), player.getY(),
-						targetPos.x, targetPos.y);
-				// Можно ли стрелять куда указывает прицел.
-				Point last = targetLine.get(targetLine.size() - 1);
-				targetValid = (targetPos.equals(last)
-						&& map.isObstacle(last.x, last.y) && new Point(
-						player.getX(), player.getY()).distance(targetPos) <= targetRadius);
-			}
-			// Огонь!
-			if (targetValid
-					&& (key == Input.KEY_NUMPAD5 || key == Input.KEY_ENTER)) {
-				targetting = false;
-				MapCell cell = MapService.getInstance().getMap()
-						.getCell(targetPos.x, targetPos.y);
-				if (!cell.getPersons().isEmpty()) {
-					RoleSystem.testBlast(player, cell.getPersons().get(0));					
-				}					
-				player.setKeyCode(Input.KEY_NUMPAD5);				
-				// добавить анимацию
-				AnimationBulletFlight animation = new AnimationBulletFlight(
-						viewport, targetLine, 20);
-				animations.add(animation);
-
-				newTurn();
-			}
-			// Передумали стрелять.
-			if (key == Input.KEY_ESCAPE) {
-				targetting = false;
-			}
-
-		}
-		if (!targetting) {
-			// Кривой детект нового хода.
-			if (key == Input.KEY_NUMPAD6 || key == Input.KEY_NUMPAD4
-					|| key == Input.KEY_NUMPAD2 || key == Input.KEY_NUMPAD8
-					|| key == Input.KEY_NUMPAD7 || key == Input.KEY_NUMPAD9
-					|| key == Input.KEY_NUMPAD1 || key == Input.KEY_NUMPAD3
-					|| key == Input.KEY_NUMPAD5) {
-				player.setKeyCode(key);
-				newTurn();
-			}
+		// Кривой детект нового хода.
+		if (key == Input.KEY_NUMPAD6 || key == Input.KEY_NUMPAD4
+				|| key == Input.KEY_NUMPAD2 || key == Input.KEY_NUMPAD8
+				|| key == Input.KEY_NUMPAD7 || key == Input.KEY_NUMPAD9
+				|| key == Input.KEY_NUMPAD1 || key == Input.KEY_NUMPAD3
+				|| key == Input.KEY_NUMPAD5) {
+			player.setKeyCode(key);
+			newTurn();
 		}
 	}
 
@@ -227,23 +199,6 @@ public class StateGameplay extends UserGameState {
 		statusPanel.draw(g);
 		GameLog.getInstance().draw(g);
 
-		// Прицеливанивае
-		//
-		if (targetting) {
-			if (targetLine != null) {
-				for (Point p : targetLine) {
-					viewport.drawString("x", p.x, p.y,
-							targetValid ? Color.yellow : Color.red,
-							Color.black, g);
-				}
-			}
-			viewport.drawString("X", targetPos.x, targetPos.y,
-					targetValid ? Color.yellow : Color.red, Color.black, g);
-			// DEBUG
-			g.setColor(Color.yellow);
-			g.drawString("Target: " + targetPos.x + ", " + targetPos.y, 100, 15);
-		}
-
 		// DEBUG
 		g.setColor(Color.red);
 		g.drawString(
@@ -255,7 +210,7 @@ public class StateGameplay extends UserGameState {
 	 * Надо вызывать из логики игры перед началом нового хода, чтобы обновлять
 	 * состояние логов.
 	 */
-	public void newTurn() {
+	private void newTurn() {
 		timeInGame++;
 		DebugLog.getInstance().resetNew();
 		GameLog.getInstance().resetNew();

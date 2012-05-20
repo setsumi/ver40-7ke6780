@@ -4,13 +4,7 @@ import java.awt.Point;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Vector;
-
-import rlforj.los.ILosAlgorithm;
 import rlforj.los.ILosBoard;
-import rlforj.los.PrecisePermissive;
-import rlforj.math.Point2I;
 import ru.ver40.model.Actor;
 import ru.ver40.model.MapCell;
 import ru.ver40.model.Player;
@@ -330,19 +324,6 @@ public class FloorMap implements ILosBoard {
 
 	public void setPlayer(Player player) {
 		this.player = player;
-	}
-
-	/**
-	 * Получить линию зрения от одной точки до другой.
-	 */
-	public List<Point2I> getLosLine(int fromX, int fromY, int toX, int toY) {
-		ILosAlgorithm los = new PrecisePermissive(); // BresLos(false);
-		los.existsLineOfSight(this, fromX, fromY, toX, toY, true);
-		List<Point2I> ret = los.getProjectPath();
-		if (ret == null) {
-			ret = new Vector<Point2I>();
-		}
-		return ret;
 	}
 
 	/**

@@ -48,10 +48,10 @@ public class ShootOnSeeAI implements AIProvider {
 				//
 				RoleSystem.testBlast(owner, player);
 
-				// TODO пока пихнул анимацию сода
+				// TODO пока пихнул анимацию выстрела монстра сюда
 				AnimationBulletFlight animation = new AnimationBulletFlight(
-				StateGameplay.viewport, los.getProjectPath(), 20);
-				StateGameplay.animations.add(animation);
+						StateGameplay.getViewport(), los.getProjectPath(), 20);
+				StateGameplay.getAnimations().add(animation);
 				// end of block
 				return 10;
 				

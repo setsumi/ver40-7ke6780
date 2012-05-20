@@ -6,7 +6,6 @@ import java.io.PrintStream;
 import java.util.Calendar;
 import java.util.LinkedList;
 
-import org.apache.commons.lang.StringUtils;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 

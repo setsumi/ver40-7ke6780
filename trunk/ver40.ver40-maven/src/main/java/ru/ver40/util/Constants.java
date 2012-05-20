@@ -148,6 +148,9 @@ public class Constants {
 	 * Стейт анимации (как ролик на скрипте).
 	 */
 	public static final int STATE_ANIMATION = 60;
-
+	/**
+	 * Стейт стрельбы.
+	 */
+	public static final int STATE_SHOOT = 70;
 }
 
