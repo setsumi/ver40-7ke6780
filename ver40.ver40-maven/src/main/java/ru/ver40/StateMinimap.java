@@ -151,11 +151,11 @@ public class StateMinimap extends UserGameState {
 	public void onKeyPressed(int key, char c) {
 		if (key == Input.KEY_ESCAPE) {
 			exitModal();
-		} else if (key == Input.KEY_SUBTRACT) {
+		} else if (c == '-'/*key == Input.KEY_SUBTRACT*/) {
 			if (--m_zoom < 1)
 				m_zoom = 1;
 			m_minimap.setZoom(m_zoom);
-		} else if (key == Input.KEY_ADD) {
+		} else if (c == '+'/*key == Input.KEY_ADD*/) {
 			if (++m_zoom > 3)
 				m_zoom = 3;
 			m_minimap.setZoom(m_zoom);

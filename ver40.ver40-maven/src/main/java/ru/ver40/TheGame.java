@@ -59,7 +59,10 @@ public class TheGame extends StateBasedGame {
 
 		state = new SystemGameState(Constants.STATE_ANIMATION, m_stateManager);
 		m_stateManager.add(state);
-		new StateAnimation();
+		new StateAnimation(); // Статический стейт. Не создавать динамически!
+
+		state = new SystemGameState(Constants.STATE_SHOOT, m_stateManager);
+		m_stateManager.add(state);
 	}
 
 	/*

@@ -3,7 +3,6 @@ package ru.ver40.model;
 import org.newdawn.slick.Input;
 import ru.ver40.map.FloorMap;
 import ru.ver40.service.MapService;
-import ru.ver40.service.TimeService;
 import ru.ver40.util.RoleSystem;
 
 /**

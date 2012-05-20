@@ -1,9 +1,5 @@
 package ru.ver40;
 
-import java.util.Calendar;
-
-import ru.ver40.map.Chunk;
-import ru.ver40.map.FloorMap;
 import ru.ver40.map.gen.FeatureGenerator;
 import ru.ver40.map.gen.FeatureGenerator.Point;
 import ru.ver40.map.gen.FeatureGenerator.Position;
