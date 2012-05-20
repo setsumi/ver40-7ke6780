@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import rlforj.los.ILosBoard;
 import ru.ver40.model.Actor;
+import ru.ver40.model.Building;
 import ru.ver40.model.MapCell;
 import ru.ver40.model.Player;
 import ru.ver40.model.VisibilityState;
@@ -375,4 +376,14 @@ public class FloorMap implements ILosBoard {
 			viewY = Constants.MAP_MAX_SIZE - h;
 		return viewY;
 	}
+
+	/**
+	 * Проверить, есть ли на указанной клетке активный объект.
+	 */
+	public boolean isActive(int x, int y) {
+		Building building;
+		return ((building = getCell(x, y).getBuilding()) != null && building
+				.isActive());
+	}
+
 }

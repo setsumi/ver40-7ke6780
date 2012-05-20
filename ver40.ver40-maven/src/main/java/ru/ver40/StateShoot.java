@@ -22,6 +22,10 @@ import ru.ver40.util.Constants;
 import ru.ver40.util.Helper;
 import ru.ver40.util.RoleSystem;
 
+/**
+ * Стрельба по врагам.
+ * 
+ */
 public class StateShoot extends UserGameState {
 
 	private Player m_player;

@@ -152,5 +152,10 @@ public class Constants {
 	 * Стейт стрельбы.
 	 */
 	public static final int STATE_SHOOT = 70;
+	/**
+	 * Стейт использования объектов на карте.
+	 */
+	public static final int STATE_USEMAPOBJECT = 80;
+
 }
 
