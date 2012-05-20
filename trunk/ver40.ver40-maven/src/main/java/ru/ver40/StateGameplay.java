@@ -121,10 +121,11 @@ public class StateGameplay extends UserGameState {
 
 		// Приветственное сообщение.
 		GameLog gl = GameLog.getInstance();
+		gl.log("[u] use object");
 		gl.log("[m] view map");
-		gl.log("[k] targeting mode");
+		gl.log("[k] shoot");
 		gl.log("[,] pick up items");
-		gl.log("[/] look mode");
+		gl.log("[/] look around");
 		gl.log(GameLog.Type.IMPORTANT, "Welcome to base reality.");
 		gl.log(GameLog.Type.IMPORTANT, "Substantiation sequence complete.");
 	}
@@ -171,9 +172,14 @@ public class StateGameplay extends UserGameState {
 			mmap.showModal();
 		}
 		// Стрельба.
-		if (key == Input.KEY_K) {
+		if (c == 'k') {
 			StateShoot shoot = new StateShoot(player);
 			shoot.showModal();
+		}
+		// Использовать объект на карте.
+		if (c == 'u') {
+			StateUseMapObject use = new StateUseMapObject(player, viewport);
+			use.showModal();
 		}
 		// Кривой детект нового хода.
 		if (key == Input.KEY_NUMPAD6 || key == Input.KEY_NUMPAD4

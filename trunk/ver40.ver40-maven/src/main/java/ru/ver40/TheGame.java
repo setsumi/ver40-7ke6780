@@ -63,6 +63,10 @@ public class TheGame extends StateBasedGame {
 
 		state = new SystemGameState(Constants.STATE_SHOOT, m_stateManager);
 		m_stateManager.add(state);
+
+		state = new SystemGameState(Constants.STATE_USEMAPOBJECT,
+				m_stateManager);
+		m_stateManager.add(state);
 	}
 
 	/*
