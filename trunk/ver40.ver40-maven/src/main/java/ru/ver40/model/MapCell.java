@@ -71,6 +71,7 @@ public class MapCell implements Serializable {
 	}
 
 	public void setBuilding(Building building) {
+		building.setParent(this);
 		this.building = building;
 	}
 	
