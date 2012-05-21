@@ -26,7 +26,7 @@ public class Building extends GObject {
 	 * Вызывается когда используют данное сооружение
 	 */
 	public void use() {	
-		
+		beh.behave(this);
 	}
 
 	public IBuildingBehaviour getBeh() {

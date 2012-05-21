@@ -141,14 +141,6 @@ public class MapCell implements Serializable {
 				&& (building == null ? true : building.isPassable());
 	}
 
-	public boolean isPassablePossible() {
-		boolean passable = true;
-		if (building != null) {
-			passable = false;
-		}
-		return floor.isPassable() && passable;
-	}
-	
 	/*
 	 * Статические фабрики
 	 */
@@ -176,6 +168,7 @@ public class MapCell implements Serializable {
 		door.setBeh(new DoorBehaviour());
 		door.setSymbol(new Symbol('+', 0x000000, 0xC0C0C0));
 		door.setPassable(false);
+		door.setActive(true);
 		ret.setBuilding(door);
 		return ret;
 	}

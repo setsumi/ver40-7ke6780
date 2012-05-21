@@ -9,6 +9,9 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 
+import ru.ver40.model.Building;
+import ru.ver40.model.DoorBehaviour;
+import ru.ver40.model.MapCell;
 import ru.ver40.service.MapService;
 import ru.ver40.system.util.AsciiDraw;
 import ru.ver40.system.util.FilterableImage;
@@ -79,6 +82,18 @@ public class ViewMinimap {
 	}
 
 	/**
+	 * Проходима ли клетка в принципе (без учета текущей обстановки).
+	 */
+	private boolean isCellPassable(MapCell cell) {
+		boolean passable = true;
+		Building building = cell.getBuilding();
+		if (building != null && !(building.getBeh() instanceof DoorBehaviour)) {
+			passable = false;
+		}
+		return cell.getFloor().isPassable() && passable;
+	}
+
+	/**
 	 * Сформировать изображение миникарты чанка.
 	 */
 	private FilterableImage getChunkImage(int chunkX, int chunkY) {
@@ -113,7 +128,7 @@ public class ViewMinimap {
 			int ci = 0;
 			for (int i = 0; i < Constants.MAP_CHUNK_SIZE; i++) {
 				for (int j = 0; j < Constants.MAP_CHUNK_SIZE; j++) {
-					if (chunk.getCell(ci).isPassablePossible()) {
+					if (isCellPassable(chunk.getCell(ci))) {
 						g.fillRect(j, i, 1, 1);
 					}
 					ci++;

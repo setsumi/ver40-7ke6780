@@ -1,6 +1,6 @@
 package ru.ver40.model;
 
-class DoorBehaviour implements IBuildingBehaviour {
+public class DoorBehaviour implements IBuildingBehaviour {
 	
 	private boolean opened;
 
