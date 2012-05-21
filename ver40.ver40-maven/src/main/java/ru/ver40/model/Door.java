@@ -19,16 +19,6 @@ public class Door extends Building {
 	
 	@Override
 	public void use() {
-		if (!opened) {
-			getSymbol().setSymbol('/');
-			setPassable(true);
-			opened = !opened;
-		} else {
-			if (getParent().isPassable()) {
-				getSymbol().setSymbol('+');
-				setPassable(false);
-				opened = !opened;
-			}
-		}
+		
 	}
 }

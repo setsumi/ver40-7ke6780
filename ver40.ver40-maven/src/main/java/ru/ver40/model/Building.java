@@ -15,6 +15,8 @@ public class Building extends GObject {
 	 */
 	private boolean active;
 	
+	private IBuildingBehaviour beh;
+	
 	/**
 	 * Серийная версия класса
 	 */
@@ -23,7 +25,16 @@ public class Building extends GObject {
 	/**
 	 * Вызывается когда используют данное сооружение
 	 */
-	public void use() {		
+	public void use() {	
+		
+	}
+
+	public IBuildingBehaviour getBeh() {
+		return beh;
+	}
+
+	public void setBeh(IBuildingBehaviour beh) {
+		this.beh = beh;
 	}
 
 	public boolean isActive() {
