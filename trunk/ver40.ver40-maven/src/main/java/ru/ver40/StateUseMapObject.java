@@ -76,16 +76,14 @@ public class StateUseMapObject extends UserGameState {
 			m_selPos.y = m_playerPos.y;
 		} else {
 			int x, y;
-			found: {
-				for (int i = m_playerPos.x - 1; i <= m_playerPos.x + 1; i++) {
-					for (int j = m_playerPos.y - 1; j <= m_playerPos.y + 1; j++) {
-						x = FloorMap.normalizePos(i);
-						y = FloorMap.normalizePos(j);
-						if (m_map.isActive(x, y)) {
-							m_selPos.x = x;
-							m_selPos.y = y;
-							break found;
-						}
+			o: for (int i = m_playerPos.x - 1; i <= m_playerPos.x + 1; i++) {
+				for (int j = m_playerPos.y - 1; j <= m_playerPos.y + 1; j++) {
+					x = FloorMap.normalizePos(i);
+					y = FloorMap.normalizePos(j);
+					if (m_map.isActive(x, y)) {
+						m_selPos.x = x;
+						m_selPos.y = y;
+						break o;
 					}
 				}
 			}
