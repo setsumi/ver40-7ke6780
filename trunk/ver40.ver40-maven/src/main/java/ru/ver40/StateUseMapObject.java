@@ -90,10 +90,10 @@ public class StateUseMapObject extends UserGameState {
 				}
 			}
 		}
+		m_exit = false;
 		if (m_selPos.x == -1 || m_selPos.y == -1) {
 			nothingToUse();
 		}
-		m_exit = false;
 	}
 
 	@Override
