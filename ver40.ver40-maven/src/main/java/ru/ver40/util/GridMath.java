@@ -91,22 +91,22 @@ public class GridMath {
 		
 	}
 	
-	private class MapActorDepthAdapter implements IDepthProvider {
-		
-		private FloorMap map;
-
-		public MapActorDepthAdapter(FloorMap map) {
-			this.map = map;
-		}
-
-		@Override
-		public int getMaxDepth(int x, int y) {
-			return 1; // 1 Actor per cell
-		}
-
-		@Override
-		public int getDepth(int x, int y) {
-			return map.getCell(x, y).getPersons().isEmpty() ? 0 : 1;
-		}		
-	}	
+//	private class MapActorDepthAdapter implements IDepthProvider {
+//		
+//		private FloorMap map;
+//
+//		public MapActorDepthAdapter(FloorMap map) {
+//			this.map = map;
+//		}
+//
+//		@Override
+//		public int getMaxDepth(int x, int y) {
+//			return 1; // 1 Actor per cell
+//		}
+//
+//		@Override
+//		public int getDepth(int x, int y) {
+//			return map.getCell(x, y).getPersons().isEmpty() ? 0 : 1;
+//		}		
+//	}	
 }
