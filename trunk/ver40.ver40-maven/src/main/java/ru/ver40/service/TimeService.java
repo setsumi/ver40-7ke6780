@@ -96,4 +96,10 @@ public class TimeService implements Serializable {
 		}
 	}
 
+	/**
+	 * Разрегистрирует все объекты (при переходе на другую карту например).
+	 */
+	public void unregisterAll() {
+		entities.clear();
+	}
 }

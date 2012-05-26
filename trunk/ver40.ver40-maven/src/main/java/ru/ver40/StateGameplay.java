@@ -1,5 +1,7 @@
 package ru.ver40;
 
+import java.awt.Point;
+
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -12,8 +14,6 @@ import rlforj.los.PrecisePermissive;
 import ru.ver40.map.FloorMap;
 import ru.ver40.map.ViewMinimap;
 import ru.ver40.map.Viewport;
-import ru.ver40.map.gen.FeatureGenerator;
-import ru.ver40.map.gen.IMapGenarator;
 import ru.ver40.model.Player;
 import ru.ver40.service.MapService;
 import ru.ver40.service.TimeService;
@@ -88,36 +88,35 @@ public class StateGameplay extends UserGameState {
 		//
 		Log.debug("StateGameplay.onInit()");
 
-		FloorMap map = new FloorMap("map/test");
-		MapService.getInstance().setcMap(map);
-		viewport = new Viewport(map, 60, 30, 1, 1);
 		GameLog.create(1, 31, Constants.ASCII_SCREEN_WIDTH - 2, 8,
 				Constants.GAME_LOG_BACKCOLOR);
-		player = new Player("Player");
-		TimeService.getInstance().register(player);
 		statusPanel = new WndStatusPanel(62, 1, Color.white, Color.black);
 		animations = (StateAnimation) TheGame.getStateManager()
 				.getSystemState(Constants.STATE_ANIMATION).getClient();
-
-		IMapGenarator gen = new FeatureGenerator();
-		gen.generate(map);
-
-		o: for (int y = 190; y < 210; ++y) {
-			for (int x = 190; x < 210; ++x) {
-				if (!map.isObstacle(x, y)) {
-					player.setX(x);
-					player.setY(x);
-					map.getCell(x, y).addPerson(player);
-					break o;
-				}
-			}
-		}
-		map.setPlayer(player);
 		fov = new PrecisePermissive();
+		viewport = new Viewport(60, 30, 1, 1);
+		minimap = new ViewMinimap(59, 31, 20, 8, 0, 0, 2, Color.green.darker(0.4f));
+		player = new Player("Player");
+		TimeService.getInstance().register(player);
 
-		viewport.moveTo(player.getX(), player.getY());
-		minimap = new ViewMinimap(59, 31, 20, 8, player.getX(), player.getY(),
-				2, Color.green.darker(0.4f));
+		MapService.getInstance().gotoLevel(Constants.LEVELS_MAX_LEVEL / 2, 200, 200);
+		// newMap(200, 200);
+//		FloorMap map = new FloorMap("map/test");
+//		MapService.getInstance().setcMap(map);
+
+//		IMapGenarator gen = new FeatureGenerator();
+//		gen.generate(map);
+
+//		o: for (int y = 190; y < 210; ++y) {
+//			for (int x = 190; x < 210; ++x) {
+//				if (!map.isObstacle(x, y)) {
+//					player.setX(x);
+//					player.setY(y);
+//					map.getCell(x, y).addPerson(player);
+//					break o;
+//				}
+//			}
+//		}
 
 		// Приветственное сообщение.
 		GameLog gl = GameLog.getInstance();
@@ -173,7 +172,7 @@ public class StateGameplay extends UserGameState {
 		}
 		// Стрельба.
 		if (c == 'k') {
-			StateShoot shoot = new StateShoot(player);
+			StateShoot shoot = new StateShoot(player, viewport);
 			shoot.showModal();
 		}
 		// Использовать объект на карте.
@@ -198,8 +197,9 @@ public class StateGameplay extends UserGameState {
 
 	@Override
 	public void onRender(GameContainer gc, StateBasedGame game, Graphics g) {
-		// Базовый интерфейс игры.
+		super.onRender(gc, game, g);
 		//
+		// Базовый интерфейс игры.
 		viewport.draw(g, player);
 		minimap.draw(g);
 		statusPanel.draw(g);
@@ -228,5 +228,26 @@ public class StateGameplay extends UserGameState {
 		if (animations.count() > 0) {
 			animations.showModal();
 		}
+	}
+
+	/**
+	 * Инициализация всего хлама при смене карты.
+	 */
+	public void newMap(int x, int y) {
+		FloorMap map = MapService.getInstance().getMap();
+		Point p = map.getNearestWalkable(x, y, 200);
+		player.setX(p.x);
+		player.setY(p.y);
+		map.getCell(p.x, p.y).addPerson(player);
+		map.setPlayer(player);
+		viewport.init(map, p.x, p.y);
+		minimap.init(p.x, p.y);
+	}
+
+	/**
+	 * Вернуть текущего игрока.
+	 */
+	public Player getPlayer() {
+		return player;
 	}
 }

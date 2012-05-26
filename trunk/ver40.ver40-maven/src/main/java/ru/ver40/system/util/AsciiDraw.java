@@ -171,6 +171,8 @@ public class AsciiDraw {
 
 	/**
 	 * Перевод кода символа в координаты на матрице SpriteSheet-а шрифта
+	 * 
+	 * @return new Point()
 	 */
 	private Point codeConvert(int code) {
 		if ((code >= 1040) && (code <= 1087)) { // А-Яа-п

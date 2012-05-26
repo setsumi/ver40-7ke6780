@@ -141,13 +141,18 @@ public class MapCell implements Serializable {
 				&& (building == null ? true : building.isPassable());
 	}
 
+	public boolean isBuildable() {
+		return building == null;
+	}
+
 	/*
 	 * Статические фабрики
 	 */
 	
 	/**
 	 * Создать клетку со стеной
-	 * @return
+	 * 
+	 * @return new MapCell()
 	 */
 	public static MapCell createWall() {
 		MapCell ret = new MapCell();
@@ -160,7 +165,8 @@ public class MapCell implements Serializable {
 	
 	/**
 	 * Создать клетку с дверью
-	 * @return
+	 * 
+	 * @return new MapCell()
 	 */
 	public static MapCell createDoor() {
 		MapCell ret = new MapCell();
@@ -170,6 +176,22 @@ public class MapCell implements Serializable {
 		door.setPassable(false);
 		door.setActive(true);
 		ret.setBuilding(door);
+		return ret;
+	}
+
+	/**
+	 * Создать клетку с транспортером на другой уровень.
+	 * 
+	 * @return new MapCell()
+	 */
+	public static MapCell createLevelTransporter(int level, int x, int y) {
+		MapCell ret = new MapCell();
+		Building transp = new Building();
+		transp.setBeh(new LevelTransporterBehaviour(level, x, y));
+		transp.setSymbol(new Symbol('>', 0x000000, 0xC0C0C0));
+		transp.setPassable(true);
+		transp.setActive(true);
+		ret.setBuilding(transp);
 		return ret;
 	}
 }

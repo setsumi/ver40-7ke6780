@@ -10,7 +10,6 @@ import org.newdawn.slick.state.StateBasedGame;
 import ru.ver40.map.FloorMap;
 import ru.ver40.map.ViewMinimap;
 import ru.ver40.map.Viewport;
-import ru.ver40.service.MapService;
 import ru.ver40.system.UserGameState;
 import ru.ver40.system.util.AsciiDraw;
 import ru.ver40.util.Constants;
@@ -21,11 +20,10 @@ import ru.ver40.util.Constants;
  */
 public class StateMinimap extends UserGameState {
 
-	private FloorMap m_map;
 	private Viewport m_viewport; // вьюпорт игры (с персонажем)
 	private ViewMinimap m_minimap; // миникарта
 	private Point m_mapPos; // положение миникарты на карте
-	private Point m_sector; // координаты чанка
+	private Point m_sector; // координаты чанка (текущий сектор миникарты)
 	private int m_zoom; // увеличение миникарты
 
 	private float m_keybAccum = 0; // накопляет дельту
@@ -33,16 +31,36 @@ public class StateMinimap extends UserGameState {
 	/**
 	 * Конструктор.
 	 */
+	/**
+	 * @param sx
+	 *            положение на экране левого верхнего угла (в символах)
+	 * @param sy
+	 *            положение на экране левого верхнего угла (в символах)
+	 * @param w
+	 *            ширина (в символах)
+	 * @param h
+	 *            высота (в символах)
+	 * @param mx
+	 *            положение на карте
+	 * @param my
+	 *            положение на карте
+	 * @param zoom
+	 *            коэффициент увеличения
+	 * @param col
+	 *            цвет миникарты
+	 * @param view
+	 *            вьюпорт игры (для отрисовки его рамочки на миникарте)
+	 */
 	public StateMinimap(int sx, int sy, int w, int h, int mx, int my, int zoom,
 			Color col, Viewport view) {
 		super();
 		attachToSystemState(Constants.STATE_MINIMAP);
 		//
-		m_map = MapService.getInstance().getMap();
 		m_minimap = new ViewMinimap(sx, sy, w, h, mx, my, zoom, col);
+		m_minimap.init(mx, my);
 		m_viewport = view;
 		m_mapPos = new Point(mx, my);
-		m_sector = new Point(m_map.getChunkXY(mx, my));
+		m_sector = new Point(FloorMap.getChunkXY(mx, my));
 		m_zoom = zoom;
 	}
 
@@ -122,12 +140,14 @@ public class StateMinimap extends UserGameState {
 			m_mapPos.x = FloorMap.normalizePos(m_mapPos.x);
 			m_mapPos.y = FloorMap.normalizePos(m_mapPos.y);
 			m_minimap.moveTo(m_mapPos.x, m_mapPos.y);
-			m_sector = m_map.getChunkXY(m_mapPos.x, m_mapPos.y);
+			m_sector = FloorMap.getChunkXY(m_mapPos.x, m_mapPos.y);
 		}
 	}
 
 	@Override
 	public void onRender(GameContainer gc, StateBasedGame game, Graphics g) {
+		super.onRender(gc, game, g);
+		//
 //		g.setClip(m_scrPos.x, m_scrPos.y, m_scrWidth, m_scrHeight);
 		m_minimap.draw(g);
 		// рамочка вьюпорта на миникарте

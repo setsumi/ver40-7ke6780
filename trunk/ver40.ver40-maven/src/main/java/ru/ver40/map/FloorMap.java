@@ -71,8 +71,10 @@ public class FloorMap implements ILosBoard {
 
 	/**
 	 * Получить координаты чанка, которому принадлежит клетка.
+	 * 
+	 * @return new Point()
 	 */
-	public Point getChunkXY(int cellX, int cellY) {
+	public static Point getChunkXY(int cellX, int cellY) {
 		return new Point(cellX / Constants.MAP_CHUNK_SIZE, cellY
 				/ Constants.MAP_CHUNK_SIZE);
 	}
@@ -80,16 +82,29 @@ public class FloorMap implements ILosBoard {
 	/**
 	 * Получить индекс чанка из его координат.
 	 */
-	public int getChunkIndex(int chunkX, int chunkY) {
+	public static int getChunkIndex(int chunkX, int chunkY) {
 		return chunkY * Constants.MAP_MAX_SIZE_CHUNKS + chunkX;
 	}
 
 	/**
 	 * Получить индекс клетки в чанке по её координатам на карте.
 	 */
-	public int getCellIndex(int cellX, int cellY) {
+	public static int getCellIndex(int cellX, int cellY) {
 		return (cellY % Constants.MAP_CHUNK_SIZE) * Constants.MAP_CHUNK_SIZE
 				+ (cellX % Constants.MAP_CHUNK_SIZE);
+	}
+
+	/**
+	 * Получить координаты верхнего левого угла чанка, принадлежащего указанной
+	 * точке на карте.
+	 * 
+	 * @return new Point()
+	 */
+	public static Point getChunkOrigin(int cellX, int cellY) {
+		Point ret = getChunkXY(cellX, cellY);
+		ret.x *= Constants.MAP_CHUNK_SIZE;
+		ret.y *= Constants.MAP_CHUNK_SIZE;
+		return ret;
 	}
 
 	/**
@@ -165,6 +180,8 @@ public class FloorMap implements ILosBoard {
 	 * Вернуть чанк и индекс в чанке по координатам клетки на карте.
 	 * 
 	 * Создает новые чанки по мере необходимости.
+	 * 
+	 * @return new CellLocation()
 	 */
 	public CellLocation locateCell(int x, int y) {
 		if (!contains(x, y))
@@ -349,7 +366,7 @@ public class FloorMap implements ILosBoard {
 	 *            - ширина окна
 	 * @return
 	 */
-	public int getViewRectX(int x, int w) {
+	public static int getViewRectX(int x, int w) {
 		int viewX = x - (w / 2);
 		if (viewX < 0)
 			viewX = 0;
@@ -368,7 +385,7 @@ public class FloorMap implements ILosBoard {
 	 *            - высота окна
 	 * @return
 	 */
-	public int getViewRectY(int y, int h) {
+	public static int getViewRectY(int y, int h) {
 		int viewY = y - (h / 2);
 		if (viewY < 0)
 			viewY = 0;
@@ -382,8 +399,83 @@ public class FloorMap implements ILosBoard {
 	 */
 	public boolean isActive(int x, int y) {
 		Building building;
-		return ((building = getCell(x, y).getBuilding()) != null && building
-				.isActive());
+		return (building = getCell(x, y).getBuilding()) != null
+				&& building.isActive();
+	}
+
+	/**
+	 * Получить ближайшую к указанной проходимую клетку.
+	 * 
+	 * @param x
+	 *            где искать свободное место
+	 * @param y
+	 *            где искать свободное место
+	 * @param radius
+	 *            область поиска (если 5, то указанная клетка + 5 клеток во все
+	 *            стороны = квадрат 11х11 клеток.
+	 * @return new Point() или null если свободная клетка в радиусе не найдена.
+	 */
+	public Point getNearestWalkable(int x, int y, int radius) {
+		for (int i = x - 1; i <= x + 1; i++) {
+			if (!isObstacle(normalizePos(i), normalizePos(y)))
+				return new Point(normalizePos(i), normalizePos(y));
+		}
+		for (int k = 1; k <= radius; k++) {
+			for (int i = x - k, j = y - k; i <= x + k; i++, j++) {
+				if (!isObstacle(normalizePos(i), normalizePos(y - k)))
+					return new Point(normalizePos(i), normalizePos(y - k));
+				if (!isObstacle(normalizePos(i), normalizePos(y + k)))
+					return new Point(normalizePos(i), normalizePos(y + k));
+				if (k < radius) {
+					if (!isObstacle(normalizePos(x - k - 1), normalizePos(j)))
+						return new Point(normalizePos(x - k - 1), normalizePos(j));
+					if (!isObstacle(normalizePos(x + k + 1), normalizePos(j)))
+						return new Point(normalizePos(x + k + 1), normalizePos(j));
+				}
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Свободна ли клетка от зданий.
+	 */
+	public boolean isBuildable(int x, int y) {
+		return getCell(x, y).isBuildable();
+	}
+
+	/**
+	 * Получить ближайшую к указанной свободную от зданий клетку.
+	 * 
+	 * @param x
+	 *            где искать
+	 * @param y
+	 *            где искать
+	 * @param radius
+	 *            область поиска (если 5, то указанная клетка + 5 клеток во все
+	 *            стороны = квадрат 11х11 клеток.
+	 * @return new Point() или null если свободная клетка в радиусе не найдена.
+	 */
+	public Point getNearestBuildable(int x, int y, int radius) {
+		for (int i = x - 1; i <= x + 1; i++) {
+			if (isBuildable(normalizePos(i), normalizePos(y)))
+				return new Point(normalizePos(i), normalizePos(y));
+		}
+		for (int k = 1; k <= radius; k++) {
+			for (int i = x - k, j = y - k; i <= x + k; i++, j++) {
+				if (isBuildable(normalizePos(i), normalizePos(y - k)))
+					return new Point(normalizePos(i), normalizePos(y - k));
+				if (isBuildable(normalizePos(i), normalizePos(y + k)))
+					return new Point(normalizePos(i), normalizePos(y + k));
+				if (k < radius) {
+					if (isBuildable(normalizePos(x - k - 1), normalizePos(j)))
+						return new Point(normalizePos(x - k - 1), normalizePos(j));
+					if (isBuildable(normalizePos(x + k + 1), normalizePos(j)))
+						return new Point(normalizePos(x + k + 1), normalizePos(j));
+				}
+			}
+		}
+		return null;
 	}
 
 }

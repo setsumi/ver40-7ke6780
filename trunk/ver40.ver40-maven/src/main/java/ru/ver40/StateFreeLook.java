@@ -58,6 +58,8 @@ public class StateFreeLook extends UserGameState {
 
 	@Override
 	public void onRender(GameContainer gc, StateBasedGame game, Graphics g) {
+		super.onRender(gc, game, g);
+		//
 		// Квадратик курсора.
 		m_viewport.drawString("\0", m_viewport.getMapPosX(),
 				m_viewport.getMapPosY(), Color.white);

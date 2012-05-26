@@ -28,23 +28,27 @@ public class StateMainMenu extends UserGameState {
 	public StateMainMenu() {
 		super();
 		attachToSystemState(Constants.STATE_MAINMENU);
+		//
 	}
 
 	@Override
 	public void onEnter(GameContainer gc, StateBasedGame game) {
 		super.onEnter(gc, game);
+		//
 		Log.debug("StateMainMenu.onEnter()");
 	}
 
 	@Override
 	public void onLeave(GameContainer gc, StateBasedGame game) {
 		super.onLeave(gc, game);
+		//
 		Log.debug("StateMainMenu.onLeave()");
 	}
 
 	@Override
 	public void onInit(GameContainer gc, StateBasedGame game) {
 		super.onInit(gc, game);
+		//
 		Log.debug("StateMainMenu.onInit()");
 	}
 
@@ -62,10 +66,13 @@ public class StateMainMenu extends UserGameState {
 	@Override
 	public void onUpdate(GameContainer gc, StateBasedGame game, int delta) {
 		super.onUpdate(gc, game, delta);
+		//
 	}
 
 	@Override
 	public void onRender(GameContainer gc, StateBasedGame game, Graphics g) {
+		super.onRender(gc, game, g);
+		//
 		if (exitCountdown == 0) {
 			// Крутая заставка.
 			AsciiDraw.getInstance()

@@ -102,6 +102,8 @@ public class StateUseMapObject extends UserGameState {
 
 	@Override
 	public void onRender(GameContainer gc, StateBasedGame game, Graphics g) {
+		super.onRender(gc, game, g);
+		//
 		if (!m_exit) {
 			m_viewport.drawString("\0", m_selPos.x, m_selPos.y, m_color);
 		}
