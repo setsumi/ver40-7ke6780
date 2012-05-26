@@ -1,9 +1,5 @@
 package ru.ver40;
 
-import ru.ver40.map.gen.FeatureGenerator;
-import ru.ver40.map.gen.FeatureGenerator.Point;
-import ru.ver40.map.gen.FeatureGenerator.Position;
-import ru.ver40.model.MapCell;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -133,11 +129,11 @@ public class AppTest extends TestCase {
 //		assertEquals(e.y, 11);				
 	}
 	
-	private void fill(MapCell[][] cells) {
+//	private void fill(MapCell[][] cells) {
 //		for (int r = 0; r < cells.length; ++r) {
 //			for (int c = 0; c < cells[r].length; ++c) {
 //				cells[r][c] = new MapCell();
 //			}
 //		}
-	}
+//	}
 }
