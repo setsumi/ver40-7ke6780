@@ -92,6 +92,8 @@ public class StateAnimation extends UserGameState {
 
 	@Override
 	public void onRender(GameContainer gc, StateBasedGame game, Graphics g) {
+		super.onRender(gc, game, g);
+		//
 		for (AAnimation a : m_animations) {
 			a.draw(g);
 		}

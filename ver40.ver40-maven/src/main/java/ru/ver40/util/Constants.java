@@ -123,6 +123,17 @@ public class Constants {
 	 */
 	public static final int MINIMAP_IMAGE_CACHE_SIZE = 25;
 
+	/**
+	 * Максимальный возможный уровень Города (самый нижний).
+	 * 
+	 * 0..LEVELS_MAX_LEVEL
+	 */
+	public static final int LEVELS_MAX_LEVEL = Integer.MAX_VALUE - 8;
+	/**
+	 * Каталог, содержащий уровни игры.
+	 */
+	public static final String LEVELS_DIRECTORY = "map";
+
 	// Стейты.
 	/**
 	 * Стейт главного меню.

@@ -32,7 +32,11 @@ public class Rng {
 	 * @return - результат броска
 	 */
 	public static int d(int x, int d) {
-		return x * d(d);
+		int ret = 0;
+		for (int i = 0; i < x; i++) {
+			ret += d(d);
+		}
+		return ret;
 	}
 	
 	/**

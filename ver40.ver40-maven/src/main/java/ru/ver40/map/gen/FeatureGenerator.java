@@ -25,8 +25,8 @@ import ru.ver40.util.Rng;
  */
 public class FeatureGenerator implements IMapGenarator {
 	
-	private int mapWidth = 400; // Карта размером 400х400
-	private int mapHeight = 400;
+	private int mapWidth; // Карта размером 400х400
+	private int mapHeight;
 	
 	private FloorMap map;
 	
@@ -38,7 +38,18 @@ public class FeatureGenerator implements IMapGenarator {
 	private List<Position> posOrder;
 	private List<IPostProcesser> postProcessers;
 	
-	public FeatureGenerator() {
+	/**
+	 * Конструктор.
+	 * 
+	 * @param w
+	 *            ширина карты
+	 * @param h
+	 *            высота карты
+	 */
+	public FeatureGenerator(int w, int h) {
+		mapWidth = w;
+		mapHeight = h;
+
 		features = new HashMap<>();
 		rotOrder = new ArrayList<>();
 		rotOrder.addAll(Arrays.asList(Rotation.values()));
@@ -111,7 +122,8 @@ public class FeatureGenerator implements IMapGenarator {
 	
 	/**
 	 * Вернуть случайную точку, принадлежащую стене какой либо комнаты
-	 * @return
+	 * 
+	 * @return new Point()
 	 */
 	private Point getRandomPoint() {
 		

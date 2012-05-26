@@ -18,7 +18,7 @@ public abstract class UserGameState {
 	private int m_id = -1;
 	private final StateManager m_manager; // Менеджер стейтов приложения.
 	private boolean m_isInitialized = false; // Флаг для инициализации через
-												// onUpdate()
+												// onUpdate() и onRender()
 
 	/**
 	 * Конструктор.
@@ -79,8 +79,7 @@ public abstract class UserGameState {
 	}
 
 	/**
-	 * Обновление стейта. Крутится в цикле. Обязательно вызывать этот супер в
-	 * наследниках.
+	 * Обновление стейта. Крутится в цикле. Обязательно вызывать этот супер в наследниках.
 	 */
 	public void onUpdate(GameContainer gc, StateBasedGame game, int delta) {
 		if (!m_isInitialized) {
@@ -89,10 +88,13 @@ public abstract class UserGameState {
 	}
 
 	/**
-	 * Рендер стейта. Крутится в цикле.
+	 * Рендер стейта. Крутится в цикле. Обязательно вызывать этот супер в наследниках.
 	 */
-	public abstract void onRender(GameContainer gc, StateBasedGame game,
-			Graphics g);
+	public void onRender(GameContainer gc, StateBasedGame game, Graphics g) {
+		if (!m_isInitialized) {
+			onInit(gc, game);
+		}
+	}
 
 	/**
 	 * Прием нажатия клавиш.

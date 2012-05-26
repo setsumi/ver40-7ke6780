@@ -52,7 +52,7 @@ public class StateDlgItems extends UserGameState {
 	@Override
 	public void onInit(GameContainer gc, StateBasedGame game) {
 		super.onInit(gc, game);
-
+		//
 		m_items = new LinkedList<TestItem>();
 		m_items.add(new TestItem("Small gun"));
 		m_items.add(new TestItem("Gun"));
@@ -101,7 +101,7 @@ public class StateDlgItems extends UserGameState {
 	@Override
 	public void onUpdate(GameContainer gc, StateBasedGame game, int delta) {
 		super.onUpdate(gc, game, delta);
-
+		//
 		CtrlListItems listbox = (CtrlListItems) m_wnd.getChild(CTRL_ITEMSLIST);
 		m_wnd.setTitle(m_title
 				+ (listbox.getLastPage() == 0 ? "" : "   Page "
@@ -111,6 +111,8 @@ public class StateDlgItems extends UserGameState {
 
 	@Override
 	public void onRender(GameContainer gc, StateBasedGame game, Graphics g) {
+		super.onRender(gc, game, g);
+		//
 		m_wnd.draw(g);
 	}
 

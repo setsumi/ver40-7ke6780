@@ -37,9 +37,8 @@ public class Viewport {
 	/**
 	 * Конструктор
 	 */
-	public Viewport(FloorMap map, int width, int height, int scrPosX,
-			int scrPosY) {
-		m_map = map;
+	public Viewport(int width, int height, int scrPosX, int scrPosY) {
+		m_map = null;
 		m_width = width;
 		m_height = height;
 		m_areaWidth = (int) ((float) m_width * Constants.VIEWPORT_MAP_ACTIVE_AREA_FACTOR);
@@ -47,12 +46,26 @@ public class Viewport {
 		m_scrPosX = scrPosX;
 		m_scrPosY = scrPosY;
 		m_colorCache = new HashMap<Integer, Color>();
-		moveTo(0, 0);
 	}
 
 	/**
-	 * Переместить вьюпорт в указанную точку на карте. Активная зона
-	 * перемещается тоже.
+	 * Инициализация вьюпорта.
+	 * 
+	 * @param map
+	 *            карта
+	 * @param x
+	 *            положение на карте
+	 * @param y
+	 *            положение на карте
+	 */
+	public void init(FloorMap map, int x, int y) {
+		TimeService.getInstance().unregisterAll();
+		m_map = map;
+		moveTo(x, y);
+	}
+
+	/**
+	 * Переместить вьюпорт в указанную точку на карте. Активная зона перемещается тоже.
 	 */
 	public void moveTo(int x, int y) {
 		moveTo(x, y, true);
@@ -71,14 +84,14 @@ public class Viewport {
 	public void moveTo(int x, int y, boolean active) {
 		m_mapPosX = FloorMap.normalizePos(x);
 		m_mapPosY = FloorMap.normalizePos(y);
-		m_topX = m_map.getViewRectX(m_mapPosX, m_width);
-		m_topY = m_map.getViewRectY(m_mapPosY, m_height);
+		m_topX = FloorMap.getViewRectX(m_mapPosX, m_width);
+		m_topY = FloorMap.getViewRectY(m_mapPosY, m_height);
 
 		// Перемещение активной зоны.
 		//
 		if (active) {
-			int areaX = m_map.getViewRectX(m_mapPosX, m_areaWidth);
-			int areaY = m_map.getViewRectY(m_mapPosY, m_areaHeight);
+			int areaX = FloorMap.getViewRectX(m_mapPosX, m_areaWidth);
+			int areaY = FloorMap.getViewRectY(m_mapPosY, m_areaHeight);
 			MapCell cell;
 			List<Actor> persons;
 			TimeService timeService = TimeService.getInstance();
@@ -149,8 +162,8 @@ public class Viewport {
 	 * Рендер вьюпорта в произвольной точке карты.
 	 */
 	private void draw(int x, int y, Graphics gr, Player p) {
-		int viewX = m_map.getViewRectX(x, m_width); // верхний угол вьюпорта
-		int viewY = m_map.getViewRectY(y, m_height);
+		int viewX = FloorMap.getViewRectX(x, m_width); // верхний угол вьюпорта
+		int viewY = FloorMap.getViewRectY(y, m_height);
 		// цикл отрисовки клеток
 		for (int i = 0; i < m_width; i++, viewX++) {
 			int vy = viewY;
@@ -199,12 +212,15 @@ public class Viewport {
 		return c;
 	}
 	
-	public MapCell getCell(int cIndex) {
-		int y = cIndex % m_width;
-		int x = cIndex - (cIndex * y);
-		return m_map.getCell(x, y);
-	}
+//	public MapCell getCell(int cIndex) {
+//		int y = cIndex % m_width;
+//		int x = cIndex - (cIndex * y);
+//		return m_map.getCell(x, y);
+//	}
 
+	/*
+	 * Геттеры.
+	 */
 	public FloorMap getMap() {
 		return m_map;
 	}

@@ -34,7 +34,6 @@ public class ViewMinimap {
 		}
 	}
 
-	private FloorMap m_map;
 	private Point m_scrPos; // положение на экране (левого верхнего угла)
 	private int m_cellWidth, m_cellHeight; // размер (в клетках карты)
 	private int m_scrWidth, m_scrHeight; // размер на экране (в пикселах)
@@ -69,7 +68,6 @@ public class ViewMinimap {
 	 */
 	public ViewMinimap(int sx, int sy, int w, int h, int mx, int my, int zoom,
 			Color col) {
-		m_map = MapService.getInstance().getMap();
 		AsciiDraw ascii = AsciiDraw.getInstance();
 		m_scrPos = new Point(sx * ascii.getWidth(), sy * ascii.getHeight());
 		m_mapPos = new Point(mx, my);
@@ -78,7 +76,22 @@ public class ViewMinimap {
 		m_cellTop = new Point();
 		m_images = new LinkedList<ImageLocation>();
 		m_color = col;
-		setZoom(zoom);
+		m_zoom = zoom;
+	}
+
+	/**
+	 * Инициализация миникарты.
+	 * 
+	 * @param x
+	 *            положение на карте
+	 * @param y
+	 *            положение на карте
+	 */
+	public void init(int x, int y) {
+		m_images.clear();
+		m_mapPos.x = x;
+		m_mapPos.y = y;
+		setZoom(m_zoom);
 	}
 
 	/**
@@ -97,7 +110,8 @@ public class ViewMinimap {
 	 * Сформировать изображение миникарты чанка.
 	 */
 	private FilterableImage getChunkImage(int chunkX, int chunkY) {
-		Chunk chunk = m_map.getChunkPassive(chunkX, chunkY);
+		Chunk chunk = MapService.getInstance().getMap()
+				.getChunkPassive(chunkX, chunkY);
 		FilterableImage img = null;
 		Graphics g = null;
 		try {
@@ -155,11 +169,11 @@ public class ViewMinimap {
 	public void moveTo(int x, int y) {
 		m_mapPos.x = FloorMap.normalizePos(x);
 		m_mapPos.y = FloorMap.normalizePos(y);
-		m_cellTop.x = m_map.getViewRectX(m_mapPos.x, m_cellWidth);
-		m_cellTop.y = m_map.getViewRectY(m_mapPos.y, m_cellHeight);
+		m_cellTop.x = FloorMap.getViewRectX(m_mapPos.x, m_cellWidth);
+		m_cellTop.y = FloorMap.getViewRectY(m_mapPos.y, m_cellHeight);
 
-		m_chunkTop = m_map.getChunkXY(m_cellTop.x, m_cellTop.y);
-		m_chunkBottom = m_map.getChunkXY(m_cellTop.x + m_cellWidth - 1,
+		m_chunkTop = FloorMap.getChunkXY(m_cellTop.x, m_cellTop.y);
+		m_chunkBottom = FloorMap.getChunkXY(m_cellTop.x + m_cellWidth - 1,
 				m_cellTop.y + m_cellHeight - 1);
 		// заносим изображения чанков в кэш
 		for (int i = m_chunkTop.x; i <= m_chunkBottom.x; i++) {
@@ -204,6 +218,8 @@ public class ViewMinimap {
 
 	/**
 	 * Вернуть точку взгляда вьюпорта миникарты.
+	 * 
+	 * @return new Point()
 	 */
 	public Point getMapPos() {
 		return new Point(m_mapPos);
@@ -258,4 +274,5 @@ public class ViewMinimap {
 
 		g.clearClip();
 	}
+
 }
