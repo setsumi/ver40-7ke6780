@@ -93,30 +93,12 @@ public class StateGameplay extends UserGameState {
 		statusPanel = new WndStatusPanel(62, 1, Color.white, Color.black);
 		animations = (StateAnimation) TheGame.getStateManager()
 				.getSystemState(Constants.STATE_ANIMATION).getClient();
-		fov = new PrecisePermissive();
 		viewport = new Viewport(60, 30, 1, 1);
 		minimap = new ViewMinimap(59, 31, 20, 8, 0, 0, 2, Color.green.darker(0.4f));
+		fov = new PrecisePermissive();
 		player = new Player("Player");
 		TimeService.getInstance().register(player);
-
 		MapService.getInstance().gotoLevel(Constants.LEVELS_MAX_LEVEL / 2, 200, 200);
-		// newMap(200, 200);
-//		FloorMap map = new FloorMap("map/test");
-//		MapService.getInstance().setcMap(map);
-
-//		IMapGenarator gen = new FeatureGenerator();
-//		gen.generate(map);
-
-//		o: for (int y = 190; y < 210; ++y) {
-//			for (int x = 190; x < 210; ++x) {
-//				if (!map.isObstacle(x, y)) {
-//					player.setX(x);
-//					player.setY(y);
-//					map.getCell(x, y).addPerson(player);
-//					break o;
-//				}
-//			}
-//		}
 
 		// Приветственное сообщение.
 		GameLog gl = GameLog.getInstance();
