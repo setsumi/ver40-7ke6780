@@ -12,6 +12,10 @@ import ru.ver40.system.util.GameLog;
 public class RoleSystem {
 
 	public static void testBlast(Actor a1, Actor a2) {
+		if (a2 == null) {
+			GameLog.getInstance().log(a1 + " blasts empty space in vain.");
+			return;
+		}
 		int b1 = Rng.d(2, 10, a1.getBlast());
 		int b2 = Rng.d(2, 10, a2.getBlast());
 		if (b1 > b2) {
@@ -30,6 +34,10 @@ public class RoleSystem {
 	}
 	
 	public static void testFight(Actor a1, Actor a2) {
+		if (a2 == null) {
+			GameLog.getInstance().log(a1 + " hits empty space in vain.");
+			return;
+		}
 		int b1 = Rng.d(2, 10, a1.getFight());
 		int b2 = Rng.d(2, 10, a2.getFight());
 		if (b1 > b2) {

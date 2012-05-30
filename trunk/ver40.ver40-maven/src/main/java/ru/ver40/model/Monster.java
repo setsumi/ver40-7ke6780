@@ -1,7 +1,12 @@
 package ru.ver40.model;
 
+import ru.ver40.StateGameplay;
+import ru.ver40.map.FloorMap;
+import ru.ver40.service.MapService;
 import ru.ver40.service.TimeService;
+import ru.ver40.system.AAnimation;
 import ru.ver40.util.Rng;
+import ru.ver40.util.RoleSystem;
 
 /**
  * Тестовый монстр
@@ -12,26 +17,82 @@ public class Monster extends Actor {
 
 	private static final long serialVersionUID = 7299922403330474136L;	
 	
-	private AIProvider ai;
+	private AIProvider m_ai = null;
 	
+	/**
+	 * Конструктор.
+	 */
 	public Monster() {
-		setPassable(true);
-	//	getSymbol().setBgColor(0xC41212);
+//		setPassable(true);
+//		getSymbol().setBgColor(0xC41212);
 		getSymbol().setSymbol('M');	
 	}
 
 	@Override
-	public int performTimedAction() {
-		return ai.behave();	
+	public void performTimedAction() {
+		// Выполняем текущее действие.
+		FloorMap map = MapService.getInstance().getMap();
+		switch (getAction()) {
+		case ACTION_WAIT:
+			break;
+		case ACTION_MOVE:
+			System.out.println(this.toString() + " [" + this.hashCode() + "] do_moveTo");// debug
+			do_moveTo(map, m_actTargetX, m_actTargetY);
+			break;
+		case ACTION_USEOBJECT:
+			break;
+		case ACTION_HIT:
+			do_hit(map, m_actTargetX, m_actTargetY);
+			break;
+		case ACTION_KICK:
+			break;
+		case ACTION_SHOOT:
+			System.out.println(this.toString() + " [" + this.hashCode() + "] do_shoot");// debug
+			do_shoot(map, m_actTargetX, m_actTargetY, getActAnimation());
+			break;
+		}
+		// Планируем следующее действие.
+		if (m_ai != null) {
+			System.out.println(this.toString() + " [" + this.hashCode() + "] ai.behave");// debug
+			m_ai.behave();
+		}
+	}
+
+	@Override
+	protected void do_moveTo(FloorMap map, int x, int y) {
+		map.translateActor(this, x, y);
 	}
 	
+	@Override
+	protected void do_shoot(FloorMap map, int x, int y, AAnimation anim) {
+		Actor target = map.getCell(x, y).getPerson();
+		RoleSystem.testBlast(this, target);
+		if (anim != null) {
+			StateGameplay.getAnimations().add(anim);
+		}
+	}
+
+	@Override
+	protected void do_useObject(FloorMap map, int x, int y) {
+	}
+
+	@Override
+	protected void do_hit(FloorMap map, int x, int y) {
+		Actor target = map.getCell(x, y).getPerson();
+		RoleSystem.testFight(this, target);
+	}
+
+	@Override
+	protected void do_kick(FloorMap map, int x, int y) {
+	}
+
 	public void setAi(AIProvider ai) {
 		ai.setOwner(this);
-		this.ai = ai;
+		m_ai = ai;
 	}
 	
 	public AIProvider getAi() {
-		return ai;
+		return m_ai;
 	}
 	
 	@Override
@@ -77,10 +138,6 @@ public class Monster extends Actor {
 		ret.setEnergy(5 + Rng.d(1, 6, 1));
 		ret.setAi(new ShootOnSeeAI());
 		return ret;
-	}	
-	
-//	@Override
-//	public String toString() {
-//		return name;
-//	}
+	}
+
 }

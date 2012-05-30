@@ -10,7 +10,7 @@ package ru.ver40.model;
  */
 public interface AIProvider {
 	
-	public int behave();
+	public void behave();
 	
 	public void setOwner(Actor actor);
 

@@ -89,6 +89,14 @@ public class MapCell implements Serializable {
 	public List<Actor> getPersons() {
 		return Collections.unmodifiableList(persons);
 	}
+
+	public Actor getPerson() {
+		Actor ret = null;
+		if (!persons.isEmpty()) {
+			ret = persons.get(0);
+		}
+		return ret;
+	}
 	
 	public void remove(GObject object) {
 		if (object instanceof Building) {

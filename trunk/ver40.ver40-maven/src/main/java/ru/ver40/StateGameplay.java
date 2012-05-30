@@ -22,6 +22,7 @@ import ru.ver40.system.ui.WndStatusPanel;
 import ru.ver40.system.util.DebugLog;
 import ru.ver40.system.util.GameLog;
 import ru.ver40.util.Constants;
+import ru.ver40.util.Helper;
 
 /**
  * Главный стейт игры.
@@ -48,7 +49,6 @@ public class StateGameplay extends UserGameState {
 	private Player player;
 	private IFovAlgorithm fov;
 	private WndStatusPanel statusPanel; // панелька со статусом персонажа
-	private int timeInGame = 0; // счетчик ходов
 	private ViewMinimap minimap; // миникарта
 
 	// непрямой вызов нового хода из других стейтов
@@ -97,7 +97,7 @@ public class StateGameplay extends UserGameState {
 		minimap = new ViewMinimap(59, 31, 20, 8, 0, 0, 2, Color.green.darker(0.4f));
 		fov = new PrecisePermissive();
 		player = new Player("Player");
-		TimeService.getInstance().register(player);
+		TimeService.getInstance().registerPlayer(player);
 		MapService.getInstance().gotoLevel(Constants.LEVELS_MAX_LEVEL / 2, 200, 200);
 
 		// Приветственное сообщение.
@@ -115,16 +115,11 @@ public class StateGameplay extends UserGameState {
 	public void onUpdate(GameContainer gc, StateBasedGame game, int delta) {
 		super.onUpdate(gc, game, delta);
 		//
-		TimeService t = TimeService.getInstance();
-		while (t.getCurrentActor() != player || player.getActionPoints() < 0) {
-			t.tick();
-		}
-
 		FloorMap map = MapService.getInstance().getMap();
 		map.setFogOfWar();
 		fov.visitFieldOfView(map, player.getX(), player.getY(), 15);
 
-		statusPanel.updateData(player, timeInGame);
+		statusPanel.updateData(player, TimeService.getInstance().getTime());
 
 		if (m_doNewTurn) {
 			m_doNewTurn = false;
@@ -162,14 +157,16 @@ public class StateGameplay extends UserGameState {
 			StateUseMapObject use = new StateUseMapObject(player, viewport);
 			use.showModal();
 		}
-		// Кривой детект нового хода.
-		if (key == Input.KEY_NUMPAD6 || key == Input.KEY_NUMPAD4
-				|| key == Input.KEY_NUMPAD2 || key == Input.KEY_NUMPAD8
-				|| key == Input.KEY_NUMPAD7 || key == Input.KEY_NUMPAD9
-				|| key == Input.KEY_NUMPAD1 || key == Input.KEY_NUMPAD3
-				|| key == Input.KEY_NUMPAD5) {
-			player.setKeyCode(key);
+		// Движение игрока (управляет ходами и, соответственно, временем).
+		Point p = new Point(player.getX(), player.getY());
+		if (Helper.moveMapPointKeyboard(p, key, c)) {
+			player.action_moveTo(p.x, p.y);
 			newTurn();
+		} else {
+			if (key == Input.KEY_NUMPAD5) {
+				player.action_wait();
+				newTurn();
+			}
 		}
 	}
 
@@ -199,13 +196,14 @@ public class StateGameplay extends UserGameState {
 	 * состояние логов.
 	 */
 	private void newTurn() {
-		timeInGame++;
 		DebugLog.getInstance().resetNew();
 		GameLog.getInstance().resetNew();
-		TimeService.getInstance().tick();
+
+		TimeService.getInstance().turn();
 
 		viewport.moveTo(player.getX(), player.getY());
 		minimap.moveTo(player.getX(), player.getY());
+
 		// Запуск анимаций.
 		if (animations.count() > 0) {
 			animations.showModal();
