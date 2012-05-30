@@ -68,7 +68,7 @@ public class Constants {
 	/**
 	 * Размер активной зоны карты по отношению к размеру вьюпорта.
 	 */
-	public static final float VIEWPORT_MAP_ACTIVE_AREA_FACTOR = 1.0f;
+	public static final float VIEWPORT_MAP_ACTIVE_AREA_FACTOR = 0.3f;// TODO debug area
 	/**
 	 * Высота отладочного лога в строках.
 	 */

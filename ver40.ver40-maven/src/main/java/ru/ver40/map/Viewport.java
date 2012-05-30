@@ -97,9 +97,8 @@ public class Viewport {
 			TimeService timeService = TimeService.getInstance();
 			// Останавляваем всех выпавших из активной зоны.
 			//
-			timeService.unregisterNotInArea(new IntRange(areaX, areaX
-					+ m_areaWidth - 1), new IntRange(areaY, areaY
-					+ m_areaHeight - 1));
+			timeService.unregisterNotInArea(new IntRange(areaX, areaX + m_areaWidth - 1),
+					new IntRange(areaY, areaY + m_areaHeight - 1));
 			// Активируем всех в активной зоне.
 			//
 			for (int i = areaX; i < areaX + m_areaWidth; i++) {
@@ -107,7 +106,7 @@ public class Viewport {
 					cell = m_map.getCell(i, j);
 					persons = cell.getPersons();
 					for (Actor a : persons) {
-						timeService.register(a);
+						timeService.registerMob(a);
 					}
 				}
 			}

@@ -40,7 +40,7 @@ public class WndStatusPanel extends MockWindow {
 		setHeight(i + 1);
 	}
 
-	public void updateData(Player player, int time) {
+	public void updateData(Player player, long time) {
 		((CtrlLabel) getChild(CTRL_LABEL_STRUCTURE)).setText("STRUCT: "
 				+ player.getStructure());
 		((CtrlLabel) getChild(CTRL_LABEL_ENERGY)).setText("ENERGY: "

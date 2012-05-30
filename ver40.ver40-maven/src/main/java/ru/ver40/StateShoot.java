@@ -116,7 +116,6 @@ public class StateShoot extends UserGameState {
 				if (!cell.getPersons().isEmpty()) {
 					RoleSystem.testBlast(m_player, cell.getPersons().get(0));
 				}
-				m_player.setKeyCode(Input.KEY_NUMPAD5); // держит на месте?
 				// добавить анимацию
 				AnimationBulletFlight animation = new AnimationBulletFlight(m_viewport,
 						m_targetLine, 20);
