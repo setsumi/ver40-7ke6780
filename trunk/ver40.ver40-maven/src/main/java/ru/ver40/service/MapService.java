@@ -9,6 +9,8 @@ import ru.ver40.StateGameplay;
 import ru.ver40.map.FloorMap;
 import ru.ver40.map.gen.FeatureGenerator;
 import ru.ver40.map.gen.IMapGenarator;
+import ru.ver40.map.gen.IMonsterGenerator;
+import ru.ver40.map.gen.MonsterGenerator;
 import ru.ver40.model.MapCell;
 import ru.ver40.util.Constants;
 
@@ -158,6 +160,10 @@ public class MapService {
 		FloorMap map = new FloorMap(dir);
 		IMapGenarator gen = new FeatureGenerator(400, 400);
 		gen.generate(map);
+		// Размещаем монстров.
+		//
+		IMonsterGenerator mongen = new MonsterGenerator(400, 400);
+		mongen.generate(map);
 		// Размещаем транспортер.
 		//
 		Point trans = map.getNearestBuildable(x, y, 200);

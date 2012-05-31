@@ -20,7 +20,7 @@ import ru.ver40.util.RoleSystem;
  * @author anon
  * 
  */
-public class FightOnSeeAI implements AIProvider {
+public class AIFightOnSee implements AIProvider {
 
 	private Actor owner;
 	private MapService mService = MapService.getInstance();
@@ -29,7 +29,7 @@ public class FightOnSeeAI implements AIProvider {
 	private PositionConstant pos;
 	private Random rng;
 
-	public FightOnSeeAI() {
+	public AIFightOnSee() {
 		los = new PrecisePermissive();
 		rng = new Random();
 		pos = PositionConstant.values()[rng.nextInt(7)];

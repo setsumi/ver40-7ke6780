@@ -1,4 +1,4 @@
-package ru.ver40.model.time;
+package ru.ver40.service;
 
 /**
  * Интерфейс, который реализуют все объекты, действующие по времени.

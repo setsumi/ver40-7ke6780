@@ -5,7 +5,7 @@ import java.beans.PropertyChangeSupport;
 import java.util.HashMap;
 
 import ru.ver40.map.FloorMap;
-import ru.ver40.model.time.ITimedEntity;
+import ru.ver40.service.ITimedEntity;
 import ru.ver40.system.AAnimation;
 import ru.ver40.system.util.GameLog;
 
