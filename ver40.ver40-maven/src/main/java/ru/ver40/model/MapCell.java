@@ -150,7 +150,7 @@ public class MapCell implements Serializable {
 	}
 
 	public boolean isBuildable() {
-		return building == null;
+		return building == null && persons.isEmpty();
 	}
 
 	/*
@@ -179,7 +179,7 @@ public class MapCell implements Serializable {
 	public static MapCell createDoor() {
 		MapCell ret = new MapCell();
 		Building door = new Building();
-		door.setBeh(new DoorBehaviour());
+		door.setBeh(new BehaviourDoor());
 		door.setSymbol(new Symbol('+', 0x000000, 0xC0C0C0));
 		door.setPassable(false);
 		door.setActive(true);
@@ -195,7 +195,7 @@ public class MapCell implements Serializable {
 	public static MapCell createLevelTransporter(int level, int x, int y) {
 		MapCell ret = new MapCell();
 		Building transp = new Building();
-		transp.setBeh(new LevelTransporterBehaviour(level, x, y));
+		transp.setBeh(new BehaviourLevelTransporter(level, x, y));
 		transp.setSymbol(new Symbol('>', 0x000000, 0xC0C0C0));
 		transp.setPassable(true);
 		transp.setActive(true);

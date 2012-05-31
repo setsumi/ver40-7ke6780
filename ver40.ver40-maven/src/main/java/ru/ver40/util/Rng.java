@@ -51,17 +51,30 @@ public class Rng {
 	}
 	
 	/**
-	 * Возвращает случайной число между 1 и 0.
+	 * Возвращает случайной число между 0.0d (включительно) и 1.0d (исключается).
+	 * 
 	 * @return - случайное число
 	 */
-	public double random() {
+	public static double randomDouble() {
 		return rng.nextDouble();
+	}
+
+	/**
+	 * Возвращает случайной целое число в указанном диапазоне.
+	 * 
+	 * @param from - нижняя граница (включительно)
+	 * @param to - верхняя граница (исключается)
+	 * @return - случайное число
+	 */
+	public static int randomInt(int from, int to) {
+		return rng.nextInt(to) + from;
 	}
 	
 	/**
 	 * Возвращает, 'сбылось' ли событие, указанное в процентах.
-	 * @param percent - процент - 1 - 100
-	 * @return 
+	 * 
+	 * @param percent - процент (1..100)
+	 * @return - сбылось или нет
 	 */
 	public static boolean percent(int percent) {
 		return d(100) <= percent;		

@@ -105,8 +105,10 @@ public class Monster extends Actor {
 	/*
 	 * Статические фабрики
 	 */
-	public static Monster createGelworm() {
+	public static Monster createGelworm(int x, int y) {
 		Monster ret = new Monster();
+		ret.setX(x);
+		ret.setY(y);
 		ret.setName("Gelworm");
 		ret.getSymbol().setSymbol('s');
 		ret.getSymbol().setFgColor(0x03998F);
@@ -118,12 +120,14 @@ public class Monster extends Actor {
 		ret.setRecover(30);
 		ret.setStructure(20 + Rng.d(2, 10, 3));
 		ret.setEnergy(10 + Rng.d(3, 6, 2));
-		ret.setAi(new FightOnSeeAI());
+		ret.setAi(new AIFightOnSee());
 		return ret;
 	}
 	
-	public static Monster createWatcherFly() {
+	public static Monster createWatcherFly(int x, int y) {
 		Monster ret = new Monster();
+		ret.setX(x);
+		ret.setY(y);
 		ret.setName("Watcher Fly");
 		ret.getSymbol().setSymbol('i');
 		ret.getSymbol().setFgColor(0x039942);
@@ -136,7 +140,7 @@ public class Monster extends Actor {
 		ret.setRecover(5);
 		ret.setStructure(5 + Rng.d(1, 6, 1));
 		ret.setEnergy(5 + Rng.d(1, 6, 1));
-		ret.setAi(new ShootOnSeeAI());
+		ret.setAi(new AIShootOnSee());
 		return ret;
 	}
 

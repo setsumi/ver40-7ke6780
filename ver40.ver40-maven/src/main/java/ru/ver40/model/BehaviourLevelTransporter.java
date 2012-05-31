@@ -2,12 +2,12 @@ package ru.ver40.model;
 
 import ru.ver40.service.MapService;
 
-public class LevelTransporterBehaviour implements IBuildingBehaviour {
+public class BehaviourLevelTransporter implements IBuildingBehaviour {
 
 	private int level;
 	private int x, y;
 
-	public LevelTransporterBehaviour(int level, int x, int y) {
+	public BehaviourLevelTransporter(int level, int x, int y) {
 		this.level = level;
 		this.x = x;
 		this.y = y;

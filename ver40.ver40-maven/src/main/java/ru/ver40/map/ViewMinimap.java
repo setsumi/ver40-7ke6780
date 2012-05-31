@@ -10,7 +10,7 @@ import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 
 import ru.ver40.model.Building;
-import ru.ver40.model.DoorBehaviour;
+import ru.ver40.model.BehaviourDoor;
 import ru.ver40.model.MapCell;
 import ru.ver40.service.MapService;
 import ru.ver40.system.util.AsciiDraw;
@@ -100,7 +100,7 @@ public class ViewMinimap {
 	private boolean isCellPassable(MapCell cell) {
 		boolean passable = true;
 		Building building = cell.getBuilding();
-		if (building != null && !(building.getBeh() instanceof DoorBehaviour)) {
+		if (building != null && !(building.getBeh() instanceof BehaviourDoor)) {
 			passable = false;
 		}
 		return cell.getFloor().isPassable() && passable;

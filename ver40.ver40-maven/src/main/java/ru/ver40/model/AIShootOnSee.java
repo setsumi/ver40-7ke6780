@@ -11,7 +11,7 @@ import ru.ver40.map.FloorMap;
 import ru.ver40.service.MapService;
 import ru.ver40.system.AnimationBulletFlight;
 
-public class ShootOnSeeAI implements AIProvider {
+public class AIShootOnSee implements AIProvider {
 
 	private Actor m_owner;
 	private MapService m_mapService = MapService.getInstance();
@@ -20,7 +20,7 @@ public class ShootOnSeeAI implements AIProvider {
 	private PositionConstant m_pos;
 	private Random m_rng;
 
-	public ShootOnSeeAI() {
+	public AIShootOnSee() {
 		m_los = new PrecisePermissive();
 		m_rng = new Random();
 		m_pos = PositionConstant.values()[m_rng.nextInt(7)];
