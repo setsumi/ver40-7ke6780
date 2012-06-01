@@ -33,24 +33,24 @@ public class Monster extends Actor {
 		// Выполняем текущее действие.
 		//
 		FloorMap map = MapService.getInstance().getMap();
-		switch (getAction()) {
-		case ACTION_WAIT:
+		switch (getCurrAction().getAction()) {
+		case Action.WAIT:
 			System.out.println(this.toString() + " [" + this.hashCode() + "] wait");// debug
 			break;
-		case ACTION_MOVE:
+		case Action.MOVE:
 			System.out.println(this.toString() + " [" + this.hashCode() + "] do_moveTo");// debug
 			do_moveTo(map, m_actTargetX, m_actTargetY);
 			break;
-		case ACTION_USEOBJECT:
+		case Action.USEOBJECT:
 			System.out.println(this.toString() + " [" + this.hashCode() + "] do_useObject");// debug
 			do_useObject(map, m_actTargetX, m_actTargetY);
 			break;
-		case ACTION_HIT:
+		case Action.HIT:
 			do_hit(map, m_actTargetX, m_actTargetY);
 			break;
-		case ACTION_KICK:
+		case Action.KICK:
 			break;
-		case ACTION_SHOOT:
+		case Action.SHOOT:
 			System.out.println(this.toString() + " [" + this.hashCode() + "] do_shoot");// debug
 			do_shoot(map, m_actTargetX, m_actTargetY, getActAnimation());
 			break;
