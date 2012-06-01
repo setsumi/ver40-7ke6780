@@ -20,10 +20,6 @@ import org.apache.commons.lang.math.IntRange;
  * Главный объект, по времени хода которого идет отсчет, находится всегда в самом начале списка
  * (таким образом ходит первый, если на этот момент попадает действие нескольких объектов).
  */
-/**
- * @author Setsumi
- * 
- */
 public class TimeService {
 
 	private static TimeService m_instance = null;
