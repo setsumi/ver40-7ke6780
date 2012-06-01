@@ -16,57 +16,40 @@ import ru.ver40.system.util.GameLog;
 public abstract class Actor extends GObject implements ITimedEntity {	
 
 	/**
-	 * Идентификаторы запланированных действий.
+	 * Список действий и их параметров.
 	 */
-	protected static final int ACTION_WAIT = 10;
-	protected static final int ACTION_MOVE = 20;
-	protected static final int ACTION_USEOBJECT = 40;
-	protected static final int ACTION_HIT = 50;
-	protected static final int ACTION_KICK = 60;
-	protected static final int ACTION_SHOOT = 70;
-	/**
-	 * Список продолжительностей действий.
-	 * (идентификатор действия, продолжительность действия)
-	 */
-	protected HashMap<Integer, Integer> m_actDurations;
+	private HashMap<Integer, Action> m_actions;
 
 	/**
 	 * Текущее запланированное действие.
 	 */
-	private int m_action;
-	/**
-	 * Продолжительность текущего действия.
-	 */
-	private int m_actDuration;
+	private Action m_currAction;
 	
 	@Override
-	public void setActDuration(int duration) {
-		m_actDuration = duration;
-	}
-
-	@Override
 	public int getActDuration() {
-		return m_actDuration;
+		return m_currAction.getDuration();
 	}
 
 	@Override
 	public void actionTick() {
-		m_actDuration--;
+		m_currAction.Tick();
 	}
 
 	/**
 	 * Получить текущее запланированное действие.
 	 */
-	protected int getAction() {
-		return m_action;
+	protected Action getCurrAction() {
+		return m_currAction;
 	}
 
 	/**
-	 * Внутренняя хелпер-функция инициализации текущего действия.
+	 * Хелпер-функция инициализации действий актера.
+	 * 
+	 * @param id - идентификатор действия
+	 * @param act - параметры действия
 	 */
-	private void setActionParams(int action) {
-		m_action = action;
-		setActDuration(m_actDurations.get(action));
+	protected void loadAction(int id, Action act) {
+		m_actions.put(id, act);
 	}
 
 	// ===========================================
@@ -93,17 +76,25 @@ public abstract class Actor extends GObject implements ITimedEntity {
 	}
 
 	/**
-	 * Запланировать. Тянуть время.
+	 * Запланировать. Тянуть время. Продолжительность по умолчанию.
 	 */
 	public void action_wait() {
-		setActionParams(ACTION_WAIT);
+		m_currAction.assign(m_actions.get(Action.WAIT));
+	}
+
+	/**
+	 * Запланировать. Тянуть время. Указанная продолжительность.
+	 */
+	public void action_wait(int duration) {
+		m_currAction.assign(m_actions.get(Action.WAIT));
+		m_currAction.setDuration(duration);
 	}
 
 	/**
 	 * Запланировать. Передвижение в точку.
 	 */
 	public void action_moveTo(int x, int y) {
-		setActionParams(ACTION_MOVE);
+		m_currAction.assign(m_actions.get(Action.MOVE));
 		m_actTargetX = x;
 		m_actTargetY = y;
 	}
@@ -112,7 +103,7 @@ public abstract class Actor extends GObject implements ITimedEntity {
 	 * Запланировать. Использование объекта на карте.
 	 */
 	public void action_useObject(int x, int y) {
-		setActionParams(ACTION_USEOBJECT);
+		m_currAction.assign(m_actions.get(Action.USEOBJECT));
 		m_actTargetX = x;
 		m_actTargetY = y;
 	}
@@ -121,7 +112,7 @@ public abstract class Actor extends GObject implements ITimedEntity {
 	 * Запланировать. Ударить место на карте.
 	 */
 	public void action_hit(int x, int y) {
-		setActionParams(ACTION_HIT);
+		m_currAction.assign(m_actions.get(Action.HIT));
 		m_actTargetX = x;
 		m_actTargetY = y;
 	}
@@ -130,7 +121,7 @@ public abstract class Actor extends GObject implements ITimedEntity {
 	 * Запланировать. Пнуть место на карте.
 	 */
 	public void action_kick(int x, int y) {
-		setActionParams(ACTION_KICK);
+		m_currAction.assign(m_actions.get(Action.KICK));
 		m_actTargetX = x;
 		m_actTargetY = y;
 	}
@@ -139,7 +130,7 @@ public abstract class Actor extends GObject implements ITimedEntity {
 	 * Запланировать. Выстрелить в точку на карте.
 	 */
 	public void action_shoot(int x, int y, AAnimation anim) {
-		setActionParams(ACTION_SHOOT);
+		m_currAction.assign(m_actions.get(Action.SHOOT));
 		m_actTargetX = x;
 		m_actTargetY = y;
 		m_actAnimation = anim;
@@ -258,17 +249,18 @@ public abstract class Actor extends GObject implements ITimedEntity {
 	 * В наследниках должны переинициализироваться списки конкретными параметрами.
 	 */
 	public Actor() {
-		m_actDurations = new HashMap<Integer, Integer>();
+		m_actions = new HashMap<Integer, Action>();
+		m_currAction = new Action();
 
-		// Скорости действий по умолчанию.
-		m_actDurations.put(ACTION_WAIT, 10);
-		m_actDurations.put(ACTION_MOVE, 10);
-		m_actDurations.put(ACTION_USEOBJECT, 10);
-		m_actDurations.put(ACTION_HIT, 10);
-		m_actDurations.put(ACTION_KICK, 10);
-		m_actDurations.put(ACTION_SHOOT, 10);
+		// Параметры действий по умолчанию.
+		loadAction(Action.WAIT, new Action(Action.WAIT, Action.BASE_VALUE, 0));
+		loadAction(Action.MOVE, new Action(Action.MOVE, Action.BASE_VALUE, 0));
+		loadAction(Action.USEOBJECT, new Action(Action.USEOBJECT, Action.BASE_VALUE, 0));
+		loadAction(Action.HIT, new Action(Action.HIT, Action.BASE_VALUE, 0));
+		loadAction(Action.KICK, new Action(Action.KICK, Action.BASE_VALUE, 0));
+		loadAction(Action.SHOOT, new Action(Action.SHOOT, Action.BASE_VALUE, 0));
 
-		// По умолчанию ничего не делаем.
+		// По умолчанию ждем.
 		action_wait();
 
 		getSymbol().setSymbol('A');
