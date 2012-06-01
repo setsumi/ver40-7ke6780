@@ -38,7 +38,7 @@ public class AIFightOnSee implements AIProvider {
 	@Override
 	public void behave() {
 		FloorMap map = mService.getMap();
-		Player player = map.getPlayer();
+		Monster player = map.getPlayer();
 		AIMoveAdapter moveAdapter = new AIMoveAdapter(map);
 		astar = new AStar(moveAdapter, 400, 400, true);
 		// Проверка игрок в поле зрения:

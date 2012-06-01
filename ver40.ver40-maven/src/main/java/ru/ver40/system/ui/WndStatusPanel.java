@@ -2,7 +2,7 @@ package ru.ver40.system.ui;
 
 import org.newdawn.slick.Color;
 
-import ru.ver40.model.Player;
+import ru.ver40.model.Monster;
 import ru.ver40.service.MapService;
 
 /**
@@ -40,7 +40,7 @@ public class WndStatusPanel extends MockWindow {
 		setHeight(i + 1);
 	}
 
-	public void updateData(Player player, long time) {
+	public void updateData(Monster player, long time) {
 		((CtrlLabel) getChild(CTRL_LABEL_STRUCTURE)).setText("STRUCT: "
 				+ player.getStructure());
 		((CtrlLabel) getChild(CTRL_LABEL_ENERGY)).setText("ENERGY: "

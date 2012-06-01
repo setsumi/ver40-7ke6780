@@ -11,7 +11,7 @@ import org.newdawn.slick.geom.Vector2f;
 
 import ru.ver40.model.Actor;
 import ru.ver40.model.MapCell;
-import ru.ver40.model.Player;
+import ru.ver40.model.Monster;
 import ru.ver40.model.VisibilityState;
 import ru.ver40.service.TimeService;
 import ru.ver40.system.util.AsciiDraw;
@@ -153,14 +153,14 @@ public class Viewport {
 	/**
 	 * Рендер вьюпорта в его положении на карте. См. moveTo(), moveBy().
 	 */
-	public void draw(Graphics gr, Player p) {
-		draw(m_mapPosX, m_mapPosY, gr, p);
+	public void draw(Graphics gr, Monster player) {
+		draw(m_mapPosX, m_mapPosY, gr, player);
 	}
 
 	/**
 	 * Рендер вьюпорта в произвольной точке карты.
 	 */
-	private void draw(int x, int y, Graphics gr, Player p) {
+	private void draw(int x, int y, Graphics gr, Monster player) {
 		int viewX = FloorMap.getViewRectX(x, m_width); // верхний угол вьюпорта
 		int viewY = FloorMap.getViewRectY(y, m_height);
 		// цикл отрисовки клеток
@@ -174,7 +174,7 @@ public class Viewport {
 					// TODO радиус обзора должен быть в кричере? А то!
 					float grad = 0.0f;// fade / 15; // затенение освещения
 					Vector2f trg = new Vector2f(viewX, vy);
-					Vector2f src = new Vector2f(p.getX(), p.getY());
+					Vector2f src = new Vector2f(player.getX(), player.getY());
 
 					AsciiDraw.getInstance().draw(
 							str,
