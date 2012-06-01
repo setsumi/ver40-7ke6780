@@ -10,7 +10,7 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import ru.ver40.map.FloorMap;
 import ru.ver40.map.Viewport;
-import ru.ver40.model.Player;
+import ru.ver40.model.Monster;
 import ru.ver40.service.MapService;
 import ru.ver40.system.UserGameState;
 import ru.ver40.system.util.GameLog;
@@ -24,7 +24,7 @@ import ru.ver40.util.Helper;
 public class StateUseMapObject extends UserGameState {
 
 	private FloorMap m_map;
-//	private Player m_player;
+	private Monster m_player;
 	private Viewport m_viewport;
 	private Point m_playerPos;
 	private Point m_selPos;
@@ -34,12 +34,12 @@ public class StateUseMapObject extends UserGameState {
 	/**
 	 * Конструктор.
 	 */
-	public StateUseMapObject(Player player, Viewport viewport) {
+	public StateUseMapObject(Monster player, Viewport viewport) {
 		super();
 		attachToSystemState(Constants.STATE_USEMAPOBJECT);
 		//
 		m_map = MapService.getInstance().getMap();
-//		m_player = player;
+		m_player = player;
 		m_viewport = viewport;
 		m_playerPos = new Point(player.getX(), player.getY());
 		m_selPos = new Point(-1, -1);
@@ -114,7 +114,8 @@ public class StateUseMapObject extends UserGameState {
 		if (!m_exit) {
 			if (key == Input.KEY_NUMPAD5 || key == Input.KEY_ENTER) {
 				if (m_map.isActive(m_selPos.x, m_selPos.y)) {
-					m_map.getCell(m_selPos.x, m_selPos.y).getBuilding().use();
+					m_player.action_useObject(m_selPos.x, m_selPos.y);
+					StateGameplay.getInstance().provokeNewTurn();
 					exit();
 				} else {
 					nothingToUse();

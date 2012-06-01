@@ -29,7 +29,7 @@ public class AIShootOnSee implements AIProvider {
 	@Override
 	public void behave() {
 		FloorMap map = m_mapService.getMap();
-		Player player = map.getPlayer();
+		Monster player = map.getPlayer();
 		AIMoveAdapter moveAdapter = new AIMoveAdapter(map);
 		m_astar = new AStar(moveAdapter, 400, 400, true);
 		// Проверка игрок в поле зрения:

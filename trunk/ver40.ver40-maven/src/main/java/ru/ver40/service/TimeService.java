@@ -20,6 +20,10 @@ import org.apache.commons.lang.math.IntRange;
  * Главный объект, по времени хода которого идет отсчет, находится всегда в самом начале списка
  * (таким образом ходит первый, если на этот момент попадает действие нескольких объектов).
  */
+/**
+ * @author Setsumi
+ * 
+ */
 public class TimeService {
 
 	private static TimeService m_instance = null;
@@ -32,9 +36,26 @@ public class TimeService {
 	}
 
 	/**
+	 * Класс для представления временного объекта в списке.
+	 */
+	private class EntityRec {
+		public ITimedEntity m_entity; // сам объект
+		public boolean m_flag; // пометка на удаление, либо признак главного объекта
+
+		public EntityRec(ITimedEntity entity, boolean flag) {
+			m_entity = entity;
+			m_flag = flag;
+		}
+
+		public EntityRec(ITimedEntity entity) {
+			this(entity, false);
+		}
+	}
+
+	/**
 	 * Объекты, действующие по времени.
 	 */
-	private LinkedList<ITimedEntity> m_entities;
+	private LinkedList<EntityRec> m_entities;
 
 	/**
 	 * Главный объект, управляемый игроком и управляющий временем.
@@ -49,10 +70,22 @@ public class TimeService {
 	private long m_time = 0;
 
 	/**
+	 * Флаг, указавающий, что происходит обработка событий хода. Нужен для корректного
+	 * вышибания попыток прямой модификации списка объектов.
+	 */
+	private boolean m_turnInProgress = false;
+
+	/**
+	 * Список объектов, запранированных на регистрацию в конце хода.
+	 */
+	private LinkedList<EntityRec> m_entitiesToAdd;
+
+	/**
 	 * Конструктор.
 	 */
 	public TimeService() {
-		m_entities = new LinkedList<ITimedEntity>();
+		m_entities = new LinkedList<EntityRec>();
+		m_entitiesToAdd = new LinkedList<EntityRec>();
 	}
 
 	/**
@@ -60,31 +93,6 @@ public class TimeService {
 	 */
 	public long getTime() {
 		return m_time;
-	}
-
-	/**
-	 * Обработка всех временных действий за один ход (ход == одно действие главного объекта -
-	 * того кем управляет пользователь).
-	 */
-	public void turn() {
-		if (!m_entities.isEmpty()) {
-			// Подразумевается, что первый объект это главный объект.
-			ITimedEntity first = m_entities.getFirst();
-			if (first != m_player) {
-				throw new RuntimeException("Invalid player. Expected: " + m_player
-						+ ", but found: " + first);
-			}
-			while (first.getActDuration() > 0) {
-				m_time++;
-				System.out.println(Long.valueOf(m_time) + " - " + first.getActDuration());// debug
-				for (ITimedEntity i : m_entities) {
-					i.actionTick();
-					if (i.getActDuration() == 0) {
-						i.performTimedAction();
-					}
-				}
-			}
-		}
 	}
 
 	/**
@@ -97,11 +105,77 @@ public class TimeService {
 	}
 
 	/**
+	 * Возвращает состояние сервиса времени в виде строки (для отладки).
+	 */
+	public String getDegugInfo() {
+		return "TimeService size: " + m_entities.size() + "; player: " + m_player + "@"
+				+ m_player.hashCode();
+	}
+
+	/**
+	 * Обработка всех временных действий за один ход (ход == одно действие главного объекта -
+	 * того кем управляет пользователь).
+	 */
+	public void turn() {
+		if (!m_entities.isEmpty()) {
+			m_turnInProgress = true;
+			// Подразумевается, что первый объект это главный объект.
+			EntityRec first = m_entities.getFirst();
+			if (first.m_entity != m_player) {
+				throw new RuntimeException("Invalid player. Expected: " + m_player
+						+ ", but found: " + first.m_entity);
+			}
+			// Крутим время пока не наступит действие главного объекта.
+			while (first.m_entity.getActDuration() > 0) {
+				m_time++;
+				System.out.println(Long.valueOf(m_time) + " - "
+						+ first.m_entity.getActDuration());// debug
+				for (EntityRec er : m_entities) {
+					er.m_entity.actionTick();
+					if (!er.m_flag && er.m_entity.getActDuration() == 0) {
+						er.m_entity.performTimedAction();
+					}
+				}
+			}
+			m_turnInProgress = false;
+			// Разрегистрация запланированных во время хода на удаление объектов.
+			Iterator<EntityRec> it = m_entities.iterator();
+			while (it.hasNext()) {
+				EntityRec er = it.next();
+				if (er.m_flag) {
+					if (er.m_entity == m_player) {
+						m_player = null;
+					}
+					it.remove();
+				}
+			}
+			// Регистрация запланированных во время хода на добавление объектов.
+			for (EntityRec er : m_entitiesToAdd) {
+				if (er.m_flag) {
+					registerPlayer(er.m_entity);
+				} else {
+					registerMob(er.m_entity);
+				}
+			}
+			m_entitiesToAdd.clear();
+		}
+	}
+
+	/**
+	 * Запланировать регистрацию временного объекта на конец хода (для избежания коллизий
+	 * списка во время хода).
+	 */
+	public void registerSafe(ITimedEntity entity, boolean isPlayer) {
+		m_entitiesToAdd.add(new EntityRec(entity, isPlayer));
+	}
+
+	/**
 	 * Зарегистрировать главный временной объект (которым управляет игрок).
 	 */
 	public void registerPlayer(ITimedEntity entity) {
-		m_entities.remove(entity);
-		m_entities.addFirst(entity);
+		checkTurnInProgress();
+		removeEntity(entity);
+		m_entities.addFirst(new EntityRec(entity));
 		m_player = entity;
 	}
 
@@ -109,8 +183,22 @@ public class TimeService {
 	 * Зарегистрировать простой временной объект.
 	 */
 	public void registerMob(ITimedEntity entity) {
-		if (!m_entities.contains(entity)) {
-			m_entities.addLast(entity);
+		checkTurnInProgress();
+		if (!findEntity(entity)) {
+			m_entities.addLast(new EntityRec(entity));
+		}
+	}
+
+	/**
+	 * Запланировать разрегистрацию временного объекта на конец хода (для избежания коллизий
+	 * списка во время хода).
+	 */
+	public void unregisterSafe(ITimedEntity entity) {
+		for (EntityRec er : m_entities) {
+			if (er.m_entity == entity) {
+				er.m_flag = true;
+				break;
+			}
 		}
 	}
 
@@ -118,39 +206,81 @@ public class TimeService {
 	 * Разрегистрировать временной объект (прекратить его обработку).
 	 */
 	public void unregister(ITimedEntity entity) {
-		m_entities.remove(entity);
+		checkTurnInProgress();
+		removeEntity(entity);
 		if (entity == m_player) {
 			m_player = null;
 		}
 	}
 
 	/**
-	 * Разрегистрирует все объекты не попадающие в указанный диапазон координат.
-	 * Главный объект (игрока) не трогаем.
+	 * Разрегистрирует все объекты не попадающие в указанный диапазон координат. Главный объект
+	 * (игрока) не трогаем.
 	 */
 	public void unregisterNotInArea(IntRange rx, IntRange ry) {
-		Iterator<ITimedEntity> it = m_entities.iterator();
+		checkTurnInProgress();
+		Iterator<EntityRec> it = m_entities.iterator();
 		while (it.hasNext()) {
-			ITimedEntity entity = it.next();
-			if (entity != m_player
-					&& (!rx.containsInteger(entity.getX()) || !ry.containsInteger(entity
-							.getY()))) {
+			EntityRec er = it.next();
+			if (er.m_entity != m_player
+					&& (!rx.containsInteger(er.m_entity.getX()) || !ry
+							.containsInteger(er.m_entity.getY()))) {
 				it.remove();
 			}
 		}
 	}
 
 	/**
-	 * Разрегистрирует все объекты (при переходе на другую карту например).
-	 * Главный объект (игрока) не трогаем.
+	 * Разрегистрирует все объекты (при переходе на другую карту например). Главный объект
+	 * (игрока) не трогаем.
 	 */
 	public void unregisterAll() {
+		checkTurnInProgress();
 		// Чистим всех.
 		m_entities.clear();
 		// Восстанавливаем игрока.
 		if (m_player != null) {
 			registerPlayer(m_player);
 		}
+	}
+
+	/**
+	 * Внутренняя функция для вышибания если идет обработка хода. Используется для недопущения
+	 * использования методов прямой модификации списка объектов во время обработки хода.
+	 */
+	private void checkTurnInProgress() {
+		if (m_turnInProgress) {
+			throw new IllegalStateException(
+					"Cannot modify time object list while turn in progress.");
+		}
+	}
+
+	/**
+	 * Внутренняя функция удаления объекта из списка.
+	 */
+	private void removeEntity(ITimedEntity entity) {
+		Iterator<EntityRec> it = m_entities.iterator();
+		while (it.hasNext()) {
+			EntityRec er = it.next();
+			if (er.m_entity == entity) {
+				it.remove();
+				break;
+			}
+		}
+	}
+
+	/**
+	 * Внутренняя функция поиска объекта в списке.
+	 */
+	private boolean findEntity(ITimedEntity entity) {
+		boolean ret = false;
+		for (EntityRec er : m_entities) {
+			if (er.m_entity == entity) {
+				ret = true;
+				break;
+			}
+		}
+		return ret;
 	}
 
 }

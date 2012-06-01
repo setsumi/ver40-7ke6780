@@ -14,14 +14,12 @@ import rlforj.los.PrecisePermissive;
 import rlforj.math.Point2I;
 import ru.ver40.map.Viewport;
 import ru.ver40.model.AIMoveAdapter;
-import ru.ver40.model.MapCell;
-import ru.ver40.model.Player;
+import ru.ver40.model.Monster;
 import ru.ver40.service.MapService;
 import ru.ver40.system.AnimationBulletFlight;
 import ru.ver40.system.UserGameState;
 import ru.ver40.util.Constants;
 import ru.ver40.util.Helper;
-import ru.ver40.util.RoleSystem;
 
 /**
  * Стрельба по врагам.
@@ -29,7 +27,7 @@ import ru.ver40.util.RoleSystem;
  */
 public class StateShoot extends UserGameState {
 
-	private Player m_player;
+	private Monster m_player;
 	private Point m_playerPos;
 	private Point m_targetPos;
 	private List<Point2I> m_targetLine;
@@ -42,7 +40,7 @@ public class StateShoot extends UserGameState {
 	/**
 	 * Конструктор.
 	 */
-	public StateShoot(Player player, Viewport viewport) {
+	public StateShoot(Monster player, Viewport viewport) {
 		super();
 		attachToSystemState(Constants.STATE_SHOOT);
 		//
@@ -111,16 +109,8 @@ public class StateShoot extends UserGameState {
 			}
 			// Огонь!
 			if (m_targetValid && (key == Input.KEY_NUMPAD5 || key == Input.KEY_ENTER)) {
-				MapCell cell = MapService.getInstance().getMap()
-						.getCell(m_targetPos.x, m_targetPos.y);
-				if (!cell.getPersons().isEmpty()) {
-					RoleSystem.testBlast(m_player, cell.getPersons().get(0));
-				}
-				// добавить анимацию
-				AnimationBulletFlight animation = new AnimationBulletFlight(m_viewport,
-						m_targetLine, 20);
-				StateGameplay.getAnimations().add(animation);
-
+				m_player.action_shoot(m_targetPos.x, m_targetPos.y, new AnimationBulletFlight(
+						m_viewport, m_targetLine, 20));
 				StateGameplay.getInstance().provokeNewTurn();
 				exit();
 			}

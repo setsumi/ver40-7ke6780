@@ -8,7 +8,7 @@ import rlforj.los.ILosBoard;
 import ru.ver40.model.Actor;
 import ru.ver40.model.Building;
 import ru.ver40.model.MapCell;
-import ru.ver40.model.Player;
+import ru.ver40.model.Monster;
 import ru.ver40.model.VisibilityState;
 import ru.ver40.util.Constants;
 
@@ -43,7 +43,7 @@ public class FloorMap implements ILosBoard {
 
 	private ArrayList<MapCell> oldVisible;
 
-	private Player player;
+	private Monster player;
 
 	/**
 	 * Конструктор
@@ -336,11 +336,11 @@ public class FloorMap implements ILosBoard {
 		oldVisible.clear();
 	}
 
-	public Player getPlayer() {
+	public Monster getPlayer() {
 		return player;
 	}
 
-	public void setPlayer(Player player) {
+	public void setPlayer(Monster player) {
 		this.player = player;
 	}
 

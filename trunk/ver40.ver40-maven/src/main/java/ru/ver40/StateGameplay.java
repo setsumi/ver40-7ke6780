@@ -14,7 +14,7 @@ import rlforj.los.PrecisePermissive;
 import ru.ver40.map.FloorMap;
 import ru.ver40.map.ViewMinimap;
 import ru.ver40.map.Viewport;
-import ru.ver40.model.Player;
+import ru.ver40.model.Monster;
 import ru.ver40.service.MapService;
 import ru.ver40.service.TimeService;
 import ru.ver40.system.UserGameState;
@@ -46,7 +46,7 @@ public class StateGameplay extends UserGameState {
 		return animations;
 	}
 
-	private Player player;
+	private Monster player;
 	private IFovAlgorithm fov;
 	private WndStatusPanel statusPanel; // панелька со статусом персонажа
 	private ViewMinimap minimap; // миникарта
@@ -96,7 +96,7 @@ public class StateGameplay extends UserGameState {
 		viewport = new Viewport(60, 30, 1, 1);
 		minimap = new ViewMinimap(59, 31, 20, 8, 0, 0, 2, Color.green.darker(0.4f));
 		fov = new PrecisePermissive();
-		player = new Player("Player");
+		player = Monster.createPlayer(0, 0);
 		TimeService.getInstance().registerPlayer(player);
 		MapService.getInstance().gotoLevel(Constants.LEVELS_MAX_LEVEL / 2, 200, 200);
 
@@ -189,6 +189,8 @@ public class StateGameplay extends UserGameState {
 		g.drawString(
 				"View: " + viewport.getMapPosX() + ", " + viewport.getMapPosY(),
 				100, 0);
+		g.setColor(Color.yellow);
+		g.drawString(TimeService.getInstance().getDegugInfo(), 5, 25);
 	}
 
 	/**
@@ -227,7 +229,7 @@ public class StateGameplay extends UserGameState {
 	/**
 	 * Вернуть текущего игрока.
 	 */
-	public Player getPlayer() {
+	public Monster getPlayer() {
 		return player;
 	}
 }
