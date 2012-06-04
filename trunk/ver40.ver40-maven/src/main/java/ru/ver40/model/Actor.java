@@ -32,7 +32,7 @@ public abstract class Actor extends GObject implements ITimedEntity {
 
 	@Override
 	public void actionTick() {
-		m_currAction.Tick();
+		m_currAction.tick();
 	}
 
 	/**

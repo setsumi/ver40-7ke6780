@@ -51,9 +51,12 @@ public class StateGameplay extends UserGameState {
 	private WndStatusPanel statusPanel; // панелька со статусом персонажа
 	private ViewMinimap minimap; // миникарта
 
-	// непрямой вызов нового хода из других стейтов
-	private boolean m_doNewTurn = false;
+	private boolean m_doNewTurn = false; // флаг вызова нового хода
+	private boolean m_isCooldown = false; // флаг хода-кулдауна, в противовес нормальному ходу
 
+	/**
+	 * Непрямой вызов нового хода из других стейтов.
+	 */
 	public void provokeNewTurn() {
 		m_doNewTurn = true;
 	}
@@ -180,7 +183,9 @@ public class StateGameplay extends UserGameState {
 		//
 		// Базовый интерфейс игры.
 		viewport.draw(g, player);
+		minimap.setClip(g);
 		minimap.draw(g);
+		minimap.clearClip(g);
 		statusPanel.draw(g);
 		GameLog.getInstance().draw(g);
 
@@ -194,21 +199,25 @@ public class StateGameplay extends UserGameState {
 	}
 
 	/**
-	 * Надо вызывать из логики игры перед началом нового хода, чтобы обновлять
-	 * состояние логов.
+	 * Выполняет новый ход. Продвигает время и обновляет состояния.
 	 */
 	private void newTurn() {
-		DebugLog.getInstance().resetNew();
-		GameLog.getInstance().resetNew();
+		if (!m_isCooldown) {
+			DebugLog.getInstance().resetNew();
+			GameLog.getInstance().resetNew();
+		}
 
-		TimeService.getInstance().turn();
+		m_isCooldown = TimeService.getInstance().turn();
+		if (m_isCooldown) {
+			provokeNewTurn();
+		} else {
+			viewport.moveTo(player.getX(), player.getY());
+			minimap.moveTo(player.getX(), player.getY());
 
-		viewport.moveTo(player.getX(), player.getY());
-		minimap.moveTo(player.getX(), player.getY());
-
-		// Запуск анимаций.
-		if (animations.count() > 0) {
-			animations.showModal();
+			// Запуск анимаций.
+			if (animations.count() > 0) {
+				animations.showModal();
+			}
 		}
 	}
 

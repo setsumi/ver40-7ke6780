@@ -29,13 +29,14 @@ public class Monster extends Actor {
 	}
 
 	@Override
-	public void performTimedAction() {
+	public boolean performTimedAction() {
 		// Выполняем текущее действие.
 		//
 		FloorMap map = MapService.getInstance().getMap();
 		switch (getCurrAction().getAction()) {
 		case Action.WAIT:
 			System.out.println(this.toString() + " [" + this.hashCode() + "] wait");// debug
+			// ничего не делаем - мы уже прождали сколько надо
 			break;
 		case Action.MOVE:
 			System.out.println(this.toString() + " [" + this.hashCode() + "] do_moveTo");// debug
@@ -57,10 +58,16 @@ public class Monster extends Actor {
 		}
 		// Планируем следующее действие.
 		//
-		if (m_ai != null) {
+		int cooldown = getCurrAction().getCooldown();
+		if (cooldown > 0) {
+			System.out.println(this.toString() + " [" + this.hashCode() + "] cooldown("
+					+ cooldown + ")");// debug
+			action_wait(cooldown);
+		} else if (m_ai != null) {
 			System.out.println(this.toString() + " [" + this.hashCode() + "] ai.behave");// debug
 			m_ai.behave();
 		}
+		return (cooldown > 0);
 	}
 
 	@Override
@@ -130,6 +137,9 @@ public class Monster extends Actor {
 		ret.setStructure(40);
 		ret.setEnergy(30);
 		ret.setAi(null);
+
+		ret.loadAction(Action.SHOOT, new Action(Action.SHOOT, 2, 8));
+
 		return ret;
 	}
 
@@ -170,6 +180,9 @@ public class Monster extends Actor {
 		ret.setStructure(5 + Rng.d(1, 6, 1));
 		ret.setEnergy(5 + Rng.d(1, 6, 1));
 		ret.setAi(new AIShootOnSee());
+
+		ret.loadAction(Action.SHOOT, new Action(Action.SHOOT, 2, 8));
+
 		return ret;
 	}
 

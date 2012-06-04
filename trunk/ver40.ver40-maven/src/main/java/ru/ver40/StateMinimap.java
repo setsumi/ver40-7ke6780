@@ -30,26 +30,15 @@ public class StateMinimap extends UserGameState {
 
 	/**
 	 * Конструктор.
-	 */
-	/**
-	 * @param sx
-	 *            положение на экране левого верхнего угла (в символах)
-	 * @param sy
-	 *            положение на экране левого верхнего угла (в символах)
-	 * @param w
-	 *            ширина (в символах)
-	 * @param h
-	 *            высота (в символах)
-	 * @param mx
-	 *            положение на карте
-	 * @param my
-	 *            положение на карте
-	 * @param zoom
-	 *            коэффициент увеличения
-	 * @param col
-	 *            цвет миникарты
-	 * @param view
-	 *            вьюпорт игры (для отрисовки его рамочки на миникарте)
+	 * @param sx - положение на экране левого верхнего угла (в символах)
+	 * @param sy - положение на экране левого верхнего угла (в символах)
+	 * @param w - ширина (в символах)
+	 * @param h - высота (в символах)
+	 * @param mx - положение на карте
+	 * @param my - положение на карте
+	 * @param zoom - коэффициент увеличения
+	 * @param col - цвет миникарты
+	 * @param view - вьюпорт игры (для отрисовки его рамочки на миникарте)
 	 */
 	public StateMinimap(int sx, int sy, int w, int h, int mx, int my, int zoom,
 			Color col, Viewport view) {
@@ -148,20 +137,23 @@ public class StateMinimap extends UserGameState {
 	public void onRender(GameContainer gc, StateBasedGame game, Graphics g) {
 		super.onRender(gc, game, g);
 		//
-//		g.setClip(m_scrPos.x, m_scrPos.y, m_scrWidth, m_scrHeight);
+		// сама миникарта
+		m_minimap.setClip(g);
 		m_minimap.draw(g);
+
 		// рамочка вьюпорта на миникарте
 		g.setColor(Color.white);
 		g.drawRect(m_minimap.transMapToScrX(m_viewport.getMapTopX()),
-				m_minimap.transMapToScrY(m_viewport.getMapTopY()),
-				m_viewport.getWidth() * m_minimap.getZoom(),
-				m_viewport.getHeight() * m_minimap.getZoom());
-//		g.clearClip();
+				m_minimap.transMapToScrY(m_viewport.getMapTopY()), m_viewport.getWidth()
+						* m_minimap.getZoom(), m_viewport.getHeight() * m_minimap.getZoom());
+		m_minimap.clearClip(g);
 
+		// статус-текст
 		AsciiDraw.getInstance().draw(
-				"Position " + m_mapPos.x + ":" + m_mapPos.y + " Sector "
-						+ m_sector.x + ":" + m_sector.y + " Zoom x" + m_zoom
-						+ " [+][-] adjust zoom", 1, 1, Color.white);
+				"Position " + m_mapPos.x + ":" + m_mapPos.y + " Sector " + m_sector.x + ":"
+						+ m_sector.y + " Zoom x" + m_zoom + " [+][-] adjust zoom", 1, 1,
+				Color.white);
+
 //		// DEBUG
 //		g.setColor(Color.red);
 //		g.drawString("View: " + m_mapPos.x + ", " + m_mapPos.y, 100, 15);
