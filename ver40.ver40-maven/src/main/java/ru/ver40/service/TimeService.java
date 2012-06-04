@@ -111,8 +111,12 @@ public class TimeService {
 	/**
 	 * Обработка всех временных действий за один ход (ход == одно действие главного объекта -
 	 * того кем управляет пользователь).
+	 * @return true если после выполнения хода, у главного тайм-объекта был запланирован
+	 *         кулдаун (это нужно для выполнения сразу следующего хода, чтобы отработать этот
+	 *         кулдаун), иначе возвращается false.
 	 */
-	public void turn() {
+	public boolean turn() {
+		boolean ret = false;
 		if (!m_entities.isEmpty()) {
 			m_turnInProgress = true;
 			// Подразумевается, что первый объект это главный объект.
@@ -124,12 +128,15 @@ public class TimeService {
 			// Крутим время пока не наступит действие главного объекта.
 			while (first.m_entity.getActDuration() > 0) {
 				m_time++;
-//				System.out.println(Long.valueOf(m_time) + " - "
-//						+ first.m_entity.getActDuration());// debug
+				System.out.println(Long.valueOf(m_time) + " - "
+						+ first.m_entity.getActDuration());// debug
 				for (EntityRec er : m_entities) {
 					er.m_entity.actionTick();
 					if (!er.m_flag && er.m_entity.getActDuration() == 0) {
-						er.m_entity.performTimedAction();
+						boolean cooldown = er.m_entity.performTimedAction();
+						if (er.m_entity == m_player && cooldown) {
+							ret = true;
+						}
 					}
 				}
 			}
@@ -155,6 +162,7 @@ public class TimeService {
 			}
 			m_entitiesToAdd.clear();
 		}
+		return ret;
 	}
 
 	/**

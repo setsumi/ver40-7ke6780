@@ -48,7 +48,7 @@ public class Action {
 	/**
 	 * Уменьшение продолжительности на единицу как результат прошедшего кванта времени.
 	 */
-	public void Tick() {
+	public void tick() {
 		m_duration--;
 	}
 

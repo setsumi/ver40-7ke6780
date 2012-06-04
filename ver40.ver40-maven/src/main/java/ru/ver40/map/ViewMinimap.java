@@ -100,8 +100,10 @@ public class ViewMinimap {
 	private boolean isCellPassable(MapCell cell) {
 		boolean passable = true;
 		Building building = cell.getBuilding();
-		if (building != null && !(building.getBeh() instanceof BehaviourDoor)) {
-			passable = false;
+		if (building != null) {
+			if (!building.isPassable() && !(building.getBeh() instanceof BehaviourDoor)) {
+				passable = false;
+			}
 		}
 		return cell.getFloor().isPassable() && passable;
 	}
@@ -252,7 +254,6 @@ public class ViewMinimap {
 	 * Рендер миникарты.
 	 */
 	public void draw(Graphics g) {
-		g.setClip(m_scrPos.x, m_scrPos.y, m_scrWidth, m_scrHeight);
 		// миникарта
 		int deltaX = m_cellTop.x % Constants.MAP_CHUNK_SIZE;
 		int deltaY = m_cellTop.y % Constants.MAP_CHUNK_SIZE;
@@ -271,7 +272,19 @@ public class ViewMinimap {
 		// указатель положения
 		g.setColor(Color.white);
 		g.fillRect(transMapToScrX(m_mapPos.x), transMapToScrY(m_mapPos.y), 2, 2);
+	}
 
+	/**
+	 * Включить клиппинг по периметру миникарты.
+	 */
+	public void setClip(Graphics g) {
+		g.setClip(m_scrPos.x, m_scrPos.y, m_scrWidth, m_scrHeight);
+	}
+
+	/**
+	 * Отключить клиппинг по периметру миникарты.
+	 */
+	public void clearClip(Graphics g) {
 		g.clearClip();
 	}
 
